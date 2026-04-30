@@ -1,0 +1,1 @@
+SELECT * FROM wc01.app_user WHERE username = ? AND password_hash = ? AND email = ?;
