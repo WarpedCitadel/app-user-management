@@ -23,6 +23,9 @@ public class UserController {
 
     @PostMapping("/register")
     private String createAppUser(@RequestBody UserModel user) {
+        if (user.dtoValidation()) {
+            return "Bad request";
+        }
         long appUserId = userService.registerUser(user);
         return appUserId > 0 ? "User logged in with AppUserId of " +
                 appUserId : "Login Failed! Invalid Credentials";

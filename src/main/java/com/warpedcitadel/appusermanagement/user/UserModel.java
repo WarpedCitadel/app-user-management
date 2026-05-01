@@ -1,8 +1,8 @@
 package com.warpedcitadel.appusermanagement.user;
 
+import com.warpedcitadel.appusermanagement.user.validation.ValidEmailFormat;
 
 public class UserModel {
-
 
     private long appUserId;
     private String username;
@@ -27,32 +27,48 @@ public class UserModel {
     }
 
     public String getUsername() {
-        return username;
+        return username.strip();
     }
 
     public String getPasswordHash() {
-        return passwordHash;
+        return passwordHash.strip();
     }
 
     public String getEmail() {
-        return email;
+        return email.replaceAll("\\s", "");
     }
 
 
-    public void setAppUserId(long appUserId) {
-        this.appUserId = appUserId;
+    public boolean dtoValidation(){
+
+        ValidEmailFormat emailValidator = new ValidEmailFormat();
+
+        if (isNull()) {
+            System.out.println("Null Value detected!");
+            return true;
+        } else {
+            if (isBlank()){
+                System.out.println("Empty value detected!");
+                return true;
+            } else {
+                if (!emailValidator.isValid(getEmail())){
+                    System.out.println("Not a valid Email");
+                    return true;
+                } else {
+                    System.out.println("Email is Valid");
+                    return false;
+                }
+            }
+        }
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+
+    private boolean isBlank() {
+        return getUsername().isBlank() || getPasswordHash().isBlank() || getEmail().isBlank();
     }
 
-    public void setPasswordHash(String passwordHash) {
-        this.passwordHash = passwordHash;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
+    private boolean isNull(){
+        return getUsername().isEmpty() || getPasswordHash().isEmpty() || getEmail().isEmpty();
     }
 
     @Override

@@ -50,10 +50,8 @@ public class UserRepository {
 
             int affected = statement.executeUpdate();
 
-            if (affected > 0) {
-
+            if (affected == 1) {
                 try (ResultSet resultSet = statement.getGeneratedKeys()) {
-
                     if (resultSet.next()) return resultSet.getInt(1);
                 }
             }
