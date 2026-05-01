@@ -1,6 +1,8 @@
 package com.warpedcitadel.appusermanagement.user;
 
 import com.warpedcitadel.appusermanagement.user.validation.ValidEmailFormat;
+import com.warpedcitadel.appusermanagement.user.validation.ValidPasswordFormat;
+import com.warpedcitadel.appusermanagement.user.validation.ValidUsernameFormat;
 
 public class UserModel {
 
@@ -38,10 +40,12 @@ public class UserModel {
         return email.replaceAll("\\s", "");
     }
 
-
+// TODO: add proper http client responses
     public boolean dtoValidation(){
 
         ValidEmailFormat emailValidator = new ValidEmailFormat();
+        ValidPasswordFormat passwordValidator = new ValidPasswordFormat();
+        ValidUsernameFormat usernameValidator = new ValidUsernameFormat();
 
         if (isNull()) {
             System.out.println("Null Value detected!");
@@ -51,13 +55,19 @@ public class UserModel {
                 System.out.println("Empty value detected!");
                 return true;
             } else {
-                if (!emailValidator.isValid(getEmail())){
-                    System.out.println("Not a valid Email");
+                if (!usernameValidator.isValid(getUsername())) {
+                    System.out.println("Not a valid username");
                     return true;
-                } else {
-                    System.out.println("Email is Valid");
-                    return false;
                 }
+                if (!passwordValidator.isValid(getPasswordHash())) {
+                    System.out.println("Not a valid password");
+                    return true;
+                }
+                if (!emailValidator.isValid(getEmail())) {
+                    System.out.println("Not a valid email");
+                    return true;
+                }
+                return false;
             }
         }
     }
