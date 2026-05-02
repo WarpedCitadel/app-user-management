@@ -1,14 +1,20 @@
 package com.warpedcitadel.appusermanagement.user;
 
-import com.warpedcitadel.appusermanagement.user.validation.ValidEmailFormat;
-import com.warpedcitadel.appusermanagement.user.validation.ValidPasswordFormat;
-import com.warpedcitadel.appusermanagement.user.validation.ValidUsernameFormat;
+import com.warpedcitadel.appusermanagement.user.validation.EmailFormat;
+import com.warpedcitadel.appusermanagement.user.validation.PasswordFormat;
+import com.warpedcitadel.appusermanagement.user.validation.UsernameFormat;
 
 public class UserModel {
 
     private long appUserId;
+
+    @UsernameFormat(message = "Invalid username")
     private String username;
+
+    @PasswordFormat(message = "Invalid password")
     private String passwordHash;
+
+    @EmailFormat(message = "Invalid email")
     private String email;
 
 
@@ -29,56 +35,15 @@ public class UserModel {
     }
 
     public String getUsername() {
-        return username.strip();
+        return username;
     }
 
     public String getPasswordHash() {
-        return passwordHash.strip();
+        return passwordHash;
     }
 
     public String getEmail() {
-        return email.replaceAll("\\s", "");
-    }
-
-// TODO: add proper http client responses
-    public boolean dtoValidation(){
-
-        ValidEmailFormat emailValidator = new ValidEmailFormat();
-        ValidPasswordFormat passwordValidator = new ValidPasswordFormat();
-        ValidUsernameFormat usernameValidator = new ValidUsernameFormat();
-
-        if (isNull()) {
-            System.out.println("Null Value detected!");
-            return true;
-        } else {
-            if (isBlank()){
-                System.out.println("Empty value detected!");
-                return true;
-            } else {
-                if (!usernameValidator.isValid(getUsername())) {
-                    System.out.println("Not a valid username");
-                    return true;
-                }
-                if (!passwordValidator.isValid(getPasswordHash())) {
-                    System.out.println("Not a valid password");
-                    return true;
-                }
-                if (!emailValidator.isValid(getEmail())) {
-                    System.out.println("Not a valid email");
-                    return true;
-                }
-                return false;
-            }
-        }
-    }
-
-
-    private boolean isBlank() {
-        return getUsername().isBlank() || getPasswordHash().isBlank() || getEmail().isBlank();
-    }
-
-    private boolean isNull(){
-        return getUsername().isEmpty() || getPasswordHash().isEmpty() || getEmail().isEmpty();
+        return email;
     }
 
     @Override
