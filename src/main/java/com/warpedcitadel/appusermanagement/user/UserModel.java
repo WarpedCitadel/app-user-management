@@ -46,6 +46,10 @@ public class UserModel {
         return email;
     }
 
+    public void setPasswordHash(String passwordHash) {
+        this.passwordHash = passwordHash;
+    }
+
     @Override
     public String toString() {
         return "UserModel{" +

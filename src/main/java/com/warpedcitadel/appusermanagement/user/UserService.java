@@ -1,6 +1,7 @@
 package com.warpedcitadel.appusermanagement.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -14,6 +15,9 @@ public class UserService {
     }
 
     public long registerUser(UserModel user) {
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(10);
+        String encodedPassword = encoder.encode(user.getPasswordHash());
+        user.setPasswordHash(encodedPassword);
         return repository.registerUser(user);
     }
 }
