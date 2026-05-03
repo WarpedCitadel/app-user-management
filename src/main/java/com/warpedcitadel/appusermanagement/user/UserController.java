@@ -14,7 +14,7 @@ import org.springframework.web.context.request.WebRequest;
 import java.time.Instant;
 
 @RestController
-@RequestMapping(path = "/app_user")
+@RequestMapping(path = "/api/v1/users")
 public class UserController {
 
     @Autowired
@@ -24,9 +24,9 @@ public class UserController {
     @PostMapping("/login")
     private String getAppUser(@RequestBody UserModel user) {
         boolean success = userService.loginUser(user.getUsername(),
-                user.getPasswordHash(), user.getEmail());
+                user.getPasswordHash());
 
-        return success ? "Account Created!" : "Invalid Inputs!";
+        return success ? "Logged in!" : "Invalid username or password!";
     }
 
 

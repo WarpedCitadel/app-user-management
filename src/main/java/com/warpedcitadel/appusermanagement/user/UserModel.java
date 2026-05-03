@@ -1,11 +1,13 @@
 package com.warpedcitadel.appusermanagement.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.warpedcitadel.appusermanagement.user.validation.EmailFormat;
 import com.warpedcitadel.appusermanagement.user.validation.PasswordFormat;
 import com.warpedcitadel.appusermanagement.user.validation.UsernameFormat;
 
 public class UserModel {
 
+    @JsonIgnore
     private long appUserId;
 
     @UsernameFormat(message = "Invalid username")
