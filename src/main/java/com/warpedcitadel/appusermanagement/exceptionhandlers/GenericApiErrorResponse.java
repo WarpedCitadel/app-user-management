@@ -3,7 +3,7 @@ package com.warpedcitadel.appusermanagement.exceptionhandlers;
 import java.time.Instant;
 import java.util.Map;
 
-public record ApiErrorResponse<timestamp>(
+public record GenericApiErrorResponse<timestamp>(
         String title,
         int status,
         Map<String, String> errors,

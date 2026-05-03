@@ -16,7 +16,7 @@ public class UserRepository {
 
     SQLFileReader loadSQL = new SQLFileReader();
 
-    // TODO | Login needs more robust queries
+    // TODO | authenticate and register needs more robust queries
 
     public boolean authenticateUser(String username, String passwordHash){
 
@@ -50,28 +50,29 @@ public class UserRepository {
 
     public int registerUser(UserModel user) {
 
-        String sqlScript = loadSQL.loadSQL("/users/insert--create_app_user.sql");
+        String insertSql = loadSQL.loadSQL("/users/insert--create_app_user.sql");
 
         try (Connection connection = wcDatabase.getConnection();
-        PreparedStatement statement = connection.prepareStatement(sqlScript, Statement.RETURN_GENERATED_KEYS)) {
+             PreparedStatement insertStatement = connection.prepareStatement(insertSql, Statement.RETURN_GENERATED_KEYS)) {
 
-            statement.setString(1, user.getUsername());
-            statement.setString(2, user.getPasswordHash());
-            statement.setString(3, user.getEmail());
+            insertStatement.setString(1, user.getUsername());
+            insertStatement.setString(2, user.getPasswordHash());
+            insertStatement.setString(3, user.getEmail());
 
-            int affected = statement.executeUpdate();
+            int affected = insertStatement.executeUpdate();
 
             if (affected == 1) {
-                try (ResultSet resultSet = statement.getGeneratedKeys()) {
+                try (ResultSet resultSet = insertStatement.getGeneratedKeys()) {
                     if (resultSet.next()) return resultSet.getInt(1);
                 }
             }
 
             return -1;
 
-        } catch (SQLException exception) {
-            exception.printStackTrace();
-            return -1;
+        } catch (SQLIntegrityConstraintViolationException userExistException) {
+            throw new RuntimeException("Username or email already exists!", userExistException);
+        } catch (SQLException genericException) {
+            throw new RuntimeException("Database error", genericException);
         }
     }
 }
