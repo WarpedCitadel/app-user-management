@@ -17,21 +17,22 @@ public class UserRepository {
     SQLFileReader loadSQL = new SQLFileReader();
 
     // TODO | authenticate and register needs more robust queries
+    // Possibly ask for email verification later on
 
-    public boolean authenticateUser(String username, String passwordHash){
+    public boolean authenticateUser(UserModel user){
 
         String sqlScript = loadSQL.loadSQL("/users/select--get_app_username.sql");
 
         try (Connection connection = wcDatabase.getConnection();
             PreparedStatement statement = connection.prepareStatement(sqlScript)) {
 
-            statement.setString(1, username);
+            statement.setString(1, user.getUsername());
             ResultSet resultSet = statement.executeQuery();
 
             if (resultSet.next()) {
                 String storedHash = resultSet.getString("password_hash");
 
-                if (BCrypt.checkpw(passwordHash, storedHash)) {
+                if (BCrypt.checkpw(user.getPasswordHash(), storedHash)) {
                     System.out.println("Login Successful -- JDBC");
                     return true;
                 } else {

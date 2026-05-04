@@ -23,9 +23,7 @@ public class UserController {
     // TODO add response body
     @PostMapping("/login")
     private String getAppUser(@RequestBody UserModel user) {
-        boolean success = userService.loginUser(user.getUsername(),
-                user.getPasswordHash());
-
+        boolean success = userService.loginUser(user);
         return success ? "Logged in!" : "Invalid username or password!";
     }
 

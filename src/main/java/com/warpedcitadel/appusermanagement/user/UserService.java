@@ -13,9 +13,9 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-
-    public boolean loginUser(String username, String passwordHash) {
-        return repository.authenticateUser(username, passwordHash);
+    // Todo | procure a JWT to the logged user
+    public boolean loginUser(UserModel user) {
+        return repository.authenticateUser(user);
     }
 
     public long registerUser(UserModel user) {

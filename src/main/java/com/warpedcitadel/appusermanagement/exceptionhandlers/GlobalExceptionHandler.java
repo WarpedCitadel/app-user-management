@@ -32,8 +32,8 @@ public class GlobalExceptionHandler {
         );
     }
 
-
-    // handles unique constraints in the database
+    // Todo | Does not invoke the status 409 error and instead gets a 403.. may need to review security config
+    // handles unique constraints exceptions from the database
     @ResponseStatus(HttpStatus.CONFLICT)
     @ExceptionHandler(UserAlreadyExistsException.class)
     public UniqueConstraintApiError handelUniqueConstraint(UserAlreadyExistsException userAlreadyExistsException, WebRequest request) {

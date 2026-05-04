@@ -24,6 +24,10 @@ public class UserModel {
 
     }
 
+    public UserModel(String username, String passwordHash) {
+        this.username = username;
+        this.passwordHash = passwordHash;
+    }
 
     public UserModel(String username, String passwordHash, String email) {
         this.username = username;
@@ -52,6 +56,7 @@ public class UserModel {
         this.passwordHash = passwordHash;
     }
 
+    // I am not even using this lol
     @Override
     public String toString() {
         return "UserModel{" +
