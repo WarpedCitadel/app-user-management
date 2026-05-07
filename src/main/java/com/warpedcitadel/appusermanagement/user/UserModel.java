@@ -5,6 +5,8 @@ import com.warpedcitadel.appusermanagement.user.validation.EmailFormat;
 import com.warpedcitadel.appusermanagement.user.validation.PasswordFormat;
 import com.warpedcitadel.appusermanagement.user.validation.UsernameFormat;
 
+import java.util.Locale;
+
 public class UserModel {
 
     @JsonIgnore
@@ -49,7 +51,7 @@ public class UserModel {
     }
 
     public String getEmail() {
-        return email;
+        return email = email.toLowerCase(Locale.ROOT);
     }
 
     public void setPasswordHash(String passwordHash) {

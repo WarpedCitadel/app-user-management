@@ -1,1 +1,1 @@
-SELECT password_hash FROM wc01.app_user where username = ?;
+SELECT password_hash FROM wc01.app_user where lower(username) = lower(?);

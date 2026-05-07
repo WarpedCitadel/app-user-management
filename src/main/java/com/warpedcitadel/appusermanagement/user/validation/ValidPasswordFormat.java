@@ -7,8 +7,8 @@ import java.util.regex.Pattern;
 
 public class ValidPasswordFormat implements ConstraintValidator<PasswordFormat, String> {
 
-//    Min. 8 chars, Max. 18 chars, 1 Upper, 1 Lower, 1 Number
-    private static final String regex = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,18}$";
+//    Min. 8 chars, Max. 26 chars, 1 Upper, 1 Lower, 1 Number
+    private static final String regex = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{8,26}$";
     private static final Pattern pattern = Pattern.compile(regex);
 
     @Override

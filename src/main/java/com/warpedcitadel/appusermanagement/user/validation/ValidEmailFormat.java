@@ -2,6 +2,7 @@ package com.warpedcitadel.appusermanagement.user.validation;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -13,10 +14,10 @@ public class ValidEmailFormat implements ConstraintValidator<EmailFormat, String
 
     @Override
     public boolean isValid(String email, ConstraintValidatorContext context) {
-        String stripEmail = email.replaceAll("\\s", "");
-        if (stripEmail.isEmpty() || stripEmail.isBlank()){
+        if (email.isEmpty() || email.isBlank()){
             return false;
         }
+        String stripEmail = email.replaceAll("\\s", "");
         Matcher matcher = pattern.matcher(stripEmail);
         return matcher.matches();
     }
