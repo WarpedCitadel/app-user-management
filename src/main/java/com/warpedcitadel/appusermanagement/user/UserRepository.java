@@ -49,6 +49,7 @@ public class UserRepository {
         }
     }
 
+//    Todo : user exist conception needs to return a api response
     public int registerUser(UserModel user) {
 
         String insertSql = loadSQL.loadSQL("/users/insert--create_app_user.sql");
@@ -60,9 +61,9 @@ public class UserRepository {
             insertStatement.setString(2, user.getPasswordHash());
             insertStatement.setString(3, user.getEmail());
 
-            int affected = insertStatement.executeUpdate();
+            int rowAffected = insertStatement.executeUpdate();
 
-            if (affected == 1) {
+            if (rowAffected == 1) {
                 try (ResultSet resultSet = insertStatement.getGeneratedKeys()) {
                     if (resultSet.next()) return resultSet.getInt(1);
                 }

@@ -18,7 +18,7 @@ public class UserService {
         return repository.authenticateUser(user);
     }
 
-    public long registerUser(UserModel user) {
+    public int registerUser(UserModel user) {
         String encodedPassword = passwordEncoder.encode(user.getPasswordHash());
         user.setPasswordHash(encodedPassword);
         return repository.registerUser(user);
