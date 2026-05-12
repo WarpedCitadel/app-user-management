@@ -1,5 +1,6 @@
 package com.warpedcitadel.appusermanagement.user;
 
+import com.warpedcitadel.appusermanagement.security.AuthenticationModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -14,7 +15,7 @@ public class UserService {
     private PasswordEncoder passwordEncoder;
 
     // Todo | procure a JWT to the logged user
-    public boolean loginUser(UserModel user) {
+    public AuthenticationModel loginUser(UserModel user) {
         return repository.authenticateUser(user);
     }
 

@@ -58,7 +58,7 @@ public class UserModel {
         this.passwordHash = passwordHash;
     }
 
-    // I am not even using this lol
+
     @Override
     public String toString() {
         return "UserModel{" +

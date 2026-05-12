@@ -2,11 +2,10 @@ package com.warpedcitadel.appusermanagement.payload;
 
 import java.time.Instant;
 
-public record LoginApiResponse<UserModel>(
+public record ApiResponse<Var>(
         String title,
         int status,
-        UserModel user,
-        String token,
+        Var user,
         String instance,
         Instant timestamp
 ) {}

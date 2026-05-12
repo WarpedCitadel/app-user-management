@@ -1,5 +1,6 @@
 package com.warpedcitadel.appusermanagement.user;
 
+import com.warpedcitadel.appusermanagement.security.AuthenticationModel;
 import com.warpedcitadel.appusermanagement.util.SQLFileReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCrypt;
@@ -19,9 +20,9 @@ public class UserRepository {
     // TODO | authenticate and register needs more robust queries
     // Possibly ask for email verification later on
 
-    public boolean authenticateUser(UserModel user){
+    public AuthenticationModel authenticateUser(UserModel user){
 
-        String sqlScript = loadSQL.loadSQL("/users/select--get_app_username.sql");
+        String sqlScript = loadSQL.loadSQL("/users/select--get_app_user_details.sql");
 
         try (Connection connection = wcDatabase.getConnection();
             PreparedStatement statement = connection.prepareStatement(sqlScript)) {
@@ -34,19 +35,19 @@ public class UserRepository {
 
                 if (BCrypt.checkpw(user.getPasswordHash(), storedHash)) {
                     System.out.println("Login Successful -- JDBC");
-                    return true;
-                } else {
-                    System.out.println("Login Failed -- JDBC");
-                    return false;
+                    AuthenticationModel dbUser = new AuthenticationModel(
+                            resultSet.getString("uuid"),
+                            resultSet.getString("username"),
+                            resultSet.getString("password_hash"),
+                            resultSet.getString("role_type")
+                    );
+                    return dbUser;
                 }
-            } else {
-                System.out.println("User not found -- JDBC");
-                return false;
             }
         } catch (SQLException exception) {
             exception.printStackTrace();
-            return false;
         }
+        throw new RuntimeException("User not found! -- JDBC");
     }
 
 //    Todo : user exist conception needs to return a api response

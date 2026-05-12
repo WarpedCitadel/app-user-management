@@ -1,0 +1,1 @@
+SELECT uuid, username, password_hash, email, r.role_type FROM wc01.app_user u INNER JOIN wc01.role r ON u.role = r.id WHERE LOWER(username) = LOWER(?);
