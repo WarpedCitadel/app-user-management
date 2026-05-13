@@ -45,7 +45,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
                         null,
                                 List.of(
                                         new SimpleGrantedAuthority(
-                                                "USER_" + userDetails.getRole()
+                                                "ROLE_" + userDetails.getRole()
                                         )));
                 authenticationToken.setDetails(new WebAuthenticationDetailsSource()
                         .buildDetails(request));

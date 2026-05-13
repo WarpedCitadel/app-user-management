@@ -1,6 +1,7 @@
 package com.warpedcitadel.appusermanagement.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.warpedcitadel.appusermanagement.user.validation.EmailFormat;
 import com.warpedcitadel.appusermanagement.user.validation.PasswordFormat;
 import com.warpedcitadel.appusermanagement.user.validation.UsernameFormat;
@@ -15,9 +16,11 @@ public class UserModel {
     @UsernameFormat(message = "Invalid username")
     private String username;
 
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @PasswordFormat(message = "Invalid password")
     private String passwordHash;
 
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @EmailFormat(message = "Invalid email")
     private String email;
 

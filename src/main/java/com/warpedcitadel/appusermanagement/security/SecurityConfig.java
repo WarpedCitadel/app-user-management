@@ -1,6 +1,7 @@
 package com.warpedcitadel.appusermanagement.security;
 
 
+import com.warpedcitadel.appusermanagement.exceptionhandlers.exceptions.CustomAccessDeniedHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,8 +25,13 @@ public class SecurityConfig {
                         .sessionManagement(session -> session.sessionCreationPolicy(
                                 SessionCreationPolicy.STATELESS
                         ))
+                        .exceptionHandling(exception -> exception
+                                .accessDeniedHandler(new CustomAccessDeniedHandler()))
                         .authorizeHttpRequests(auth ->
                                 auth.requestMatchers("/api/v1/auth/**").permitAll()
+                                .requestMatchers("/api/v1/protected/user").hasAnyRole("admin", "mod", "user")
+                                        .requestMatchers("/api/v1/protected/mod").hasAnyRole("admin", "mod")
+                                        .requestMatchers("/api/v1/protected/admin").hasRole("admin")
                                         .anyRequest().authenticated()
                         );
         http.addFilterBefore(authTokenFilter, UsernamePasswordAuthenticationFilter.class);

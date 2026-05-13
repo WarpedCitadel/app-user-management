@@ -1,10 +1,16 @@
 package com.warpedcitadel.appusermanagement.security;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class AuthenticationModel {
 
     private final String uuid;
     private final String username;
+
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private final String passwordHash;
+
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String role;
 
 
