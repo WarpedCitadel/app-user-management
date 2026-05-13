@@ -3,7 +3,6 @@ package com.warpedcitadel.appusermanagement.user;
 import com.warpedcitadel.appusermanagement.security.AuthenticationModel;
 import com.warpedcitadel.appusermanagement.util.SQLFileReader;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -20,29 +19,24 @@ public class UserRepository {
     // TODO | authenticate and register needs more robust queries
     // Possibly ask for email verification later on
 
-    public AuthenticationModel authenticateUser(UserModel user){
+    public AuthenticationModel authenticateUser(String username){
 
         String sqlScript = loadSQL.loadSQL("/users/select--get_app_user_details.sql");
 
         try (Connection connection = wcDatabase.getConnection();
             PreparedStatement statement = connection.prepareStatement(sqlScript)) {
 
-            statement.setString(1, user.getUsername());
+            statement.setString(1, username);
             ResultSet resultSet = statement.executeQuery();
 
             if (resultSet.next()) {
-                String storedHash = resultSet.getString("password_hash");
-
-                if (BCrypt.checkpw(user.getPasswordHash(), storedHash)) {
-                    System.out.println("Login Successful -- JDBC");
-                    AuthenticationModel dbUser = new AuthenticationModel(
-                            resultSet.getString("uuid"),
-                            resultSet.getString("username"),
-                            resultSet.getString("password_hash"),
-                            resultSet.getString("role_type")
-                    );
-                    return dbUser;
-                }
+                AuthenticationModel dbUser = new AuthenticationModel(
+                        resultSet.getString("uuid"),
+                        resultSet.getString("username"),
+                        resultSet.getString("password_hash"),
+                        resultSet.getString("role_type")
+                );
+                return dbUser;
             }
         } catch (SQLException exception) {
             exception.printStackTrace();
