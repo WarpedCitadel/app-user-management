@@ -1,0 +1,7 @@
+services:
+  Environment:
+    image: app-user-mananagement/demo
+    env_file:
+      - .env
+    ports:
+      - "8080:8080"
