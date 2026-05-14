@@ -3,6 +3,7 @@ package com.warpedcitadel.appusermanagement.user;
 import com.warpedcitadel.appusermanagement.security.AuthenticationModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -29,7 +30,7 @@ public class UserService {
                 return dbUser;
             }
         }
-        throw new RuntimeException("User password or username does not match!");
+        throw new BadCredentialsException("Invalid Username or password!");
     }
 
     public int registerUser(UserModel user) {

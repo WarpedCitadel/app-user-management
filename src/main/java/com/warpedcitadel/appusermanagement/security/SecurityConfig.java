@@ -29,6 +29,7 @@ public class SecurityConfig {
                                 .accessDeniedHandler(new CustomAccessDeniedHandler()))
                         .authorizeHttpRequests(auth ->
                                 auth.requestMatchers("/api/v1/auth/**").permitAll()
+                                        .requestMatchers("/error").permitAll()
                                 .requestMatchers("/api/v1/protected/user").hasAnyRole("admin", "mod", "user")
                                         .requestMatchers("/api/v1/protected/mod").hasAnyRole("admin", "mod")
                                         .requestMatchers("/api/v1/protected/admin").hasRole("admin")

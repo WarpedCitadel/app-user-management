@@ -66,10 +66,8 @@ public class UserRepository {
 
             return -1;
 
-        } catch (SQLIntegrityConstraintViolationException userExistException) {
+        } catch (SQLException userExistException) {
             throw new RuntimeException("Username or email already exists!", userExistException);
-        } catch (SQLException genericException) {
-            throw new RuntimeException("Database error", genericException);
         }
     }
 }
