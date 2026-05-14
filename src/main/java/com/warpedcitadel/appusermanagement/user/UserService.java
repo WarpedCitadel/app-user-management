@@ -24,10 +24,12 @@ public class UserService {
     public AuthenticationModel loginUser(UserModel user) {
         AuthenticationModel dbUser = repository.authenticateUser(user.getUsername());
         String storedHash = dbUser.getPasswordHash();
-        if (BCrypt.checkpw(user.getPasswordHash(), storedHash)) {
-            return dbUser;
+        if (user.getUsername().equals(dbUser.getUsername())){
+            if (BCrypt.checkpw(user.getPasswordHash(), storedHash)) {
+                return dbUser;
+            }
         }
-        throw new RuntimeException("User password does not match!");
+        throw new RuntimeException("User password or username does not match!");
     }
 
     public int registerUser(UserModel user) {
