@@ -1,5 +1,5 @@
 services:
-  Environment:
+  wc_dev:
     image: app-user-mananagement/demo
     env_file:
       - .env
