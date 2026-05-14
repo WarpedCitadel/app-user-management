@@ -8,5 +8,8 @@ USER wc_dev
 
 ARG JAR_FILE=target/*.jar
 COPY --chown=wc_dev:wc_secure_role ${JAR_FILE} appusermanagement-0.0.1-SNAPSHOT.jar
-COPY ./src .
+COPY --chown=wc_dev:wc_secure_role ./src/main .
+
+EXPOSE 8080
+
 ENTRYPOINT ["java","-jar", "/app-user-management/appusermanagement-0.0.1-SNAPSHOT.jar"]
