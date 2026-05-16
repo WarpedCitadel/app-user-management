@@ -1,6 +1,7 @@
 package com.warpedcitadel.appusermanagement.user;
 
 
+import com.warpedcitadel.appusermanagement.user.profile.AppUserProfileModel;
 import com.warpedcitadel.appusermanagement.user.profile.UpdateBioModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -14,15 +15,18 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @PreAuthorize("hasAnyRole('admin', 'mod', 'user')")
-    @GetMapping("/{username}")
-    public String userProfile(@PathVariable String username, String uuid){
-        return "User content with JWT";
+    @GetMapping("/{uuid}")
+    public AppUserProfileModel userProfile(@PathVariable String uuid){
+        return userRepository.getAppUserProfile(uuid);
     }
 
 
     @PreAuthorize("hasAnyRole('admin', 'mod', 'user')")
-    @PostMapping("/{username}")
+    @PatchMapping("/{uuid}")
     public String userUpdateBio(@RequestBody UpdateBioModel updateBio, WebRequest request){
         if (userService.updateUserBio(updateBio) == 1) {
             return "profile updated!";

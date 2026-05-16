@@ -1,1 +1,0 @@
-SELECT * FROM wc01.app_user WHERE username = lower(?) AND password_hash = ? AND email = ?;

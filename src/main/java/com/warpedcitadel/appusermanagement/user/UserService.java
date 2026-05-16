@@ -22,7 +22,6 @@ public class UserService {
     }
 
 
-    // Todo | procure a JWT to the logged user
     public AuthenticationModel loginUser(UserModel user) {
         AuthenticationModel dbUser = repository.authenticateUser(user.getUsername());
         String storedHash = dbUser.getPasswordHash();

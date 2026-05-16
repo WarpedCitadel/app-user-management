@@ -1,6 +1,7 @@
 package com.warpedcitadel.appusermanagement.user;
 
 import com.warpedcitadel.appusermanagement.security.AuthenticationModel;
+import com.warpedcitadel.appusermanagement.user.profile.AppUserProfileModel;
 import com.warpedcitadel.appusermanagement.user.profile.UpdateBioModel;
 import com.warpedcitadel.appusermanagement.util.SQLFileReader;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,9 +74,35 @@ public class UserRepository {
     }
 
 
+    public AppUserProfileModel getAppUserProfile(String uuid){
+
+        String selectSQL = loadSQL.loadSQL("/users/select--get_app_user_profile.sql");
+
+
+        try (Connection connection = wcDatabase.getConnection();
+             PreparedStatement statement = connection.prepareStatement(selectSQL)) {
+
+            statement.setString(1, uuid);
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                AppUserProfileModel userProfile = new AppUserProfileModel(
+                        resultSet.getString("uuid"),
+                        resultSet.getString("username"),
+                        resultSet.getString("user_bio")
+                );
+                return userProfile;
+            }
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+        throw new RuntimeException("User profile not found! -- JDBC");
+    }
+
+
     public int updateDbBio(UpdateBioModel updateBio){
 
-        String updateSql = loadSQL.loadSQL("");
+        String updateSql = loadSQL.loadSQL("/users/insert--create_user_bio.sql");
 
         try (Connection connection = wcDatabase.getConnection();
             PreparedStatement updateStatement = connection.prepareStatement(updateSql, Statement.RETURN_GENERATED_KEYS)) {
@@ -83,7 +110,7 @@ public class UserRepository {
             updateStatement.setInt(1, updateBio.getAppUserId());
             updateStatement.setString(2, updateBio.getBio());
 
-            int rowAffected = updateStatement .executeUpdate();
+            int rowAffected = updateStatement.executeUpdate();
 
             if (rowAffected == 1){
                 try (ResultSet resultSet = updateStatement.getGeneratedKeys()) {
@@ -104,7 +131,7 @@ public class UserRepository {
 
     public int getUserId(String uuid){
 
-        String selectSQL = loadSQL.loadSQL("");
+        String selectSQL = loadSQL.loadSQL("/users/select--get_app_user_id.sql");
 
         try (Connection connection = wcDatabase.getConnection();
              PreparedStatement statement = connection.prepareStatement(selectSQL)) {
