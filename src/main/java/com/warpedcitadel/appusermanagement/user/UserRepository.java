@@ -2,7 +2,6 @@ package com.warpedcitadel.appusermanagement.user;
 
 import com.warpedcitadel.appusermanagement.security.AuthenticationModel;
 import com.warpedcitadel.appusermanagement.user.profile.AppUserProfileModel;
-import com.warpedcitadel.appusermanagement.user.profile.UpdateBioModel;
 import com.warpedcitadel.appusermanagement.util.SQLFileReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -88,7 +87,7 @@ public class UserRepository {
             if (resultSet.next()) {
                 AppUserProfileModel userProfile = new AppUserProfileModel(
                         resultSet.getString("uuid"),
-                        resultSet.getString("username"),
+                        resultSet.getString("display_name"),
                         resultSet.getString("user_bio")
                 );
                 return userProfile;
@@ -100,15 +99,16 @@ public class UserRepository {
     }
 
 
-    public int updateDbBio(UpdateBioModel updateBio){
+    public int createAppUserProfile(AppUserProfileModel updateProfile){
 
-        String updateSql = loadSQL.loadSQL("/users/insert--create_user_bio.sql");
+        String updateSql = loadSQL.loadSQL("/users/insert--create_app_user_profile.sql");
 
         try (Connection connection = wcDatabase.getConnection();
             PreparedStatement updateStatement = connection.prepareStatement(updateSql, Statement.RETURN_GENERATED_KEYS)) {
 
-            updateStatement.setInt(1, updateBio.getAppUserId());
-            updateStatement.setString(2, updateBio.getBio());
+            updateStatement.setInt(1, updateProfile.getAppUserId());
+            updateStatement.setString(2, updateProfile.getDisplayName());
+            updateStatement.setString(3, updateProfile.getBio());
 
             int rowAffected = updateStatement.executeUpdate();
 
@@ -121,7 +121,35 @@ public class UserRepository {
             return -1;
 
         } catch (SQLException updateException){
-            throw new RuntimeException("Failed to update user bio!", updateException);
+            throw new RuntimeException("Failed to update user profile!", updateException);
+        }
+
+    }
+
+
+    public int updateAppUserProfile(AppUserProfileModel updateProfile){
+
+        String updateSql = loadSQL.loadSQL("/users/update--update_app_user_profile.sql");
+
+        try (Connection connection = wcDatabase.getConnection();
+             PreparedStatement updateStatement = connection.prepareStatement(updateSql, Statement.RETURN_GENERATED_KEYS)) {
+
+            updateStatement.setString(1, updateProfile.getDisplayName());
+            updateStatement.setString(2, updateProfile.getBio());
+            updateStatement.setInt(3, updateProfile.getAppUserId());
+
+            int rowAffected = updateStatement.executeUpdate();
+
+            if (rowAffected == 1){
+                try (ResultSet resultSet = updateStatement.getGeneratedKeys()) {
+                    if (resultSet.next()) return resultSet.getInt(1);
+                }
+            }
+
+            return -1;
+
+        } catch (SQLException updateException){
+            throw new RuntimeException("Failed to update user profile!", updateException);
         }
 
     }

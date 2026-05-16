@@ -30,9 +30,7 @@ public class SecurityConfig {
                         .authorizeHttpRequests(auth ->
                                 auth.requestMatchers("/api/v1/auth/**").permitAll()
                                         .requestMatchers("/error").permitAll()
-                                .requestMatchers("/api/v1/protected/user").hasAnyRole("admin", "mod", "user")
-                                        .requestMatchers("/api/v1/protected/mod").hasAnyRole("admin", "mod")
-                                        .requestMatchers("/api/v1/protected/admin").hasRole("admin")
+                                        .requestMatchers("/api/v1/user/profile").hasAnyRole("admin", "mod", "user")
                                         .anyRequest().authenticated()
                         );
         http.addFilterBefore(authTokenFilter, UsernamePasswordAuthenticationFilter.class);

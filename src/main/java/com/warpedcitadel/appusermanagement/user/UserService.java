@@ -1,7 +1,7 @@
 package com.warpedcitadel.appusermanagement.user;
 
 import com.warpedcitadel.appusermanagement.security.AuthenticationModel;
-import com.warpedcitadel.appusermanagement.user.profile.UpdateBioModel;
+import com.warpedcitadel.appusermanagement.user.profile.AppUserProfileModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -40,9 +40,15 @@ public class UserService {
     }
 
 
-    public int updateUserBio(UpdateBioModel updateBioDetails){
-        int userId = repository.getUserId(updateBioDetails.getUuid());
-        UpdateBioModel updateBio = new UpdateBioModel(userId, updateBioDetails.getBio());
-        return repository.updateDbBio(updateBio);
+    public int createUserProfile(AppUserProfileModel updateProfileDetails){
+        int userId = repository.getUserId(updateProfileDetails.getUuid());
+        AppUserProfileModel appUserProfileModel = new AppUserProfileModel(userId, updateProfileDetails.getUuid(), updateProfileDetails.getDisplayName(), updateProfileDetails.getBio());
+        return repository.createAppUserProfile(appUserProfileModel);
+    }
+
+    public int updateUserProfile(AppUserProfileModel updateProfileDetails){
+        int userId = repository.getUserId(updateProfileDetails.getUuid());
+        AppUserProfileModel appUserProfileModel = new AppUserProfileModel(userId, updateProfileDetails.getUuid(), updateProfileDetails.getDisplayName(), updateProfileDetails.getBio());
+        return repository.updateAppUserProfile(appUserProfileModel);
     }
 }

@@ -50,7 +50,6 @@ public class GlobalExceptionHandler {
     }
 
 
-    // Todo | Does not invoke the status 409 error and instead gets a 403.. may need to review security config
     // handles unique constraints exceptions from the database
     @ResponseStatus(HttpStatus.CONFLICT)
     @ExceptionHandler(SQLException.class)
@@ -58,7 +57,7 @@ public class GlobalExceptionHandler {
         Map<String, String> errors = new HashMap<>();
         errors.put("message", userAlreadyExistsException.toString());
         return new GenericApiErrorResponse(
-          "User already exists!",
+          "Can not replace existing value!",
           HttpStatus.CONFLICT.value(),
           errors,
           request.getDescription(false).replace("uri=", ""),
