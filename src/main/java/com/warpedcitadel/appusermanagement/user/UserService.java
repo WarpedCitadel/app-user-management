@@ -1,6 +1,7 @@
 package com.warpedcitadel.appusermanagement.user;
 
 import com.warpedcitadel.appusermanagement.security.AuthenticationModel;
+import com.warpedcitadel.appusermanagement.user.profile.UpdateBioModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -37,5 +38,12 @@ public class UserService {
         String encodedPassword = passwordEncoder().encode(user.getPasswordHash());
         user.setPasswordHash(encodedPassword);
         return repository.registerUser(user);
+    }
+
+
+    public int updateUserBio(UpdateBioModel updateBioDetails){
+        int userId = repository.getUserId(updateBioDetails.getUuid());
+        UpdateBioModel updateBio = new UpdateBioModel(userId, updateBioDetails.getBio());
+        return repository.updateDbBio(updateBio);
     }
 }
