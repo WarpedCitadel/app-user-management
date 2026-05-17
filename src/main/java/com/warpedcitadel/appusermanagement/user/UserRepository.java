@@ -192,12 +192,9 @@ public class UserRepository {
 
             return new SliceImpl<>(users, pageable, hasNext);
 
-
         } catch (SQLException exception){
-            exception.printStackTrace();
+            throw new RuntimeException("Can not load users", exception);
         }
-
-        throw new RuntimeException("Could not find any users");
     }
 
 

@@ -18,7 +18,7 @@ import java.time.Clock;
 import java.time.Instant;
 
 @RestController
-@RequestMapping(path = "/api/v1/auth")
+@RequestMapping(path = "/auth", version = "1.0")
 public class UserAuthController {
 
     @Autowired

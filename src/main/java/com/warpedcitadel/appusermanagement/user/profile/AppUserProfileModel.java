@@ -1,12 +1,13 @@
 package com.warpedcitadel.appusermanagement.user.profile;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class AppUserProfileModel {
 
     @JsonIgnore
     private int appUserId;
-
     private String uuid;
     private String displayName;
     private String bio;

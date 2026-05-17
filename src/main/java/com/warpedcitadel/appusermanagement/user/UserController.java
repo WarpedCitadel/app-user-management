@@ -16,7 +16,7 @@ import java.time.Clock;
 import java.time.Instant;
 
 @RestController
-@RequestMapping("/api/v1/user")
+@RequestMapping(path = "/user", version = "1.0")
 public class UserController {
 
     @Autowired
@@ -26,6 +26,7 @@ public class UserController {
     private UserRepository userRepository;
 
 
+    // Todo | change the search look only for games, then redirect the user to the game publisher by clicking on their default display name
     @GetMapping("/search")
     public Slice<AppUserProfileModel> getUsers(@RequestParam("query") String searchterm,
                                                Pageable pageable) {
@@ -39,7 +40,7 @@ public class UserController {
 
 
     @PreAuthorize("hasAnyRole('admin', 'mod', 'user')")
-    @PostMapping("/createprofile")
+    @PostMapping("/profile/createprofile")
     private ResponseEntity<ApiResponse> createUserProfile(@RequestBody AppUserProfileModel updateProfile, WebRequest request){
         if(userService.createUserProfile(updateProfile) >= 1){
             ApiResponse userProfile = new ApiResponse<>("User profile created", HttpStatus.OK.value(),
@@ -54,7 +55,7 @@ public class UserController {
 
 
     @PreAuthorize("hasAnyRole('admin', 'mod', 'user')")
-    @PutMapping("/updateprofile")
+    @PutMapping("/profile/updateprofile")
     private ResponseEntity<ApiResponse> updateUserProfile(@RequestBody AppUserProfileModel updateProfile, WebRequest request) {
         if(userService.updateUserProfile(updateProfile) >= 1){
             ApiResponse userProfile = new ApiResponse<>("User profile created", HttpStatus.OK.value(),

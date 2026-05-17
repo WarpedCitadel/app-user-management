@@ -64,7 +64,7 @@ public class UserService {
 
 
     public Slice<AppUserProfileModel> getUsers(Pageable pageable, String searchTerm){
-        String querySearchTerm = searchTerm + "%";
+        String querySearchTerm = searchTerm.concat("%");
         return repository.findUsers(pageable, querySearchTerm);
     }
 }
