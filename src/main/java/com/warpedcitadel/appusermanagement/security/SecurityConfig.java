@@ -28,9 +28,9 @@ public class SecurityConfig {
                         .exceptionHandling(exception -> exception
                                 .accessDeniedHandler(new CustomAccessDeniedHandler()))
                         .authorizeHttpRequests(auth ->
-                                auth.requestMatchers("/api/v1/auth/**").permitAll()
+                                auth.requestMatchers("/api/v1/auth/**", "/api/v1/user/profile/{uuid}").permitAll()
                                         .requestMatchers("/error").permitAll()
-                                        .requestMatchers("/api/v1/user/profile").hasAnyRole("admin", "mod", "user")
+                                        .requestMatchers("/api/v1/user/profile/**").hasAnyRole("admin", "mod", "user")
                                         .anyRequest().authenticated()
                         );
         http.addFilterBefore(authTokenFilter, UsernamePasswordAuthenticationFilter.class);

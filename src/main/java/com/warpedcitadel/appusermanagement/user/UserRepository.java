@@ -40,9 +40,9 @@ public class UserRepository {
                 return dbUser;
             }
         } catch (SQLException exception) {
-            exception.printStackTrace();
+            throw new RuntimeException("Failed to connect to database", exception);
         }
-        throw new RuntimeException("User not found! -- JDBC");
+        throw new RuntimeException("User with the username of " + username + " was not found");
     }
 
 
@@ -85,17 +85,16 @@ public class UserRepository {
             ResultSet resultSet = statement.executeQuery();
 
             if (resultSet.next()) {
-                AppUserProfileModel userProfile = new AppUserProfileModel(
+                return new AppUserProfileModel(
                         resultSet.getString("uuid"),
                         resultSet.getString("display_name"),
                         resultSet.getString("user_bio")
                 );
-                return userProfile;
             }
         } catch (SQLException exception) {
-            exception.printStackTrace();
+            throw new RuntimeException("Failed to connect to database", exception);
         }
-        throw new RuntimeException("User profile not found! -- JDBC");
+        throw new RuntimeException("Failed to find user with uuid: " + uuid);
     }
 
 
@@ -121,7 +120,7 @@ public class UserRepository {
             return -1;
 
         } catch (SQLException updateException){
-            throw new RuntimeException("Failed to update user profile!", updateException);
+            throw new RuntimeException("Failed to update user profile with uuid: " + updateProfile.getUuid(), updateException);
         }
 
     }
@@ -149,9 +148,8 @@ public class UserRepository {
             return -1;
 
         } catch (SQLException updateException){
-            throw new RuntimeException("Failed to update user profile!", updateException);
+            throw new RuntimeException("Failed to update user profile with uuid: " + updateProfile.getUuid(), updateException);
         }
-
     }
 
 
@@ -171,11 +169,9 @@ public class UserRepository {
             if (resultSet.next()) {
                 return resultSet.getInt("id");
             }
-
         } catch (SQLException exception) {
-            exception.printStackTrace();
+            throw new RuntimeException("User with uuid: " + uuid + " does not exist", exception);
         }
-
-        throw new RuntimeException("User does not exist!");
+        return -1;
     }
 }

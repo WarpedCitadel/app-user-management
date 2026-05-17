@@ -5,7 +5,7 @@ import java.time.Instant;
 public record ApiResponse<Var>(
         String title,
         int status,
-        Var user,
+        Var response,
         String instance,
         Instant timestamp
 ) {}

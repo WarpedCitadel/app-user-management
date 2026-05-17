@@ -18,6 +18,7 @@ public class UserService {
 
     @Bean
     public PasswordEncoder passwordEncoder(){
+
         return new BCryptPasswordEncoder(10);
     }
 
@@ -27,6 +28,7 @@ public class UserService {
         String storedHash = dbUser.getPasswordHash();
         if (user.getUsername().equals(dbUser.getUsername())){
             if (BCrypt.checkpw(user.getPasswordHash(), storedHash)) {
+
                 return dbUser;
             }
         }
@@ -36,19 +38,24 @@ public class UserService {
     public int registerUser(UserModel user) {
         String encodedPassword = passwordEncoder().encode(user.getPasswordHash());
         user.setPasswordHash(encodedPassword);
+
         return repository.registerUser(user);
     }
 
 
     public int createUserProfile(AppUserProfileModel updateProfileDetails){
         int userId = repository.getUserId(updateProfileDetails.getUuid());
-        AppUserProfileModel appUserProfileModel = new AppUserProfileModel(userId, updateProfileDetails.getUuid(), updateProfileDetails.getDisplayName(), updateProfileDetails.getBio());
+        AppUserProfileModel appUserProfileModel = new AppUserProfileModel(userId, updateProfileDetails.getUuid(),
+                updateProfileDetails.getDisplayName(), updateProfileDetails.getBio());
+
         return repository.createAppUserProfile(appUserProfileModel);
     }
 
     public int updateUserProfile(AppUserProfileModel updateProfileDetails){
         int userId = repository.getUserId(updateProfileDetails.getUuid());
-        AppUserProfileModel appUserProfileModel = new AppUserProfileModel(userId, updateProfileDetails.getUuid(), updateProfileDetails.getDisplayName(), updateProfileDetails.getBio());
+        AppUserProfileModel appUserProfileModel = new AppUserProfileModel(userId, updateProfileDetails.getUuid(),
+                updateProfileDetails.getDisplayName(), updateProfileDetails.getBio());
+
         return repository.updateAppUserProfile(appUserProfileModel);
     }
 }

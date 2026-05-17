@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 
+import java.time.Clock;
 import java.time.Instant;
 
 @RestController
@@ -30,7 +31,7 @@ public class UserAuthController {
     private ResponseEntity<ApiResponse<AuthenticationModel>> loginUser(@RequestBody UserModel user, WebRequest request){
         AuthenticationModel dbUser = userService.loginUser(user);
             ApiResponse<AuthenticationModel> response = new ApiResponse<>("Logged in", HttpStatus.OK.value(),
-                    dbUser, request.getDescription(false).replace("uri=", ""), Instant.now());
+                    dbUser, request.getDescription(false).replace("uri=", ""), Instant.now(Clock.systemUTC()));
             String jwtToken = jwtUtil.generateToken(user.getUsername());
             HttpHeaders headers = new HttpHeaders();
             headers.set("Authorization", "Bearer " + jwtToken);
@@ -42,7 +43,7 @@ public class UserAuthController {
     private ResponseEntity<ApiResponse<UserModel>> createAppUser(@Valid @RequestBody UserModel user, WebRequest request){
         userService.registerUser(user);
         ApiResponse<UserModel> response = new ApiResponse<>("User Created", HttpStatus.CREATED.value(),
-                user, request.getDescription(false).replace("uri=", ""), Instant.now());
+                user, request.getDescription(false).replace("uri=", ""), Instant.now(Clock.systemUTC()));
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 }

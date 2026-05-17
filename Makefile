@@ -30,6 +30,8 @@ deploy_local:
 	@echo Deploying LOCAL app-user-management at $(localappip):$(localappport). Are you sure? [Y/n]
 	@read line; if [ ! $$line = "Y" ] && [ ! $$line = "y" ]; then echo Aborting...; exit 1; fi
 	
+	mvn clean package
+	
 	docker build -t app-user-mananagement/local .
 	
 	docker compose up

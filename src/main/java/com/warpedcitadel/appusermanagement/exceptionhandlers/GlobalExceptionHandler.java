@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
 import java.sql.SQLException;
+import java.time.Clock;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,7 +30,7 @@ public class GlobalExceptionHandler {
                 HttpStatus.BAD_REQUEST.value(),
                 errors,
                 request.getDescription(false).replace("uri=", ""),
-                Instant.now()
+                Instant.now(Clock.systemUTC())
         );
     }
 
@@ -45,7 +46,7 @@ public class GlobalExceptionHandler {
                 HttpStatus.UNAUTHORIZED.value(),
                 errors,
                 request.getDescription(false).replace("uri=", ""),
-                Instant.now()
+                Instant.now(Clock.systemUTC())
         );
     }
 
@@ -61,7 +62,7 @@ public class GlobalExceptionHandler {
           HttpStatus.CONFLICT.value(),
           errors,
           request.getDescription(false).replace("uri=", ""),
-          Instant.now()
+          Instant.now(Clock.systemUTC())
         );
     }
 }
