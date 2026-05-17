@@ -4,6 +4,8 @@ package com.warpedcitadel.appusermanagement.user;
 import com.warpedcitadel.appusermanagement.payload.ApiResponse;
 import com.warpedcitadel.appusermanagement.user.profile.AppUserProfileModel;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -14,7 +16,7 @@ import java.time.Clock;
 import java.time.Instant;
 
 @RestController
-@RequestMapping("/api/v1/user/profile")
+@RequestMapping("/api/v1/user")
 public class UserController {
 
     @Autowired
@@ -24,7 +26,13 @@ public class UserController {
     private UserRepository userRepository;
 
 
-    @GetMapping("/{uuid}")
+    @GetMapping("/search")
+    public Slice<AppUserProfileModel> getUsers(@RequestParam("query") String searchterm,
+                                               Pageable pageable) {
+        return userService.getUsers(pageable, searchterm);
+    }
+
+    @GetMapping("/profile/{uuid}")
     public AppUserProfileModel userProfile(@PathVariable String uuid){
         return userRepository.getAppUserProfile(uuid);
     }

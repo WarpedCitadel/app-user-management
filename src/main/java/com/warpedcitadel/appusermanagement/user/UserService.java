@@ -4,6 +4,8 @@ import com.warpedcitadel.appusermanagement.security.AuthenticationModel;
 import com.warpedcitadel.appusermanagement.user.profile.AppUserProfileModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -51,11 +53,18 @@ public class UserService {
         return repository.createAppUserProfile(appUserProfileModel);
     }
 
+
     public int updateUserProfile(AppUserProfileModel updateProfileDetails){
         int userId = repository.getUserId(updateProfileDetails.getUuid());
         AppUserProfileModel appUserProfileModel = new AppUserProfileModel(userId, updateProfileDetails.getUuid(),
                 updateProfileDetails.getDisplayName(), updateProfileDetails.getBio());
 
         return repository.updateAppUserProfile(appUserProfileModel);
+    }
+
+
+    public Slice<AppUserProfileModel> getUsers(Pageable pageable, String searchTerm){
+        String querySearchTerm = searchTerm + "%";
+        return repository.findUsers(pageable, querySearchTerm);
     }
 }

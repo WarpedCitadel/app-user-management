@@ -4,10 +4,15 @@ import com.warpedcitadel.appusermanagement.security.AuthenticationModel;
 import com.warpedcitadel.appusermanagement.user.profile.AppUserProfileModel;
 import com.warpedcitadel.appusermanagement.util.SQLFileReader;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Repository
 public class UserRepository {
@@ -150,6 +155,49 @@ public class UserRepository {
         } catch (SQLException updateException){
             throw new RuntimeException("Failed to update user profile with uuid: " + updateProfile.getUuid(), updateException);
         }
+    }
+
+
+    public Slice<AppUserProfileModel> findUsers(Pageable pageable, String displayName) {
+
+        String selectSQL = loadSQL.loadSQL("/users/select--get_app_users.sql");
+        int offset = pageable.getPageNumber() * pageable.getPageSize();
+        int limit = pageable.getPageSize();
+
+        List<AppUserProfileModel> users = new ArrayList<>();
+
+        try (Connection connection = wcDatabase.getConnection();
+        PreparedStatement selectStatement = connection.prepareStatement(selectSQL)) {
+
+            selectStatement.setString(1, displayName);
+            selectStatement.setInt(2, limit + 1);
+            selectStatement.setInt(3, offset);
+
+            ResultSet resultSet = selectStatement.executeQuery();
+
+            while (resultSet.next()) {
+                AppUserProfileModel user = new AppUserProfileModel(
+                        resultSet.getString("uuid"),
+                        resultSet.getString("username")
+                );
+
+                users.add(user);
+            }
+
+            boolean hasNext = users.size() > limit;
+
+            if (hasNext){
+                users.remove(users.size() - 1);
+            }
+
+            return new SliceImpl<>(users, pageable, hasNext);
+
+
+        } catch (SQLException exception){
+            exception.printStackTrace();
+        }
+
+        throw new RuntimeException("Could not find any users");
     }
 
 

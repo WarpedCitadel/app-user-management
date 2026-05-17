@@ -16,6 +16,11 @@ public class AppUserProfileModel {
 
     }
 
+    public AppUserProfileModel(String uuid, String displayName) {
+        this.uuid = uuid;
+        this.displayName = displayName;
+    }
+
     public AppUserProfileModel(String uuid, String displayName, String bio) {
         this.uuid = uuid;
         this.displayName = displayName;
