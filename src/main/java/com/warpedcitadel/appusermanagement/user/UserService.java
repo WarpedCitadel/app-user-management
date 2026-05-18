@@ -46,7 +46,7 @@ public class UserService {
 
 
     public int createUserProfile(AppUserProfileModel updateProfileDetails){
-        int userId = repository.getUserId(updateProfileDetails.getUuid());
+        int userId = repository.getUserIdByUuid(updateProfileDetails.getUuid());
         AppUserProfileModel appUserProfileModel = new AppUserProfileModel(userId, updateProfileDetails.getUuid(),
                 updateProfileDetails.getDisplayName(), updateProfileDetails.getBio());
 
@@ -54,12 +54,17 @@ public class UserService {
     }
 
 
-    public int updateUserProfile(AppUserProfileModel updateProfileDetails){
-        int userId = repository.getUserId(updateProfileDetails.getUuid());
-        AppUserProfileModel appUserProfileModel = new AppUserProfileModel(userId, updateProfileDetails.getUuid(),
-                updateProfileDetails.getDisplayName(), updateProfileDetails.getBio());
+    public boolean updateUserProfile(AppUserProfileModel updateProfileDetails, String username){
+        int userId = repository.getUserIdByUsername(username);
+        int userProfileId = repository.getUserIdByUuid(updateProfileDetails.getUuid());
 
-        return repository.updateAppUserProfile(appUserProfileModel);
+        if (userProfileId == userId) {
+            AppUserProfileModel appUserProfileModel = new AppUserProfileModel(userProfileId, updateProfileDetails.getUuid(),
+                    updateProfileDetails.getDisplayName(), updateProfileDetails.getBio());
+            repository.updateAppUserProfile(appUserProfileModel);
+            return true;
+        }
+        return false;
     }
 
 

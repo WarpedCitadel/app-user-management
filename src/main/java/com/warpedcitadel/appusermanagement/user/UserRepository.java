@@ -200,7 +200,9 @@ public class UserRepository {
 
     // ################################### Helper Functions #########################################
 
-    public int getUserId(String uuid){
+    // Todo | Make create a statement to distinguish between a username and uuid
+
+    public int getUserIdByUuid(String uuid){
 
         String selectSQL = loadSQL.loadSQL("/users/select--get_app_user_id.sql");
 
@@ -216,6 +218,27 @@ public class UserRepository {
             }
         } catch (SQLException exception) {
             throw new RuntimeException("User with uuid: " + uuid + " does not exist", exception);
+        }
+        return -1;
+    }
+
+
+    public int getUserIdByUsername(String username){
+
+        String selectSQL = loadSQL.loadSQL("/users/select--get_app_user_id_u.sql");
+
+        try (Connection connection = wcDatabase.getConnection();
+             PreparedStatement statement = connection.prepareStatement(selectSQL)) {
+
+            statement.setString(1, username);
+
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                return resultSet.getInt("id");
+            }
+        } catch (SQLException exception) {
+            throw new RuntimeException("User with username: " + username + " does not exist", exception);
         }
         return -1;
     }

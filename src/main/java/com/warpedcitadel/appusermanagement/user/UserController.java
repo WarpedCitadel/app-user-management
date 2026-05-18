@@ -2,6 +2,7 @@ package com.warpedcitadel.appusermanagement.user;
 
 
 import com.warpedcitadel.appusermanagement.payload.ApiResponse;
+import com.warpedcitadel.appusermanagement.security.JwtUtil;
 import com.warpedcitadel.appusermanagement.user.profile.AppUserProfileModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -19,11 +20,16 @@ import java.time.Instant;
 @RequestMapping(path = "/user", version = "1.0")
 public class UserController {
 
+    private static final String BEARER_ = "Bearer ";
+
     @Autowired
     private UserService userService;
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private JwtUtil jwtUtil;
 
 
     // Todo | change the search look only for games, then redirect the user to the game publisher by clicking on their default display name
@@ -57,15 +63,19 @@ public class UserController {
     @PreAuthorize("hasAnyRole('admin', 'mod', 'user')")
     @PutMapping("/profile/updateprofile")
     private ResponseEntity<ApiResponse> updateUserProfile(@RequestBody AppUserProfileModel updateProfile, WebRequest request) {
-        if(userService.updateUserProfile(updateProfile) >= 1){
-            ApiResponse userProfile = new ApiResponse<>("User profile created", HttpStatus.OK.value(),
-                    updateProfile, request.getDescription(false).replace("uri=", ""), Instant.now(Clock.systemUTC()));
-            return new ResponseEntity<>(userProfile, HttpStatus.OK);
-        } else {
-            ApiResponse failedUpdate = new ApiResponse<>("Bad request", HttpStatus.BAD_REQUEST.value(),
-                    "Failed to update user profile", request.getDescription(false).replace("uri=", ""), Instant.now(Clock.systemUTC()));
-            return new ResponseEntity<>(failedUpdate, HttpStatus.BAD_REQUEST);
+        String jwtToken = request.getHeader("Authorization");
+        if (jwtToken == null || jwtToken.startsWith(BEARER_)) {
+            String cleanToken = jwtToken.substring(BEARER_.length());
+            String username = jwtUtil.getUserFromToken(cleanToken);
+            if (userService.updateUserProfile(updateProfile, username)) {
+                ApiResponse userProfile = new ApiResponse<>("User profile update", HttpStatus.OK.value(),
+                        updateProfile, request.getDescription(false).replace("uri=", ""), Instant.now(Clock.systemUTC()));
+                return new ResponseEntity<>(userProfile, HttpStatus.OK);
+            }
         }
+        ApiResponse failedUpdate = new ApiResponse<>("Bad request", HttpStatus.BAD_REQUEST.value(),
+                "Failed to update user profile", request.getDescription(false).replace("uri=", ""), Instant.now(Clock.systemUTC()));
+        return new ResponseEntity<>(failedUpdate, HttpStatus.BAD_REQUEST);
     }
 
 
