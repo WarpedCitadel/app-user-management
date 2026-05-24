@@ -13,6 +13,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 
+import java.sql.SQLException;
 import java.time.Clock;
 import java.time.Instant;
 
@@ -40,7 +41,7 @@ public class UserController {
     }
 
     @GetMapping("/profile/{uuid}")
-    public AppUserProfileModel userProfile(@PathVariable String uuid){
+    public AppUserProfileModel userProfile(@PathVariable String uuid) throws SQLException {
         return userRepository.getAppUserProfile(uuid);
     }
 
@@ -62,7 +63,7 @@ public class UserController {
 
     @PreAuthorize("hasAnyRole('admin', 'mod', 'user')")
     @PutMapping("/profile/updateprofile")
-    private ResponseEntity<ApiResponse> updateUserProfile(@RequestBody AppUserProfileModel updateProfile, WebRequest request) {
+    private ResponseEntity<ApiResponse> updateUserProfile(@RequestBody AppUserProfileModel updateProfile, WebRequest request) throws SQLException {
         String jwtToken = request.getHeader("Authorization");
         if (jwtToken == null || jwtToken.startsWith(BEARER_)) {
             String cleanToken = jwtToken.substring(BEARER_.length());

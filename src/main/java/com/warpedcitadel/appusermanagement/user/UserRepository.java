@@ -2,6 +2,7 @@ package com.warpedcitadel.appusermanagement.user;
 
 import com.warpedcitadel.appusermanagement.security.AuthenticationModel;
 import com.warpedcitadel.appusermanagement.user.profile.AppUserProfileModel;
+import com.warpedcitadel.appusermanagement.user.profile.GameProfileModel;
 import com.warpedcitadel.appusermanagement.util.SQLFileReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -78,10 +79,11 @@ public class UserRepository {
     }
 
 
-    public AppUserProfileModel getAppUserProfile(String uuid){
+    public AppUserProfileModel getAppUserProfile(String uuid) throws SQLException {
 
         String selectSQL = loadSQL.loadSQL("/users/select--get_app_user_profile.sql");
 
+        List<GameProfileModel> games = getUserGames(uuid);
 
         try (Connection connection = wcDatabase.getConnection();
              PreparedStatement statement = connection.prepareStatement(selectSQL)) {
@@ -93,13 +95,14 @@ public class UserRepository {
                 return new AppUserProfileModel(
                         resultSet.getString("uuid"),
                         resultSet.getString("display_name"),
-                        resultSet.getString("user_bio")
+                        resultSet.getString("user_bio"),
+                        games
                 );
             }
         } catch (SQLException exception) {
-            throw new RuntimeException("Failed to connect to database", exception);
+            throw new RuntimeException("Failed to find user with uuid: " + uuid);
         }
-        throw new RuntimeException("Failed to find user with uuid: " + uuid);
+        throw new RuntimeException("Failed to connect connect to the Database");
     }
 
 
@@ -207,11 +210,11 @@ public class UserRepository {
         String selectSQL = loadSQL.loadSQL("/users/select--get_app_user_id.sql");
 
         try (Connection connection = wcDatabase.getConnection();
-             PreparedStatement statement = connection.prepareStatement(selectSQL)) {
+             PreparedStatement selectStatement = connection.prepareStatement(selectSQL)) {
 
-            statement.setString(1, uuid);
+            selectStatement.setString(1, uuid);
 
-            ResultSet resultSet = statement.executeQuery();
+            ResultSet resultSet = selectStatement.executeQuery();
 
             if (resultSet.next()) {
                 return resultSet.getInt("id");
@@ -223,7 +226,7 @@ public class UserRepository {
     }
 
 
-    public int getUserIdByUsername(String username){
+    public int getUserIdByUsername(String username) throws SQLException{
 
         String selectSQL = loadSQL.loadSQL("/users/select--get_app_user_id_u.sql");
 
@@ -238,8 +241,40 @@ public class UserRepository {
                 return resultSet.getInt("id");
             }
         } catch (SQLException exception) {
-            throw new RuntimeException("User with username: " + username + " does not exist", exception);
+            throw new SQLException("User with username: " + username + " does not exist", exception);
         }
         return -1;
     }
+
+    public List<GameProfileModel> getUserGames(String uuid) throws SQLException {
+
+            String selectSQL = loadSQL.loadSQL("/users/select--get_game_profiles.sql");
+
+            List<GameProfileModel> games = new ArrayList<>();
+
+            try (Connection connection = wcDatabase.getConnection();
+            PreparedStatement selectStatement = connection.prepareStatement(selectSQL)) {
+
+                selectStatement.setString(1, uuid);
+
+                ResultSet resultSet = selectStatement.executeQuery();
+
+                while (resultSet.next()) {
+                    GameProfileModel game = new GameProfileModel(
+                            resultSet.getString(1),
+                            resultSet.getString(2),
+                            resultSet.getString(3),
+                            resultSet.getString(4),
+                            resultSet.getString(5)
+                    );
+
+                    games.add(game);
+                }
+
+                return games;
+            }  catch (SQLException exception) {
+                throw new SQLException("Can not get list of games for user id of " + uuid, exception);
+            }
+    }
+
 }

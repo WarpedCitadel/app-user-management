@@ -12,6 +12,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.sql.SQLException;
+
 @Service
 public class UserService {
 
@@ -54,7 +56,7 @@ public class UserService {
     }
 
 
-    public boolean updateUserProfile(AppUserProfileModel updateProfileDetails, String username){
+    public boolean updateUserProfile(AppUserProfileModel updateProfileDetails, String username) throws SQLException {
         int userId = repository.getUserIdByUsername(username);
         int userProfileId = repository.getUserIdByUuid(updateProfileDetails.getUuid());
 
