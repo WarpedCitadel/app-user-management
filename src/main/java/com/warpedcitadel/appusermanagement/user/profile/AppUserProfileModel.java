@@ -11,6 +11,7 @@ public class AppUserProfileModel {
     @JsonIgnore
     private int appUserId;
     private String uuid;
+    private String profileIMG;
     private String displayName;
     private String bio;
     private List<GameProfileModel> game;
@@ -25,8 +26,9 @@ public class AppUserProfileModel {
         this.displayName = displayName;
     }
 
-    public AppUserProfileModel(String uuid, String displayName, String bio, List<GameProfileModel> game) {
+    public AppUserProfileModel(String uuid, String profileIMG, String displayName, String bio, List<GameProfileModel> game) {
         this.uuid = uuid;
+        this.profileIMG = profileIMG;
         this.displayName = displayName;
         this.bio = bio;
         this.game = game;
@@ -45,6 +47,10 @@ public class AppUserProfileModel {
 
     public String getUuid() {
         return uuid;
+    }
+
+    public String getProfileIMG() {
+        return profileIMG;
     }
 
     public String getDisplayName() {

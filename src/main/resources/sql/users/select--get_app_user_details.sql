@@ -1,5 +1,5 @@
 SELECT
-    au.uuid,
+    au.user_uuid,
     au.username,
     au.password_hash,
     au.email,

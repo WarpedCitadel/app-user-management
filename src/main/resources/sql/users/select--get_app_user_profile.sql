@@ -1,12 +1,12 @@
 SELECT
-    au.uuid,
+    au.user_uuid,
     aup.display_name,
     aup.user_bio,
-    pi.uuid
+    pi.img_uuid
 FROM wc01.app_user au
-INNER JOIN wc01.app_user_profile aup
+left JOIN wc01.app_user_profile aup
     ON au.id = aup.app_user_id
-inner join wc01.profile_image pi
+left join wc01.profile_image pi
 	on aup.id = pi.user_profile_id
-WHERE au.uuid = ?::uuid;
+WHERE au.user_uuid = ?::uuid;
 

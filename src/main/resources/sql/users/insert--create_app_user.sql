@@ -1,2 +1,5 @@
-INSERT INTO wc01.app_user (username, password_hash, email)
+INSERT INTO wc01.app_user
+(username,
+password_hash,
+email)
 VALUES ( ?, ?, ?);

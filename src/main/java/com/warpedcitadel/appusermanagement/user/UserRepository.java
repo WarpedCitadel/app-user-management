@@ -38,7 +38,7 @@ public class UserRepository {
 
             if (resultSet.next()) {
                 AuthenticationModel dbUser = new AuthenticationModel(
-                        resultSet.getString("uuid"),
+                        resultSet.getString("user_uuid"),
                         resultSet.getString("username"),
                         resultSet.getString("password_hash"),
                         resultSet.getString("role_type")
@@ -83,7 +83,7 @@ public class UserRepository {
 
         String selectSQL = loadSQL.loadSQL("/users/select--get_app_user_profile.sql");
 
-        List<GameProfileModel> games = getUserGames(uuid);
+        List<GameProfileModel> gameList = getUserGames(uuid);
 
         try (Connection connection = wcDatabase.getConnection();
              PreparedStatement statement = connection.prepareStatement(selectSQL)) {
@@ -93,16 +93,18 @@ public class UserRepository {
 
             if (resultSet.next()) {
                 return new AppUserProfileModel(
-                        resultSet.getString("uuid"),
-                        resultSet.getString("display_name"),
-                        resultSet.getString("user_bio"),
-                        games
+                        resultSet.getString(1),
+                        resultSet.getString(2),
+                        resultSet.getString(3),
+                        resultSet.getString(4),
+                        gameList
                 );
+            } else {
+                throw new RuntimeException("Failed to get user profile");
             }
         } catch (SQLException exception) {
-            throw new RuntimeException("Failed to find user with uuid: " + uuid);
+            throw new SQLException("Failed to find user with uuid: " + uuid, exception);
         }
-        throw new RuntimeException("Failed to connect connect to the Database");
     }
 
 
@@ -180,8 +182,8 @@ public class UserRepository {
 
             while (resultSet.next()) {
                 AppUserProfileModel user = new AppUserProfileModel(
-                        resultSet.getString("uuid"),
-                        resultSet.getString("username")
+                        resultSet.getString(1),
+                        resultSet.getString(2)
                 );
 
                 users.add(user);
@@ -260,6 +262,11 @@ public class UserRepository {
                 ResultSet resultSet = selectStatement.executeQuery();
 
                 while (resultSet.next()) {
+
+                    String fileUUID = resultSet.getString(1);
+                    if (fileUUID == null) {
+                        continue;
+                    }
                     GameProfileModel game = new GameProfileModel(
                             resultSet.getString(1),
                             resultSet.getString(2),
@@ -276,5 +283,4 @@ public class UserRepository {
                 throw new SQLException("Can not get list of games for user id of " + uuid, exception);
             }
     }
-
 }
