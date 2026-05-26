@@ -7,6 +7,6 @@ FROM wc01.app_user au
 left JOIN wc01.app_user_profile aup
     ON au.id = aup.app_user_id
 left join wc01.profile_image pi
-	on aup.id = pi.user_profile_id
+	on aup.id = pi.app_user_profile_id
 WHERE au.user_uuid = ?::uuid;
 

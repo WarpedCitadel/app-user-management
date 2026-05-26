@@ -11,7 +11,7 @@ public class AuthenticationModel {
     private final String passwordHash;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private String role;
+    private final String role;
 
 
     public AuthenticationModel(String uuid, String username, String passwordHash, String role) {
@@ -35,7 +35,7 @@ public class AuthenticationModel {
     }
 
     public String getRole(){
-        return role = role;
+        return role;
     }
 
 }

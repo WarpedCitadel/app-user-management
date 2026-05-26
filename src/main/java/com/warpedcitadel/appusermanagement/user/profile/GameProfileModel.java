@@ -1,9 +1,9 @@
 package com.warpedcitadel.appusermanagement.user.profile;
 
 public record GameProfileModel(
-        String uuid,
+        String fileUUID,
         String title,
-        String image,
+        String coverImgUUID,
         String description,
         String genre
 )
