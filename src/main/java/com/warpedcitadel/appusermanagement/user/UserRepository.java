@@ -26,7 +26,7 @@ public class UserRepository {
     // TODO | authenticate and register needs more robust queries
     // Possibly ask for email verification later on
 
-    public AuthenticationModel authenticateUser(String username) {
+    public AuthenticationModel authenticateUser(String username) throws SQLException {
 
         String sqlScript = loadSQL.loadSQL("/users/select--get_app_user_details.sql");
 
@@ -44,11 +44,12 @@ public class UserRepository {
                         resultSet.getString("role_type")
                 );
                 return dbUser;
+            } else {
+                throw new SQLException("Invalid username or password");
             }
         } catch (SQLException exception) {
             throw new RuntimeException("Failed to connect to database", exception);
         }
-        throw new RuntimeException("User with the username of " + username + " was not found");
     }
 
 
@@ -72,9 +73,8 @@ public class UserRepository {
             }
 
             return -1;
-
-        } catch (SQLException userExistException) {
-            throw new RuntimeException("Username or email already exists!", userExistException);
+        } catch (SQLException exception) {
+            throw new RuntimeException("Username or email already exists", exception);
         }
     }
 
@@ -93,10 +93,10 @@ public class UserRepository {
 
             if (resultSet.next()) {
                 return new AppUserProfileModel(
-                        resultSet.getString(1),
-                        resultSet.getString(2),
-                        resultSet.getString(3),
-                        resultSet.getString(4),
+                        resultSet.getString("user_uuid"),
+                        resultSet.getString("display_name"),
+                        resultSet.getString("user_bio"),
+                        resultSet.getString("img_uuid"),
                         gameList
                 );
             } else {
@@ -129,10 +129,9 @@ public class UserRepository {
 
             return -1;
 
-        } catch (SQLException updateException){
-            throw new RuntimeException("Failed to update user profile with uuid: " + updateProfile.getUuid(), updateException);
+        } catch (SQLException exception){
+            throw new RuntimeException("Failed to create user profile with uuid: " + updateProfile.getUuid(), exception);
         }
-
     }
 
 
@@ -182,8 +181,8 @@ public class UserRepository {
 
             while (resultSet.next()) {
                 AppUserProfileModel user = new AppUserProfileModel(
-                        resultSet.getString(1),
-                        resultSet.getString(2)
+                        resultSet.getString("user_uuid"),
+                        resultSet.getString("username")
                 );
 
                 users.add(user);
@@ -198,7 +197,7 @@ public class UserRepository {
             return new SliceImpl<>(users, pageable, hasNext);
 
         } catch (SQLException exception){
-            throw new RuntimeException("Can not load users", exception);
+            throw new RuntimeException("Failed to retrieve list of users", exception);
         }
     }
 
@@ -228,7 +227,7 @@ public class UserRepository {
     }
 
 
-    public int getUserIdByUsername(String username) throws SQLException{
+    public int getUserIdByUsername(String username) throws SQLException {
 
         String selectSQL = loadSQL.loadSQL("/users/select--get_app_user_id_u.sql");
 
@@ -243,7 +242,7 @@ public class UserRepository {
                 return resultSet.getInt("id");
             }
         } catch (SQLException exception) {
-            throw new SQLException("User with username: " + username + " does not exist", exception);
+            throw new SQLException("User with the username of " + username + " does not exist", exception);
         }
         return -1;
     }
@@ -268,11 +267,11 @@ public class UserRepository {
                         continue;
                     }
                     GameProfileModel game = new GameProfileModel(
-                            resultSet.getString(1),
-                            resultSet.getString(2),
-                            resultSet.getString(3),
-                            resultSet.getString(4),
-                            resultSet.getString(5)
+                            resultSet.getString("file_uuid"),
+                            resultSet.getString("title"),
+                            resultSet.getString("img_uuid"),
+                            resultSet.getString("short_desc"),
+                            resultSet.getString("genre_type")
                     );
 
                     games.add(game);
@@ -280,7 +279,7 @@ public class UserRepository {
 
                 return games;
             }  catch (SQLException exception) {
-                throw new SQLException("Can not get list of games for user id of " + uuid, exception);
+                throw new SQLException("failed to get list of games for user " + uuid, exception);
             }
     }
 }

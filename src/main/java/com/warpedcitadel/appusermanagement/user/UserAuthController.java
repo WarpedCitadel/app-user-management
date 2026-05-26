@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 
+import java.sql.SQLException;
 import java.time.Clock;
 import java.time.Instant;
 
@@ -28,7 +29,7 @@ public class UserAuthController {
     private JwtUtil jwtUtil;
 
     @PostMapping("/login")
-    private ResponseEntity<ApiResponse<AuthenticationModel>> loginUser(@RequestBody UserModel user, WebRequest request){
+    private ResponseEntity<ApiResponse<AuthenticationModel>> loginUser(@RequestBody UserModel user, WebRequest request) throws SQLException {
         AuthenticationModel dbUser = userService.loginUser(user);
             ApiResponse<AuthenticationModel> response = new ApiResponse<>("Logged in", HttpStatus.OK.value(),
                     dbUser, request.getDescription(false).replace("uri=", ""), Instant.now(Clock.systemUTC()));
@@ -40,7 +41,7 @@ public class UserAuthController {
 
 
     @PostMapping("/register")
-    private ResponseEntity<ApiResponse<UserModel>> createAppUser(@Valid @RequestBody UserModel user, WebRequest request){
+    private ResponseEntity<ApiResponse<UserModel>> createAppUser(@Valid @RequestBody UserModel user, WebRequest request) throws SQLException {
         userService.registerUser(user);
         ApiResponse<UserModel> response = new ApiResponse<>("User Created", HttpStatus.CREATED.value(),
                 user, request.getDescription(false).replace("uri=", ""), Instant.now(Clock.systemUTC()));

@@ -26,11 +26,11 @@ public class AppUserProfileModel {
         this.displayName = displayName;
     }
 
-    public AppUserProfileModel(String uuid, String profileIMG, String displayName, String bio, List<GameProfileModel> game) {
+    public AppUserProfileModel(String uuid, String displayName, String bio, String profileIMG, List<GameProfileModel> game) {
         this.uuid = uuid;
-        this.profileIMG = profileIMG;
         this.displayName = displayName;
         this.bio = bio;
+        this.profileIMG = profileIMG;
         this.game = game;
     }
 
@@ -49,16 +49,16 @@ public class AppUserProfileModel {
         return uuid;
     }
 
-    public String getProfileIMG() {
-        return profileIMG;
-    }
-
     public String getDisplayName() {
         return displayName;
     }
 
     public String getBio() {
         return bio;
+    }
+
+    public String getProfileIMG() {
+        return profileIMG;
     }
 
     public List<GameProfileModel> getGame() {

@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -27,7 +26,7 @@ public class UserService {
     }
 
 
-    public AuthenticationModel loginUser(UserModel user) {
+    public AuthenticationModel loginUser(UserModel user) throws SQLException {
         AuthenticationModel dbUser = repository.authenticateUser(user.getUsername());
         String storedHash = dbUser.getPasswordHash();
         if (user.getUsername().equals(dbUser.getUsername())){
@@ -36,10 +35,10 @@ public class UserService {
                 return dbUser;
             }
         }
-        throw new BadCredentialsException("Invalid Username or password!");
+        throw new SQLException("Invalid user name or password");
     }
 
-    public int registerUser(UserModel user) {
+    public int registerUser(UserModel user) throws SQLException {
         String encodedPassword = passwordEncoder().encode(user.getPasswordHash());
         user.setPasswordHash(encodedPassword);
 

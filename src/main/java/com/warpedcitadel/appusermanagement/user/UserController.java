@@ -69,7 +69,7 @@ public class UserController {
             String cleanToken = jwtToken.substring(BEARER_.length());
             String username = jwtUtil.getUserFromToken(cleanToken);
             if (userService.updateUserProfile(updateProfile, username)) {
-                ApiResponse userProfile = new ApiResponse<>("User profile update", HttpStatus.OK.value(),
+                ApiResponse userProfile = new ApiResponse<>("User profile updated", HttpStatus.OK.value(),
                         updateProfile, request.getDescription(false).replace("uri=", ""), Instant.now(Clock.systemUTC()));
                 return new ResponseEntity<>(userProfile, HttpStatus.OK);
             }
