@@ -4,6 +4,7 @@ package com.warpedcitadel.appusermanagement.user;
 import com.warpedcitadel.appusermanagement.payload.ApiResponse;
 import com.warpedcitadel.appusermanagement.security.JwtUtil;
 import com.warpedcitadel.appusermanagement.user.profile.AppUserProfileModel;
+import com.warpedcitadel.appusermanagement.user.usermanagement.UserAuditModel;
 import com.warpedcitadel.appusermanagement.user.usermanagement.UserDetailsModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -14,9 +15,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 
-import java.sql.SQLException;
 import java.time.Clock;
 import java.time.Instant;
+import java.util.List;
 
 @RestController
 @RequestMapping(path = "/user", version = "1.0")
@@ -32,19 +33,6 @@ public class UserController {
 
     @Autowired
     private JwtUtil jwtUtil;
-
-
-    // Todo | change the search look only for games, then redirect the user to the game publisher by clicking on their default display name
-    @GetMapping("/search")
-    public Slice<UserDetailsModel> getUsers(@RequestParam("query") String searchterm,
-                                            Pageable pageable) {
-        return userService.getAppUsers(pageable, searchterm);
-    }
-
-    @GetMapping("/profile/{uuid}")
-    public AppUserProfileModel userProfile(@PathVariable String uuid) throws SQLException {
-        return userRepository.getAppUserProfile(uuid);
-    }
 
 
     @PreAuthorize("hasAnyRole('admin', 'mod', 'user')")
@@ -64,7 +52,7 @@ public class UserController {
 
     @PreAuthorize("hasAnyRole('admin', 'mod', 'user')")
     @PutMapping("/profile/updateprofile")
-    private ResponseEntity<ApiResponse> updateUserProfile(@RequestBody AppUserProfileModel updateProfile, WebRequest request) throws SQLException {
+    private ResponseEntity<ApiResponse> updateUserProfile(@RequestBody AppUserProfileModel updateProfile, WebRequest request) {
         String jwtToken = request.getHeader("Authorization");
         if (jwtToken == null || jwtToken.startsWith(BEARER_)) {
             String cleanToken = jwtToken.substring(BEARER_.length());
@@ -82,6 +70,25 @@ public class UserController {
 
 
 //  Todo | Make user management system via admin and mod roles
+
+    @GetMapping("/search")
+    public Slice<UserDetailsModel> getUsers(@RequestParam("query") String searchterm,
+                                            Pageable pageable) {
+        return userService.getAppUsers(pageable, searchterm);
+    }
+
+
+    @GetMapping("/profile/{uuid}")
+    public AppUserProfileModel userProfile(@PathVariable String uuid) {
+        return userRepository.getAppUserProfile(uuid);
+    }
+
+
+    @GetMapping("/profile/{uuid}/session")
+    public List<UserAuditModel> getAppUserSessions(@PathVariable String uuid) {
+       return userRepository.getAppUserSessions(uuid);
+    }
+
     @PreAuthorize("hasAnyRole('admin', 'mod')")
     @GetMapping("/mod")
     public String modAccess(){

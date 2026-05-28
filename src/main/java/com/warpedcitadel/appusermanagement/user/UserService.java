@@ -7,27 +7,26 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.sql.SQLException;
-
 @Service
 public class UserService {
 
     @Autowired
-    private static UserRepository repository;
+    private UserRepository repository;
 
     @Bean
-    private static PasswordEncoder passwordEncoder(){
+    private PasswordEncoder passwordEncoder(){
 
         return new BCryptPasswordEncoder(10);
     }
 
 
-    public AuthenticationModel loginUser(UserModel user) throws SQLException {
+    public AuthenticationModel loginUser(UserModel user) {
         AuthenticationModel dbUser = repository.authenticateUser(user.getUsername());
         String storedHash = dbUser.getPasswordHash();
         if (user.getUsername().equals(dbUser.getUsername())){
@@ -37,7 +36,7 @@ public class UserService {
                 return dbUser;
             }
         }
-        throw new SQLException("Invalid user name or password");
+        throw new UsernameNotFoundException("Invalid user name or password");
     }
 
     public int registerUser(UserModel user) {
@@ -57,7 +56,7 @@ public class UserService {
     }
 
 
-    public boolean updateUserProfile(AppUserProfileModel updateProfileDetails, String username) throws SQLException {
+    public boolean updateUserProfile(AppUserProfileModel updateProfileDetails, String username) {
         int userId = repository.getUserIdByUsername(username);
         int userProfileId = repository.getUserIdByUuid(updateProfileDetails.getUuid());
 

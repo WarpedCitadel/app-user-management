@@ -15,7 +15,10 @@ public class UserDetailsModel {
 
     }
 
-    public UserDetailsModel(String uuid, String profileIMG, String displayName, String email, String role, boolean isActive, String createdDtm) {
+    public UserDetailsModel(String uuid, String profileIMG,
+                            String displayName, String email,
+                            String role, boolean isActive, String createdDtm) {
+
         this.uuid = uuid;
         this.profileIMG = profileIMG;
         this.displayName = displayName;

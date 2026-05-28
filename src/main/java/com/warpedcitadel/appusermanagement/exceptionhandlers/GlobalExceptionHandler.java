@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
-import java.sql.SQLException;
 import java.time.Clock;
 import java.time.Instant;
 import java.util.HashMap;
@@ -17,16 +16,16 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    // Handles invalid fields
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public GenericApiErrorResponse handleValidationExceptions(MethodArgumentNotValidException methodArgumentNotValidException, WebRequest request) {
+    public GenericApiErrorResponse handleValidationException(MethodArgumentNotValidException methodArgumentNotValidException, WebRequest request) {
         Map<String, String> errors = new HashMap<>();
         methodArgumentNotValidException.getBindingResult().getFieldErrors()
                 .forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
 
         return new GenericApiErrorResponse<>(
-                "Invalid fields",
+                "Invalid Fields",
                 HttpStatus.BAD_REQUEST.value(),
                 errors,
                 request.getDescription(false).replace("uri=", ""),
@@ -35,14 +34,13 @@ public class GlobalExceptionHandler {
     }
 
 
-    // Handles bad credentials
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(BadCredentialsException.class)
-    public GenericApiErrorResponse handleBadCredentialsExceptions(BadCredentialsException badCredentialsException, WebRequest request) {
+    public GenericApiErrorResponse handleBadCredentialsException(BadCredentialsException badCredentialsException, WebRequest request) {
         Map<String, String> errors = new HashMap<>();
         errors.put("message", badCredentialsException.getMessage());
         return new GenericApiErrorResponse<>(
-                "Invalid fields",
+                "Invalid Fields",
                 HttpStatus.UNAUTHORIZED.value(),
                 errors,
                 request.getDescription(false).replace("uri=", ""),
@@ -51,18 +49,17 @@ public class GlobalExceptionHandler {
     }
 
 
-    // handles unique constraints exceptions from the database
-    @ResponseStatus(HttpStatus.CONFLICT)
-    @ExceptionHandler(SQLException.class)
-    public GenericApiErrorResponse handelUniqueConstraint(SQLException userAlreadyExistsException, WebRequest request) {
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(RuntimeException.class)
+    public GenericApiErrorResponse handelRunTimeException(RuntimeException runtimeException, WebRequest request) {
         Map<String, String> errors = new HashMap<>();
-        errors.put("message", userAlreadyExistsException.toString());
+        errors.put("message", runtimeException.getMessage());
         return new GenericApiErrorResponse(
-          "Database Error",
-          HttpStatus.CONFLICT.value(),
-          errors,
-          request.getDescription(false).replace("uri=", ""),
-          Instant.now(Clock.systemUTC())
+                "Bad Request",
+                HttpStatus.CONFLICT.value(),
+                errors,
+                request.getDescription(false).replace("uri=", ""),
+                Instant.now(Clock.systemUTC())
         );
     }
 
@@ -71,9 +68,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(IllegalArgumentException.class)
     public GenericApiErrorResponse handelUniqueConstraint(IllegalArgumentException illegalArgumentException, WebRequest request) {
         Map<String, String> errors = new HashMap<>();
-        errors.put("message", illegalArgumentException.toString());
+        errors.put("message", illegalArgumentException.getMessage());
         return new GenericApiErrorResponse(
-                "IllegalArgument",
+                "Bad Request",
                 HttpStatus.BAD_REQUEST.value(),
                 errors,
                 request.getDescription(false).replace("uri=", ""),

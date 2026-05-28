@@ -3,12 +3,14 @@ package com.warpedcitadel.appusermanagement.user;
 import com.warpedcitadel.appusermanagement.security.AuthenticationModel;
 import com.warpedcitadel.appusermanagement.user.profile.AppUserProfileModel;
 import com.warpedcitadel.appusermanagement.user.profile.GameProfileModel;
+import com.warpedcitadel.appusermanagement.user.usermanagement.UserAuditModel;
 import com.warpedcitadel.appusermanagement.user.usermanagement.UserDetailsModel;
 import com.warpedcitadel.appusermanagement.util.SQLFileReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -46,10 +48,10 @@ public class UserRepository {
                 );
                 return dbUser;
             } else {
-                throw new SQLException("Invalid username or password");
+                throw new IllegalArgumentException("Invalid username or password");
             }
         } catch (SQLException exception) {
-            throw new RuntimeException("Failed to connect to database", exception);
+            throw new RuntimeException("Failed to authenticate user");
         }
     }
 
@@ -59,7 +61,8 @@ public class UserRepository {
         String insertSql = loadSQL.loadSQL("/users/insert--create_app_user.sql");
 
         try (Connection connection = wcDatabase.getConnection();
-             PreparedStatement insertStatement = connection.prepareStatement(insertSql, Statement.RETURN_GENERATED_KEYS)) {
+             PreparedStatement insertStatement = connection.prepareStatement(insertSql,
+                     Statement.RETURN_GENERATED_KEYS)) {
 
             insertStatement.setString(1, user.getUsername());
             insertStatement.setString(2, user.getPasswordHash());
@@ -75,12 +78,12 @@ public class UserRepository {
 
             return -1;
         } catch (SQLException exception) {
-            throw new RuntimeException("Username or email already exists", exception);
+            throw new RuntimeException("Username or email already exists");
         }
     }
 
 
-    public AppUserProfileModel getAppUserProfile(String uuid) throws SQLException {
+    public AppUserProfileModel getAppUserProfile(String uuid) {
 
         String selectSQL = loadSQL.loadSQL("/users/select--get_app_user_profile.sql");
 
@@ -104,7 +107,7 @@ public class UserRepository {
                 throw new RuntimeException("Failed to get user profile");
             }
         } catch (SQLException exception) {
-            throw new SQLException("Failed to find user with uuid: " + uuid, exception);
+            throw new UsernameNotFoundException("Failed to find user with uuid: " + uuid, exception);
         }
     }
 
@@ -158,7 +161,8 @@ public class UserRepository {
             return -1;
 
         } catch (SQLException updateException){
-            throw new RuntimeException("Failed to update user profile with uuid: " + updateProfile.getUuid(), updateException);
+            throw new RuntimeException("Failed to update user profile with uuid: " +
+                    updateProfile.getUuid(), updateException);
         }
     }
 
@@ -213,18 +217,36 @@ public class UserRepository {
     }
 
 
-    public void updateLastActiveDtm(String uuid){
+    public List<UserAuditModel> getAppUserSessions(String uuid) {
 
-        String updateSQL = loadSQL.loadSQL("/audit/update--update_last_active_dtm.sql");
+        String selectSQL = loadSQL.loadSQL("/audit/select--get_app_user_sessions.sql");
+
+        List<UserAuditModel> userSessions = new ArrayList<>();
 
         try (Connection connection = wcDatabase.getConnection();
-        PreparedStatement updateStatement = connection.prepareStatement(updateSQL)) {
+        PreparedStatement selectStatement = connection.prepareStatement(selectSQL)) {
 
-            updateStatement.setString(1, uuid);
-            updateStatement.execute();
+            selectStatement.setString(1, uuid);
 
+            ResultSet resultSet = selectStatement.executeQuery();
+
+            while (resultSet.next()) {
+
+                String isSession = resultSet.getString(1);
+                if (isSession == null) {
+                    continue;
+                }
+
+                UserAuditModel session = new UserAuditModel(
+                        resultSet.getString("lastactive_dtm")
+                );
+
+                userSessions.add(session);
+            }
+
+            return userSessions;
         } catch (SQLException exception) {
-            throw new RuntimeException("failed to log user session", exception);
+            throw new RuntimeException("Failed to retrieve user session history", exception);
         }
     }
 
@@ -254,7 +276,7 @@ public class UserRepository {
     }
 
 
-    public int getUserIdByUsername(String username) throws SQLException {
+    public int getUserIdByUsername(String username) {
 
         String selectSQL = loadSQL.loadSQL("/users/select--get_app_user_id_u.sql");
 
@@ -269,12 +291,12 @@ public class UserRepository {
                 return resultSet.getInt("id");
             }
         } catch (SQLException exception) {
-            throw new SQLException("User with the username of " + username + " does not exist", exception);
+            throw new UsernameNotFoundException("User with the username of " + username + " does not exist");
         }
         return -1;
     }
 
-    public List<GameProfileModel> getUserGames(String uuid) throws SQLException {
+    public List<GameProfileModel> getUserGames(String uuid) {
 
             String selectSQL = loadSQL.loadSQL("/users/select--get_game_profiles.sql");
 
@@ -306,7 +328,23 @@ public class UserRepository {
 
                 return games;
             }  catch (SQLException exception) {
-                throw new SQLException("failed to get list of games for user " + uuid, exception);
+                throw new RuntimeException("failed to get list of games for user " + uuid);
             }
+    }
+
+
+    public void updateLastActiveDtm(String uuid){
+
+        String updateSQL = loadSQL.loadSQL("/audit/update--update_last_active_dtm.sql");
+
+        try (Connection connection = wcDatabase.getConnection();
+             PreparedStatement updateStatement = connection.prepareStatement(updateSQL)) {
+
+            updateStatement.setString(1, uuid);
+            updateStatement.execute();
+
+        } catch (SQLException exception) {
+            throw new RuntimeException("failed to log user session");
+        }
     }
 }
