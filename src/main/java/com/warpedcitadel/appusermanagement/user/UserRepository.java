@@ -3,7 +3,10 @@ package com.warpedcitadel.appusermanagement.user;
 import com.warpedcitadel.appusermanagement.security.AuthenticationModel;
 import com.warpedcitadel.appusermanagement.user.profile.AppUserProfileModel;
 import com.warpedcitadel.appusermanagement.user.profile.GameProfileModel;
+import com.warpedcitadel.appusermanagement.user.usermanagement.UserDetailsModel;
 import com.warpedcitadel.appusermanagement.util.SQLFileReader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -18,6 +21,7 @@ import java.util.List;
 @Repository
 public class UserRepository {
 
+    private static final Logger log = LoggerFactory.getLogger(UserRepository.class);
     @Autowired
     private DataSource wcDatabase;
 
@@ -162,27 +166,37 @@ public class UserRepository {
     }
 
 
-    public Slice<AppUserProfileModel> findUsers(Pageable pageable, String displayName) {
+    public Slice<UserDetailsModel> findUsers(Pageable pageable, String displayName) {
 
         String selectSQL = loadSQL.loadSQL("/users/select--get_app_users.sql");
         int offset = pageable.getPageNumber() * pageable.getPageSize();
         int limit = pageable.getPageSize();
 
-        List<AppUserProfileModel> users = new ArrayList<>();
+        if (limit > 51) {
+            throw new IllegalArgumentException("Content requested too large");
+        }
+
+        List<UserDetailsModel> users = new ArrayList<>();
 
         try (Connection connection = wcDatabase.getConnection();
         PreparedStatement selectStatement = connection.prepareStatement(selectSQL)) {
 
             selectStatement.setString(1, displayName);
-            selectStatement.setInt(2, limit + 1);
-            selectStatement.setInt(3, offset);
+            selectStatement.setString(2, displayName);
+            selectStatement.setInt(3, limit + 1);
+            selectStatement.setInt(4, offset);
 
             ResultSet resultSet = selectStatement.executeQuery();
 
             while (resultSet.next()) {
-                AppUserProfileModel user = new AppUserProfileModel(
+                UserDetailsModel user = new UserDetailsModel(
                         resultSet.getString("user_uuid"),
-                        resultSet.getString("username")
+                        resultSet.getString("img_uuid"),
+                        resultSet.getString("display_name"),
+                        resultSet.getString("email"),
+                        resultSet.getString("role_type"),
+                        resultSet.getBoolean("isactive"),
+                        resultSet.getString("created_dtm")
                 );
 
                 users.add(user);
@@ -198,6 +212,22 @@ public class UserRepository {
 
         } catch (SQLException exception){
             throw new RuntimeException("Failed to retrieve list of users", exception);
+        }
+    }
+
+
+    public void updateLastActiveDtm(String uuid){
+
+        String updateSQL = loadSQL.loadSQL("/audit/update--update_last_active_dtm.sql");
+
+        try (Connection connection = wcDatabase.getConnection();
+        PreparedStatement updateStatement = connection.prepareStatement(updateSQL)) {
+
+            updateStatement.setString(1, uuid);
+            updateStatement.execute();
+
+        } catch (SQLException exception) {
+            throw new RuntimeException("failed to log user session", exception);
         }
     }
 

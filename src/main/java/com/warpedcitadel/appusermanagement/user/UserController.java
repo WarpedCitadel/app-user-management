@@ -4,6 +4,7 @@ package com.warpedcitadel.appusermanagement.user;
 import com.warpedcitadel.appusermanagement.payload.ApiResponse;
 import com.warpedcitadel.appusermanagement.security.JwtUtil;
 import com.warpedcitadel.appusermanagement.user.profile.AppUserProfileModel;
+import com.warpedcitadel.appusermanagement.user.usermanagement.UserDetailsModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -35,8 +36,8 @@ public class UserController {
 
     // Todo | change the search look only for games, then redirect the user to the game publisher by clicking on their default display name
     @GetMapping("/search")
-    public Slice<AppUserProfileModel> getUsers(@RequestParam("query") String searchterm,
-                                               Pageable pageable) {
+    public Slice<UserDetailsModel> getUsers(@RequestParam("query") String searchterm,
+                                            Pageable pageable) {
         return userService.getUsers(pageable, searchterm);
     }
 

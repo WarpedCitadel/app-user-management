@@ -58,11 +58,26 @@ public class GlobalExceptionHandler {
         Map<String, String> errors = new HashMap<>();
         errors.put("message", userAlreadyExistsException.toString());
         return new GenericApiErrorResponse(
-          "Can not replace existing value!",
+          "Database Error",
           HttpStatus.CONFLICT.value(),
           errors,
           request.getDescription(false).replace("uri=", ""),
           Instant.now(Clock.systemUTC())
+        );
+    }
+
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(IllegalArgumentException.class)
+    public GenericApiErrorResponse handelUniqueConstraint(IllegalArgumentException illegalArgumentException, WebRequest request) {
+        Map<String, String> errors = new HashMap<>();
+        errors.put("message", illegalArgumentException.toString());
+        return new GenericApiErrorResponse(
+                "IllegalArgument",
+                HttpStatus.BAD_REQUEST.value(),
+                errors,
+                request.getDescription(false).replace("uri=", ""),
+                Instant.now(Clock.systemUTC())
         );
     }
 }
