@@ -41,7 +41,7 @@ public class UserAuthController {
 
 
     @PostMapping("/register")
-    private ResponseEntity<ApiResponse<UserModel>> createAppUser(@Valid @RequestBody UserModel user, WebRequest request) throws SQLException {
+    private ResponseEntity<ApiResponse<UserModel>> createAppUser(@Valid @RequestBody UserModel user, WebRequest request) {
         userService.registerUser(user);
         ApiResponse<UserModel> response = new ApiResponse<>("User Created", HttpStatus.CREATED.value(),
                 user, request.getDescription(false).replace("uri=", ""), Instant.now(Clock.systemUTC()));

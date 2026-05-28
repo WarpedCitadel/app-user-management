@@ -38,7 +38,7 @@ public class UserController {
     @GetMapping("/search")
     public Slice<UserDetailsModel> getUsers(@RequestParam("query") String searchterm,
                                             Pageable pageable) {
-        return userService.getUsers(pageable, searchterm);
+        return userService.getAppUsers(pageable, searchterm);
     }
 
     @GetMapping("/profile/{uuid}")

@@ -5,8 +5,6 @@ import com.warpedcitadel.appusermanagement.user.profile.AppUserProfileModel;
 import com.warpedcitadel.appusermanagement.user.profile.GameProfileModel;
 import com.warpedcitadel.appusermanagement.user.usermanagement.UserDetailsModel;
 import com.warpedcitadel.appusermanagement.util.SQLFileReader;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -21,7 +19,6 @@ import java.util.List;
 @Repository
 public class UserRepository {
 
-    private static final Logger log = LoggerFactory.getLogger(UserRepository.class);
     @Autowired
     private DataSource wcDatabase;
 
@@ -30,7 +27,7 @@ public class UserRepository {
     // TODO | authenticate and register needs more robust queries
     // Possibly ask for email verification later on
 
-    public AuthenticationModel authenticateUser(String username) throws SQLException {
+    public AuthenticationModel authenticateUser(String username) {
 
         String sqlScript = loadSQL.loadSQL("/users/select--get_app_user_details.sql");
 
@@ -166,13 +163,13 @@ public class UserRepository {
     }
 
 
-    public Slice<UserDetailsModel> findUsers(Pageable pageable, String displayName) {
+    public Slice<UserDetailsModel> getAppUsers(Pageable pageable, String displayName) {
 
         String selectSQL = loadSQL.loadSQL("/users/select--get_app_users.sql");
         int offset = pageable.getPageNumber() * pageable.getPageSize();
         int limit = pageable.getPageSize();
 
-        if (limit > 51) {
+        if (limit >= 51) {
             throw new IllegalArgumentException("Content requested too large");
         }
 

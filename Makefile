@@ -19,9 +19,9 @@ For more help refer to the documentation in Github. \n\
 \n\
 	rip_deploy_local	Drop and recreate LOCAL app-user-management at $(localappip):$(localappport).\n\
 \n\
-	deploy_local		Deploy the app-user-mananagement/local container.\n\
+	deploy_local		Deploy the app-user-management/local container.\n\
 \n\
-	rip_local		Drop the app-user-mananagement/local container.\n"
+	rip_local		Drop the app-user-management/local container.\n"
 
 
 # ------ deploy application ------
@@ -32,7 +32,7 @@ deploy_local:
 	
 	mvn clean package
 	
-	docker build -t app-user-mananagement/local .
+	docker build -t app-user-management/local .
 	
 	docker compose up
 
@@ -45,7 +45,7 @@ rip_deploy_local:
 	
 	docker compose down
 	
-	docker build -t app-user-mananagement/local .
+	docker build -t app-user-management/local .
 	
 	docker compose up
 

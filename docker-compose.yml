@@ -1,6 +1,6 @@
 services:
   wc_local:
-    image: app-user-mananagement/local
+    image: app-user-management/local
     env_file:
       - .env
     ports:

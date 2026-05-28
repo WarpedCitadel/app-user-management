@@ -18,10 +18,10 @@ import java.sql.SQLException;
 public class UserService {
 
     @Autowired
-    private UserRepository repository;
+    private static UserRepository repository;
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    private static PasswordEncoder passwordEncoder(){
 
         return new BCryptPasswordEncoder(10);
     }
@@ -40,7 +40,7 @@ public class UserService {
         throw new SQLException("Invalid user name or password");
     }
 
-    public int registerUser(UserModel user) throws SQLException {
+    public int registerUser(UserModel user) {
         String encodedPassword = passwordEncoder().encode(user.getPasswordHash());
         user.setPasswordHash(encodedPassword);
 
@@ -71,8 +71,8 @@ public class UserService {
     }
 
 
-    public Slice<UserDetailsModel> getUsers(Pageable pageable, String searchTerm) {
+    protected Slice<UserDetailsModel> getAppUsers(Pageable pageable, String searchTerm) {
         String querySearchTerm = searchTerm.concat("%");
-        return repository.findUsers(pageable, querySearchTerm);
+        return repository.getAppUsers(pageable, querySearchTerm);
     }
 }
