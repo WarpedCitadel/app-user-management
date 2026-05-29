@@ -4,7 +4,6 @@ package com.warpedcitadel.appusermanagement.user;
 import com.warpedcitadel.appusermanagement.payload.ApiResponse;
 import com.warpedcitadel.appusermanagement.security.JwtUtil;
 import com.warpedcitadel.appusermanagement.user.profile.AppUserProfileModel;
-import com.warpedcitadel.appusermanagement.user.usermanagement.UserAuditModel;
 import com.warpedcitadel.appusermanagement.user.usermanagement.UserDetailsModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -85,7 +84,7 @@ public class UserController {
 
 
     @GetMapping("/profile/{uuid}/session")
-    public List<UserAuditModel> getAppUserSessions(@PathVariable String uuid) {
+    public List<String> getAppUserSessions(@PathVariable String uuid) {
        return userRepository.getAppUserSessions(uuid);
     }
 

@@ -217,11 +217,11 @@ public class UserRepository {
     }
 
 
-    public List<UserAuditModel> getAppUserSessions(String uuid) {
+    public List<String> getAppUserSessions(String uuid) {
 
         String selectSQL = loadSQL.loadSQL("/audit/select--get_app_user_sessions.sql");
 
-        List<UserAuditModel> userSessions = new ArrayList<>();
+        List<String> userSessions = new ArrayList<>();
 
         try (Connection connection = wcDatabase.getConnection();
         PreparedStatement selectStatement = connection.prepareStatement(selectSQL)) {
@@ -241,7 +241,7 @@ public class UserRepository {
                         resultSet.getString("lastactive_dtm")
                 );
 
-                userSessions.add(session);
+                userSessions.add(session.lastActiveDtm());
             }
 
             return userSessions;
