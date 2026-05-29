@@ -10,17 +10,30 @@
 	</parent>
 
 	<groupId>com.warpedcitadel</groupId>
-	<artifactId>appusermanagement</artifactId>
+	<artifactId>app-user-management</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>appusermanagement</name>
+	<name>app-user-management</name>
 	<description>Application service for user management and authorization</description>
 	<url/>
 	<licenses>
 		<license/>
 	</licenses>
-	<developers>
-		<developer/>
-	</developers>
+    <developers>
+        <developer>
+            <id>jnolte</id>
+            <name>Jaeger Nolte</name>
+            <email>jaeger.nolte@gmail.com</email>
+            <url>https://github.com/JaegerNolte</url>
+            <organization>Warped Citadel</organization>
+            <organizationUrl>https://warpedcitadel.com</organizationUrl>
+            <roles>
+                <role>backend developer</role>
+                <role>database administrator</role>
+                <role>architect</role>
+            </roles>
+            <timezone>America/chicago</timezone>
+        </developer>
+    </developers>
 	<scm>
 		<connection/>
 		<developerConnection/>
@@ -28,7 +41,7 @@
 		<url/>
 	</scm>
 	<properties>
-		<java.version>24</java.version>
+		<java.version>25</java.version>
 	</properties>
 	<dependencies>
 		<dependency>

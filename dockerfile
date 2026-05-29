@@ -7,9 +7,9 @@ RUN chown wc_dev:wc_secure_role /app-user-management
 USER wc_dev
 
 ARG JAR_FILE=target/*.jar
-COPY --chown=wc_dev:wc_secure_role ${JAR_FILE} appusermanagement-0.0.1-SNAPSHOT.jar
+COPY --chown=wc_dev:wc_secure_role ${JAR_FILE} app-user-management-0.0.1-SNAPSHOT.jar
 COPY --chown=wc_dev:wc_secure_role ./src/main .
 
 EXPOSE 8080
 
-ENTRYPOINT ["java","-jar", "/app-user-management/appusermanagement-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java","-jar", "/app-user-management/app-user-management-0.0.1-SNAPSHOT.jar"]
