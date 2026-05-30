@@ -3,6 +3,7 @@ package com.warpedcitadel.appusermanagement.user;
 import com.warpedcitadel.appusermanagement.security.AuthenticationModel;
 import com.warpedcitadel.appusermanagement.user.profile.AppUserProfileModel;
 import com.warpedcitadel.appusermanagement.user.profile.GameProfileModel;
+import com.warpedcitadel.appusermanagement.user.usermanagement.SearchAttributesModel;
 import com.warpedcitadel.appusermanagement.user.usermanagement.UserAuditModel;
 import com.warpedcitadel.appusermanagement.user.usermanagement.UserDetailsModel;
 import com.warpedcitadel.appusermanagement.util.SQLFileReader;
@@ -167,7 +168,7 @@ public class UserRepository {
     }
 
 
-    public Slice<UserDetailsModel> getAppUsers(Pageable pageable, String displayName) {
+    public Slice<UserDetailsModel> getAppUsers(Pageable pageable, SearchAttributesModel attributes) {
 
         String selectSQL = loadSQL.loadSQL("/users/select--get_app_users.sql");
         int offset = pageable.getPageNumber() * pageable.getPageSize();
@@ -182,10 +183,11 @@ public class UserRepository {
         try (Connection connection = wcDatabase.getConnection();
         PreparedStatement selectStatement = connection.prepareStatement(selectSQL)) {
 
-            selectStatement.setString(1, displayName);
-            selectStatement.setString(2, displayName);
-            selectStatement.setInt(3, limit + 1);
-            selectStatement.setInt(4, offset);
+            selectStatement.setString(1, attributes.getDisplayName());
+            selectStatement.setString(2, attributes.getRole());
+            selectStatement.setBoolean(3, attributes.getIsActive());
+            selectStatement.setInt(4, limit + 1);
+            selectStatement.setInt(5, offset);
 
             ResultSet resultSet = selectStatement.executeQuery();
 
@@ -193,6 +195,7 @@ public class UserRepository {
                 UserDetailsModel user = new UserDetailsModel(
                         resultSet.getString("user_uuid"),
                         resultSet.getString("img_uuid"),
+                        resultSet.getString("username"),
                         resultSet.getString("display_name"),
                         resultSet.getString("email"),
                         resultSet.getString("role_type"),
@@ -212,8 +215,10 @@ public class UserRepository {
             return new SliceImpl<>(users, pageable, hasNext);
 
         } catch (SQLException exception){
-            throw new RuntimeException("Failed to retrieve list of users", exception);
+            exception.printStackTrace();
+//            throw new RuntimeException("Failed to retrieve list of users", exception);
         }
+        throw new RuntimeException("Failed to retrieve list of users");
     }
 
 

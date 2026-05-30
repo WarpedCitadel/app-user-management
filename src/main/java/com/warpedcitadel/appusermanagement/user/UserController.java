@@ -4,6 +4,7 @@ package com.warpedcitadel.appusermanagement.user;
 import com.warpedcitadel.appusermanagement.payload.ApiResponse;
 import com.warpedcitadel.appusermanagement.security.JwtUtil;
 import com.warpedcitadel.appusermanagement.user.profile.AppUserProfileModel;
+import com.warpedcitadel.appusermanagement.user.usermanagement.SearchAttributesModel;
 import com.warpedcitadel.appusermanagement.user.usermanagement.UserDetailsModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -71,9 +72,9 @@ public class UserController {
 //  Todo | Make user management system via admin and mod roles
 
     @GetMapping("/search")
-    public Slice<UserDetailsModel> getUsers(@RequestParam("query") String searchterm,
+    public Slice<UserDetailsModel> getUsers(SearchAttributesModel attributes,
                                             Pageable pageable) {
-        return userService.getAppUsers(pageable, searchterm);
+        return userService.getAppUsers(pageable, attributes);
     }
 
 

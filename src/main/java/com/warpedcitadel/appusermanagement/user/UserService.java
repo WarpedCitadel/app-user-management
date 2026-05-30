@@ -2,6 +2,7 @@ package com.warpedcitadel.appusermanagement.user;
 
 import com.warpedcitadel.appusermanagement.security.AuthenticationModel;
 import com.warpedcitadel.appusermanagement.user.profile.AppUserProfileModel;
+import com.warpedcitadel.appusermanagement.user.usermanagement.SearchAttributesModel;
 import com.warpedcitadel.appusermanagement.user.usermanagement.UserDetailsModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -70,8 +71,7 @@ public class UserService {
     }
 
 
-    protected Slice<UserDetailsModel> getAppUsers(Pageable pageable, String searchTerm) {
-        String querySearchTerm = searchTerm.concat("%");
-        return repository.getAppUsers(pageable, querySearchTerm);
+    protected Slice<UserDetailsModel> getAppUsers(Pageable pageable, SearchAttributesModel attributes) {
+        return repository.getAppUsers(pageable, attributes);
     }
 }

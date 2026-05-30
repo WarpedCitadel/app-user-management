@@ -4,6 +4,7 @@ public class UserDetailsModel {
 
     String uuid;
     String profileIMG;
+    String username;
     String displayName;
     String email;
     String role;
@@ -16,12 +17,13 @@ public class UserDetailsModel {
     }
 
     public UserDetailsModel(String uuid, String profileIMG,
-                            String displayName, String email,
+                            String displayName, String username, String email,
                             String role, boolean isActive, String createdDtm) {
 
         this.uuid = uuid;
         this.profileIMG = profileIMG;
         this.displayName = displayName;
+        this.username = username;
         this.email = email;
         this.role = role;
         this.isActive = isActive;
@@ -35,6 +37,10 @@ public class UserDetailsModel {
 
     public String getProfileIMG() {
         return profileIMG;
+    }
+
+    public String getUsername() {
+        return username;
     }
 
     public String getDisplayName() {
