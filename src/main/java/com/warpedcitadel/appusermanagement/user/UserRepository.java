@@ -27,7 +27,7 @@ public class UserRepository {
 
     SQLFileReader loadSQL = new SQLFileReader();
 
-    // TODO | authenticate and register needs more robust queries
+    // TODO: Create a abstract template design with abstract methods for database query methods
     // Possibly ask for email verification later on
 
     public AuthenticationModel authenticateUser(String username) {
@@ -167,7 +167,7 @@ public class UserRepository {
         }
     }
 
-    // TODO: Create an abstract class for dynamic searches
+    // TODO: Create an abstract template class for dynamic searches
     public Slice<UserDetailsModel> getAppUsers(Pageable pageable, SearchAttributesModel attributes) {
 
         String selectSQL = loadSQL.loadSQL("/users/select--get_app_users.sql");
@@ -180,6 +180,7 @@ public class UserRepository {
 
         List<Object> attributesList = new ArrayList<>();
 
+        // Can this if/else block be reduced?
         if (attributes.getDisplayName() != null &&
                 !attributes.getDisplayName().isEmpty()) {
             attributesList.add(attributes.getDisplayName().concat("%"));
@@ -209,6 +210,7 @@ public class UserRepository {
         try (Connection connection = wcDatabase.getConnection();
         PreparedStatement selectStatement = connection.prepareStatement(selectSQL)) {
 
+            // Convert this into an abstract method
             int request;
             for (request = 0; attributesList.size() > request; request++) {
 

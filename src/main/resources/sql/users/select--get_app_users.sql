@@ -14,5 +14,5 @@ FROM wc01.app_user au
     ) f
     ON au.id = f.app_user_id
 WHERE 1=1
-ORDER BY f.display_name
+ORDER BY f.display_name ASC
 LIMIT COALESCE(?, 20) OFFSET COALESCE (?, 0);
