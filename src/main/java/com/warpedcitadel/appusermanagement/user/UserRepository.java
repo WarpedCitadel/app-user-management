@@ -167,7 +167,7 @@ public class UserRepository {
         }
     }
 
-
+    // TODO: Create an abstract class for dynamic searches
     public Slice<UserDetailsModel> getAppUsers(Pageable pageable, SearchAttributesModel attributes) {
 
         String selectSQL = loadSQL.loadSQL("/users/select--get_app_users.sql");
@@ -178,20 +178,52 @@ public class UserRepository {
             throw new IllegalArgumentException("Content requested too large");
         }
 
+        List<Object> attributesList = new ArrayList<>();
+
+        if (attributes.getDisplayName() != null &&
+                !attributes.getDisplayName().isEmpty()) {
+            attributesList.add(attributes.getDisplayName().concat("%"));
+        } else {
+            attributes.setDisplayName("%");
+            attributesList.add(attributes.getDisplayName());
+        }
+        if (attributes.getRole() != null &&
+        !attributes.getRole().isEmpty()) {
+            attributesList.add(attributes.getRole());
+        } else {
+            attributes.setRole(null);
+            attributesList.add(attributes.getRole());
+        }
+        if (attributes.getIsActive() != null) {
+            attributesList.add(attributes.getIsActive());
+        } else {
+            attributes.setIsActive(null);
+            attributesList.add(attributes.getIsActive());
+        }
+
+        attributesList.add(limit + 1);
+        attributesList.add(offset);
+
         List<UserDetailsModel> users = new ArrayList<>();
 
         try (Connection connection = wcDatabase.getConnection();
         PreparedStatement selectStatement = connection.prepareStatement(selectSQL)) {
 
-            selectStatement.setString(1, attributes.getDisplayName());
-            selectStatement.setString(2, attributes.getRole());
-            selectStatement.setBoolean(3, attributes.getIsActive());
-            selectStatement.setInt(4, limit + 1);
-            selectStatement.setInt(5, offset);
+            int request;
+            for (request = 0; attributesList.size() > request; request++) {
+
+                if (attributesList.get(request) != null && !attributesList.isEmpty()) {
+                    selectStatement.setObject(request + 1,
+                            attributesList.get(request));
+                } else {
+                    selectStatement.setObject(request + 1, null);
+                }
+            }
 
             ResultSet resultSet = selectStatement.executeQuery();
 
             while (resultSet.next()) {
+
                 UserDetailsModel user = new UserDetailsModel(
                         resultSet.getString("user_uuid"),
                         resultSet.getString("img_uuid"),
@@ -208,17 +240,15 @@ public class UserRepository {
 
             boolean hasNext = users.size() > limit;
 
-            if (hasNext){
+            if (hasNext) {
                 users.remove(users.size() - 1);
             }
 
             return new SliceImpl<>(users, pageable, hasNext);
 
         } catch (SQLException exception){
-            exception.printStackTrace();
-//            throw new RuntimeException("Failed to retrieve list of users", exception);
+            throw new RuntimeException("Failed to retrieve list of users", exception);
         }
-        throw new RuntimeException("Failed to retrieve list of users");
     }
 
 

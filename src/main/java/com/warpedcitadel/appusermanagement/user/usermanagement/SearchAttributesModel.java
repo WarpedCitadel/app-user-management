@@ -25,4 +25,16 @@ public class SearchAttributesModel {
     public Boolean getIsActive() {
         return isActive;
     }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public void setIsActive(Boolean isActive) {
+        this.isActive = isActive;
+    }
 }

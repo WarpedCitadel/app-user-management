@@ -8,11 +8,11 @@ SELECT
 	au.isactive,
 	au.created_dtm
 FROM wc01.app_user au
-    JOIN wc01.fnc_search_users_select(  CAST(? AS TEXT),
-                                        CAST(? AS TEXT),
-                                        CAST(? AS BOOLEAN)
+    JOIN wc01.fnc_search_users_select(    ?,
+                                          ?,
+                                          ?
     ) f
     ON au.id = f.app_user_id
 WHERE 1=1
 ORDER BY f.display_name
-LIMIT ? OFFSET ?;
+LIMIT COALESCE(?, 20) OFFSET COALESCE (?, 0);
