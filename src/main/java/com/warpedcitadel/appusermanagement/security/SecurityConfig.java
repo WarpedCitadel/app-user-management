@@ -19,7 +19,7 @@ public class SecurityConfig {
     AuthTokenFilter authTokenFilter;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) {
         http
                         .csrf(csrf -> csrf.disable())
                         .sessionManagement(session -> session.sessionCreationPolicy(
@@ -28,7 +28,7 @@ public class SecurityConfig {
                         .exceptionHandling(exception -> exception
                                 .accessDeniedHandler(new CustomAccessDeniedHandler()))
                         .authorizeHttpRequests(auth ->
-                                auth.requestMatchers("/auth/**", "/user/profile/{uuid}", "/user/search", "/user/profile/{uuid}/session").permitAll()
+                                auth.requestMatchers("/auth/**", "/user/search", "/user/profile/**").permitAll()
                                         .requestMatchers("/error").permitAll()
                                         .requestMatchers("/user/**").hasAnyRole("admin", "mod", "user")
                                         .anyRequest().authenticated()

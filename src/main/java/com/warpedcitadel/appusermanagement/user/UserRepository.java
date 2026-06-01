@@ -288,6 +288,38 @@ public class UserRepository {
     }
 
 
+    public void disableAppUser(String uuid){
+
+        String updateSQL = loadSQL.loadSQL("/users/update--disable_app_user.sql");
+
+        try (Connection connection = wcDatabase.getConnection();
+            PreparedStatement updateStatement = connection.prepareStatement(updateSQL)) {
+
+            updateStatement.setString(1, uuid);
+            updateStatement.execute();
+
+        } catch (SQLException exception) {
+            throw new RuntimeException("Failed to disable user with the UUID: " + uuid, exception);
+        }
+    }
+
+
+    public void enableAppUser(String uuid){
+
+        String updateSQL = loadSQL.loadSQL("/users/update--enable_app_user.sql");
+
+        try (Connection connection = wcDatabase.getConnection();
+             PreparedStatement updateStatement = connection.prepareStatement(updateSQL)) {
+
+            updateStatement.setString(1, uuid);
+            updateStatement.execute();
+
+        } catch (SQLException exception) {
+            throw new RuntimeException("Failed to enable user with the UUID: " + uuid, exception);
+        }
+    }
+
+
     // ################################### Helper Functions #########################################
 
     // Todo | Make create a statement to distinguish between a username and uuid
@@ -372,7 +404,7 @@ public class UserRepository {
 
     public void updateLastActiveDtm(String uuid){
 
-        String updateSQL = loadSQL.loadSQL("/audit/update--update_last_active_dtm.sql");
+        String updateSQL = loadSQL.loadSQL("/audit/insert--update_last_active_dtm.sql");
 
         try (Connection connection = wcDatabase.getConnection();
              PreparedStatement updateStatement = connection.prepareStatement(updateSQL)) {
