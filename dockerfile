@@ -1,15 +1,19 @@
-FROM amazoncorretto:25.0.3
-RUN yum install -y shadow-utils
-RUN groupadd -r wc_secure_role && useradd -r -g wc_secure_role wc_dev
+FROM maven:3.9-amazoncorretto-25-alpine AS builder
 
-WORKDIR /app-user-management
-RUN chown wc_dev:wc_secure_role /app-user-management
-USER wc_dev
+WORKDIR /app
 
-ARG JAR_FILE=target/*.jar
-COPY --chown=wc_dev:wc_secure_role ${JAR_FILE} app-user-management-0.0.1-SNAPSHOT.jar
-COPY --chown=wc_dev:wc_secure_role ./src/main .
+COPY pom.xml .
+
+COPY src/main ./src/main
+
+RUN mvn clean package -Dmaven.test.skip=true
+
+FROM amazoncorretto:25-alpine AS runner
+
+WORKDIR /app
+
+COPY --from=builder /app/target/app-user-management-0.0.1-SNAPSHOT.jar app-user-management-0.0.1-SNAPSHOT.jar
 
 EXPOSE 8080
 
-ENTRYPOINT ["java","-jar", "/app-user-management/app-user-management-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java","-jar", "/app/app-user-management-0.0.1-SNAPSHOT.jar"]
