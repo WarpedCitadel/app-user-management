@@ -229,8 +229,8 @@ public class UserRepository {
                 UserDetailsModel user = new UserDetailsModel(
                         resultSet.getString("user_uuid"),
                         resultSet.getString("img_uuid"),
-                        resultSet.getString("username"),
                         resultSet.getString("display_name"),
+                        resultSet.getString("username"),
                         resultSet.getString("email"),
                         resultSet.getString("role_type"),
                         resultSet.getBoolean("isactive"),
