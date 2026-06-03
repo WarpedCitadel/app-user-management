@@ -6,7 +6,7 @@ COPY pom.xml .
 
 COPY src/main ./src/main
 
-RUN mvn clean package -Dmaven.test.skip=true
+RUN ./mvn clean package -Dmaven.test.skip=true
 
 FROM amazoncorretto:25-alpine AS runner
 
