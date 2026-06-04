@@ -46,7 +46,7 @@ jobs:
           context: .
           push: true
           tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/app-user-management/dev:latest
-            ${{ secrets.DOCKERHUB_USERNAME }}/app-user-management/dev:develop
+            ${{ secrets.DOCKERHUB_USERNAME }}/app-user-management-dev:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/app-user-management-dev:develop
           cache-from: type=gha
           cache-to: type=gha,mode=max
