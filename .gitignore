@@ -34,4 +34,3 @@ build/
 
 ### environment variables ###
 .env
-.secrets

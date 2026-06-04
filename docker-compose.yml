@@ -1,6 +1,21 @@
 services:
   wc_local:
     image: app-user-management/local
+    build:
+      context: ./
+      dockerfile: dockerfile
+    env_file:
+      - .env
+    ports:
+      - "8080:8080"
+  wc_dev:
+    image: app-user-management/dev
+    env_file:
+      - .env
+    ports:
+      - "8080:8080"
+  wc_prod:
+    image: app-user-management/prod
     env_file:
       - .env
     ports:

@@ -10,13 +10,13 @@ Build the application image with the `docker build` command.
 docker build -t app-user-management/local .
 ```
 Docker uses the projects `dockerfile` to build a multistaged docker image.
-The image builder, uses `maven:3.9-amazoncorretto-25-alpine` to build and compile the project, then executes `mvn clean package -Dmaven.test.skip=true` to create a run target .jar file called `app-user-management-0.0.1-SNAPSHOT.jar` inside a newly created folder called `/app`.
+The image builder, uses `maven:3.9-amazoncorretto-25-alpine` to build and compile the project, then executes `mvn clean package` to create a run target .jar file called `app-user-management-0.0.1-SNAPSHOT.jar` inside a newly created folder called `/app`.
 
 The image runner, uses `amazoncorretto:25-alpine` to run the projects newly compiled Java application located in the `/app` folder using Maven.
 
 Build the docker container using `docker-compose up`.
 ```bashrc
-docker-compose up
+docker compose up wc_local -d
 ```
 Referencing the `docker-compose.yml`, Docker creates a container called `wc_local` with the defined image `app-user-management/local` and port on `8080`. The `.env` file references the applications secrets needed to run.
 ```yml
@@ -29,7 +29,7 @@ services:
       - "8080:8080"
 ```
 
-## Using Make for Docker deployments
+## Using Make for local Docker deployments
 To use `make` you must install the build automation tool in a Linux terminal with the following command.
 ```bashrc
 sudo apt install make
