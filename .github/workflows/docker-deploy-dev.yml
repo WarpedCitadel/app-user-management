@@ -1,11 +1,11 @@
-name: Docker Hub CI/CD
+name: CI/CD Deploy DEV
 
 on:
   workflow_dispatch:
   push:
-    branches: ["master"]
+    branches: ["develop"]
   pull_request:
-    branches: ["master"]
+    branches: ["develop"]
 
 jobs:
   test-and-verify:
@@ -26,7 +26,7 @@ jobs:
   build-and-push-docker:
     needs: test-and-verify
     runs-on: ubuntu-24.04
-    if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+    if: github.ref == 'refs/heads/develop' && github.event_name == 'push'
 
     steps:
       - name: Checkout Code
@@ -47,7 +47,7 @@ jobs:
           context: .
           push: true
           tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/app-user-management:latest
-            ${{ secrets.DOCKERHUB_USERNAME }}/app-user-management:${{ github.sha }}
+            app-user-management/dev:latest
+            app-user-management/dev:develop
           cache-from: type=gha
           cache-to: type=gha,mode=max
