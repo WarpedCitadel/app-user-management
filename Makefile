@@ -54,18 +54,18 @@ deploy_dev:
 	@echo Deploying LOCAL $(CONTAINER_NAME) at $(localappip):$(localappport). Are you sure? [Y/n]
 	@read line; if [ ! $$line = "Y" ] && [ ! $$line = "y" ]; then echo Aborting...; exit 1; fi
 
-	@echo "Building image $(IMAGE_NAME)/dev..."
-	docker build -t $(IMAGE_NAME)/dev .
+	@echo "Building image warpedcitadel/$(IMAGE_NAME)/dev..."
+	docker build -t warpedcitadel/$(IMAGE_NAME)/dev .
 
-	@echo "Building container $(CONTAINER_NAME)..."
+	@echo "Building container warpedcitadel/$(CONTAINER_NAME)..."
 	docker compose up wc_dev -d
 
 deploy_prod:
 	@echo Deploying LOCAL $(CONTAINER_NAME) at $(localappip):$(localappport). Are you sure? [Y/n]
 	@read line; if [ ! $$line = "Y" ] && [ ! $$line = "y" ]; then echo Aborting...; exit 1; fi
 
-	@echo "Building image $(IMAGE_NAME)/prod..."
-	docker build -t $(IMAGE_NAME)/prod .
+	@echo "Building image warpedcitadel/$(IMAGE_NAME)/prod..."
+	docker build -t warpedcitadel/$(IMAGE_NAME)/prod .
 
 	@echo "Building container $(CONTAINER_NAME)..."
 	docker compose up wc_prod -d
@@ -92,7 +92,7 @@ rip_dev:
 	-docker rm $(CONTAINER_NAME)-wc_dev-1
 	
 	@echo "Removing image $(IMAGE_NAME)/dev..."
-	-docker rmi -f $(IMAGE_NAME)/dev
+	-docker rmi -f warpedcitadel/$(IMAGE_NAME)/dev
 
 rip_prod:
 	@echo Ripping PROD $(CONTAINER_NAME) at $(localappip):$(localappport). Are you sure? [Y/n]
@@ -103,7 +103,7 @@ rip_prod:
 	-docker rm $(CONTAINER_NAME)-wc_prod-1
 
 	@echo "Removing image $(IMAGE_NAME)/prod..."
-	-docker rmi -f $(IMAGE_NAME)/prod
+	-docker rmi -f warpedcitadel/$(IMAGE_NAME)/prod
 
 
 # ------ rip and deploy application ------
