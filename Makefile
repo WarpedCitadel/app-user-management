@@ -54,7 +54,7 @@ deploy_dev:
 	@echo Deploying LOCAL $(CONTAINER_NAME) at $(localappip):$(localappport). Are you sure? [Y/n]
 	@read line; if [ ! $$line = "Y" ] && [ ! $$line = "y" ]; then echo Aborting...; exit 1; fi
 
-    @echo pulling warpedcitadel/$(IMAGE_NAME)-dev
+	@echo pulling warpedcitadel/$(IMAGE_NAME)-dev
 	docker pull warpedcitadel/$(IMAGE_NAME):dev
 
 	@echo "Building container $(CONTAINER_NAME)..."
@@ -64,7 +64,7 @@ deploy_prod:
 	@echo Deploying LOCAL $(CONTAINER_NAME) at $(localappip):$(localappport). Are you sure? [Y/n]
 	@read line; if [ ! $$line = "Y" ] && [ ! $$line = "y" ]; then echo Aborting...; exit 1; fi
 
-    @echo pulling warpedcitadel/$(IMAGE_NAME)-prod
+	@echo pulling warpedcitadel/$(IMAGE_NAME)-prod
 	docker pull warpedcitadel/$(IMAGE_NAME):prod
 
 	@echo "Building container $(CONTAINER_NAME)..."
@@ -110,7 +110,7 @@ rip_prod:
 rip_deploy_local:
 	@echo Ripping and redeploying LOCAL $(CONTAINER_NAME) at $(localappip):$(localappport). Are you sure? [Y/n]
 	@read line; if [ ! $$line = "Y" ] && [ ! $$line = "y" ]; then echo Aborting...; exit 1; fi
-	
+
 	@echo "Stopping $(CONTAINER_NAME)..."
 	docker compose down
 
