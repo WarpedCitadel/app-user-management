@@ -1,7 +1,6 @@
-name: CI/CD Deploy DEV
+name: Test and Deploy to DEV
 
 on:
-  workflow_dispatch:
   push:
     branches: ["develop"]
   pull_request:

@@ -1,7 +1,6 @@
-name: CI/CD Deploy PROD
+name: Test and Deploy to PROD
 
 on:
-  workflow_dispatch:
   push:
     branches: ["master"]
   pull_request:
