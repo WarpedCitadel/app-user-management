@@ -54,18 +54,18 @@ deploy_dev:
 	@echo Deploying LOCAL $(CONTAINER_NAME) at $(localappip):$(localappport). Are you sure? [Y/n]
 	@read line; if [ ! $$line = "Y" ] && [ ! $$line = "y" ]; then echo Aborting...; exit 1; fi
 
-	@echo "Building image warpedcitadel/$(IMAGE_NAME)/dev..."
-	docker build -t warpedcitadel/$(IMAGE_NAME)/dev .
+    @echo pulling warpedcitadel/$(IMAGE_NAME)-dev
+	docker pull warpedcitadel/$(IMAGE_NAME):dev
 
-	@echo "Building container warpedcitadel/$(CONTAINER_NAME)..."
+	@echo "Building container $(CONTAINER_NAME)..."
 	docker compose up wc_dev -d
 
 deploy_prod:
 	@echo Deploying LOCAL $(CONTAINER_NAME) at $(localappip):$(localappport). Are you sure? [Y/n]
 	@read line; if [ ! $$line = "Y" ] && [ ! $$line = "y" ]; then echo Aborting...; exit 1; fi
 
-	@echo "Building image warpedcitadel/$(IMAGE_NAME)/prod..."
-	docker build -t warpedcitadel/$(IMAGE_NAME)/prod .
+    @echo pulling warpedcitadel/$(IMAGE_NAME)-prod
+	docker pull warpedcitadel/$(IMAGE_NAME):prod
 
 	@echo "Building container $(CONTAINER_NAME)..."
 	docker compose up wc_prod -d
@@ -87,23 +87,23 @@ rip_dev:
 	@echo Ripping DEV $(CONTAINER_NAME)/dev at $(localappip):$(localappport). Are you sure? [Y/n]
 	@read line; if [ ! $$line = "Y" ] && [ ! $$line = "y" ]; then echo Aborting...; exit 1; fi
 
-	@echo "Stopping and removing container $(CONTAINER_NAME)/dev..."
+	@echo "Stopping and removing container $(CONTAINER_NAME)..."
 	-docker stop $(CONTAINER_NAME)-wc_dev-1
 	-docker rm $(CONTAINER_NAME)-wc_dev-1
 	
-	@echo "Removing image $(IMAGE_NAME)/dev..."
-	-docker rmi -f warpedcitadel/$(IMAGE_NAME)/dev
+	@echo "Removing image $(IMAGE_NAME)..."
+	-docker rmi -f warpedcitadel/$(IMAGE_NAME):dev
 
 rip_prod:
 	@echo Ripping PROD $(CONTAINER_NAME) at $(localappip):$(localappport). Are you sure? [Y/n]
 	@read line; if [ ! $$line = "Y" ] && [ ! $$line = "y" ]; then echo Aborting...; exit 1; fi
 
-	@echo "Stopping and removing container $(CONTAINER_NAME)/prod..."
+	@echo "Stopping and removing container $(CONTAINER_NAME)-prod..."
 	-docker stop $(CONTAINER_NAME)-wc_prod-1
 	-docker rm $(CONTAINER_NAME)-wc_prod-1
 
-	@echo "Removing image $(IMAGE_NAME)/prod..."
-	-docker rmi -f warpedcitadel/$(IMAGE_NAME)/prod
+	@echo "Removing image $(IMAGE_NAME)..."
+	-docker rmi -f warpedcitadel/$(IMAGE_NAME):prod
 
 
 # ------ rip and deploy application ------
