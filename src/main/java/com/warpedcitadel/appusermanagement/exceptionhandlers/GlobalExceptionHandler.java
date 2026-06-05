@@ -1,5 +1,6 @@
 package com.warpedcitadel.appusermanagement.exceptionhandlers;
 
+import com.warpedcitadel.appusermanagement.payload.GenericApiErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;

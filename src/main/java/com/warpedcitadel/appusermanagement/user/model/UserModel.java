@@ -1,10 +1,10 @@
-package com.warpedcitadel.appusermanagement.user;
+package com.warpedcitadel.appusermanagement.user.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.warpedcitadel.appusermanagement.user.validation.EmailFormat;
-import com.warpedcitadel.appusermanagement.user.validation.PasswordFormat;
-import com.warpedcitadel.appusermanagement.user.validation.UsernameFormat;
+import com.warpedcitadel.appusermanagement.validation.EmailFormat;
+import com.warpedcitadel.appusermanagement.validation.PasswordFormat;
+import com.warpedcitadel.appusermanagement.validation.UsernameFormat;
 
 import java.util.Locale;
 

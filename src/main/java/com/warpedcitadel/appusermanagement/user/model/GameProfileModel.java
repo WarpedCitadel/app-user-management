@@ -1,4 +1,4 @@
-package com.warpedcitadel.appusermanagement.user.profile;
+package com.warpedcitadel.appusermanagement.user.model;
 
 public record GameProfileModel(
         String fileUUID,

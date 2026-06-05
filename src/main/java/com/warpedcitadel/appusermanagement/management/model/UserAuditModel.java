@@ -1,4 +1,4 @@
-package com.warpedcitadel.appusermanagement.user.usermanagement;
+package com.warpedcitadel.appusermanagement.management.model;
 
 public record UserAuditModel(
         String lastActiveDtm

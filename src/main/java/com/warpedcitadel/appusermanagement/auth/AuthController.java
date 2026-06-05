@@ -1,8 +1,8 @@
-package com.warpedcitadel.appusermanagement.user;
+package com.warpedcitadel.appusermanagement.auth;
 
 import com.warpedcitadel.appusermanagement.payload.ApiResponse;
-import com.warpedcitadel.appusermanagement.security.AuthenticationModel;
 import com.warpedcitadel.appusermanagement.security.JwtUtil;
+import com.warpedcitadel.appusermanagement.user.model.UserModel;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -19,18 +19,18 @@ import java.time.Instant;
 
 @RestController
 @RequestMapping(path = "/auth", version = "1.0")
-public class UserAuthController {
+public class AuthController {
 
     @Autowired
-    private UserService userService;
+    private AuthService authService;
 
     @Autowired
     private JwtUtil jwtUtil;
 
     @PostMapping("/login")
-    private ResponseEntity<ApiResponse<AuthenticationModel>> loginUser(@RequestBody UserModel user, WebRequest request) {
-        AuthenticationModel dbUser = userService.loginUser(user);
-            ApiResponse<AuthenticationModel> response = new ApiResponse<>("Logged in", HttpStatus.OK.value(),
+    private ResponseEntity<ApiResponse<AuthModel>> loginUser(@RequestBody UserModel user, WebRequest request) {
+        AuthModel dbUser = authService.loginUser(user);
+            ApiResponse<AuthModel> response = new ApiResponse<>("Logged in", HttpStatus.OK.value(),
                     dbUser, request.getDescription(false).replace("uri=", ""), Instant.now(Clock.systemUTC()));
             String jwtToken = jwtUtil.generateToken(user.getUsername());
             HttpHeaders headers = new HttpHeaders();
@@ -39,9 +39,9 @@ public class UserAuthController {
     }
 
 
-    @PostMapping("/register")
+    @PostMapping("/signin")
     private ResponseEntity<ApiResponse<UserModel>> createAppUser(@Valid @RequestBody UserModel user, WebRequest request) {
-        userService.registerUser(user);
+        authService.registerUser(user);
         ApiResponse<UserModel> response = new ApiResponse<>("User Created", HttpStatus.CREATED.value(),
                 user, request.getDescription(false).replace("uri=", ""), Instant.now(Clock.systemUTC()));
         return new ResponseEntity<>(response, HttpStatus.CREATED);

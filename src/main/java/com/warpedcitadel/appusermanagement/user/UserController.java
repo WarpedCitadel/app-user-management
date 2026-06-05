@@ -3,12 +3,8 @@ package com.warpedcitadel.appusermanagement.user;
 
 import com.warpedcitadel.appusermanagement.payload.ApiResponse;
 import com.warpedcitadel.appusermanagement.security.JwtUtil;
-import com.warpedcitadel.appusermanagement.user.profile.AppUserProfileModel;
-import com.warpedcitadel.appusermanagement.user.usermanagement.SearchAttributesModel;
-import com.warpedcitadel.appusermanagement.user.usermanagement.UserDetailsModel;
+import com.warpedcitadel.appusermanagement.user.model.AppUserProfileModel;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,7 +13,6 @@ import org.springframework.web.context.request.WebRequest;
 
 import java.time.Clock;
 import java.time.Instant;
-import java.util.List;
 
 @RestController
 @RequestMapping(path = "/user", version = "1.0")
@@ -73,55 +68,8 @@ public class UserController {
     }
 
 
-//  Todo | Make user management system via admin and mod roles
-
-    @GetMapping("/search")
-    public Slice<UserDetailsModel> getUsers(SearchAttributesModel attributes,
-                                            Pageable pageable) {
-        return userService.getAppUsers(pageable, attributes);
-    }
-
-
     @GetMapping("/profile/{uuid}")
     public AppUserProfileModel userProfile(@PathVariable String uuid) {
         return userRepository.getAppUserProfile(uuid);
-    }
-
-
-    @GetMapping("/profile/{uuid}/disable")
-    public ResponseEntity<ApiResponse> disableAppUser(@PathVariable String uuid, WebRequest request) {
-        userRepository.disableAppUser(uuid);
-        ApiResponse disableAppUser = new ApiResponse<>("Status Changed", HttpStatus.OK.value(),
-                "User status changed to disabled", request.getDescription(false).replace("uri=", ""),
-                Instant.now(Clock.systemUTC()));
-        return new ResponseEntity<>(disableAppUser, HttpStatus.OK);
-    }
-
-
-    @GetMapping("/profile/{uuid}/enable")
-    public ResponseEntity<ApiResponse> enableAppUser(@PathVariable String uuid, WebRequest request) {
-        userRepository.enableAppUser(uuid);
-        ApiResponse enableAppUser = new ApiResponse<>("Status Changed", HttpStatus.OK.value(),
-                "User status changed to enabled", request.getDescription(false).replace("uri=", ""),
-                Instant.now(Clock.systemUTC()));
-        return new ResponseEntity<>(enableAppUser, HttpStatus.OK);
-    }
-
-
-    @GetMapping("/profile/{uuid}/session")
-    public List<String> getAppUserSessions(@PathVariable String uuid) {
-       return userRepository.getAppUserSessions(uuid);
-    }
-
-    @PreAuthorize("hasAnyRole('admin', 'mod')")
-    @GetMapping("/mod")
-    public String modAccess(){
-        return "Mod content with JWT";
-    }
-
-    @PreAuthorize("(hasRole('admin'))")
-    @GetMapping("/admin")
-    public String adminAccess(){
-        return "Admin content with JWT";
     }
 }

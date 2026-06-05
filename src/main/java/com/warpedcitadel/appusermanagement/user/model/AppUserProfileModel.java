@@ -1,4 +1,4 @@
-package com.warpedcitadel.appusermanagement.user.profile;
+package com.warpedcitadel.appusermanagement.user.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
