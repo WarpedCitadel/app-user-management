@@ -1,20 +1,14 @@
-package com.warpedcitadel.appusermanagement.security;
+package com.warpedcitadel.appusermanagement.auth.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-public class AuthenticationModel {
+public class AuthModel {
 
     private final String uuid;
     private final String username;
-
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private final String passwordHash;
-
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private final String role;
 
 
-    public AuthenticationModel(String uuid, String username, String passwordHash, String role) {
+    public AuthModel(String uuid, String username, String passwordHash, String role) {
         this.uuid = uuid;
         this.username = username;
         this.passwordHash = passwordHash;
@@ -37,5 +31,4 @@ public class AuthenticationModel {
     public String getRole(){
         return role;
     }
-
 }

@@ -1,9 +1,9 @@
-package com.warpedcitadel.appusermanagement.exceptionhandlers;
+package com.warpedcitadel.appusermanagement.payload;
 
 import java.time.Instant;
 import java.util.Map;
 
-// Todo | Make this generic for all user input errors / exceptions
+
 public record GenericApiErrorResponse<timestamp>(
         String title,
         int status,

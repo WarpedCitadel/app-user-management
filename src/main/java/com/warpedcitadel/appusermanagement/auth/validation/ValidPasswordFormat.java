@@ -1,4 +1,4 @@
-package com.warpedcitadel.appusermanagement.user.validation;
+package com.warpedcitadel.appusermanagement.auth.validation;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
