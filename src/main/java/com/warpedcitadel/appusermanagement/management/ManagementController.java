@@ -1,11 +1,10 @@
 package com.warpedcitadel.appusermanagement.management;
 
-import com.warpedcitadel.appusermanagement.management.model.SearchAttributesModel;
-import com.warpedcitadel.appusermanagement.management.model.UserDetailsModel;
+import com.warpedcitadel.appusermanagement.management.dto.GetAppUsersDto;
+import com.warpedcitadel.appusermanagement.management.dto.SearchAttributesDto;
 import com.warpedcitadel.appusermanagement.payload.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,15 +29,15 @@ public class ManagementController {
 
 
     @GetMapping("/search")
-    public Slice<UserDetailsModel> getUsers(SearchAttributesModel attributes,
-                                            Pageable pageable) {
+    public GetAppUsersDto getUsers(SearchAttributesDto attributes,
+                                   Pageable pageable) {
         return managementService.getAppUsers(pageable, attributes);
     }
 
 
     @GetMapping("/profile/{uuid}/disable")
     public ResponseEntity<ApiResponse> disableAppUser(@PathVariable String uuid, WebRequest request) {
-        managementRepository.disableAppUser(uuid);
+        managementService.disableAppUser(uuid);
         ApiResponse disableAppUser = new ApiResponse<>("Status Changed", HttpStatus.OK.value(),
                 "User status changed to disabled", request.getDescription(false).replace("uri=", ""),
                 Instant.now(Clock.systemUTC()));
@@ -48,7 +47,7 @@ public class ManagementController {
 
     @GetMapping("/profile/{uuid}/enable")
     public ResponseEntity<ApiResponse> enableAppUser(@PathVariable String uuid, WebRequest request) {
-        managementRepository.enableAppUser(uuid);
+        managementService.enableAppUser(uuid);
         ApiResponse enableAppUser = new ApiResponse<>("Status Changed", HttpStatus.OK.value(),
                 "User status changed to enabled", request.getDescription(false).replace("uri=", ""),
                 Instant.now(Clock.systemUTC()));

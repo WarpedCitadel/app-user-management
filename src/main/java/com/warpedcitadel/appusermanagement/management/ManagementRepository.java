@@ -1,6 +1,5 @@
 package com.warpedcitadel.appusermanagement.management;
 
-import com.warpedcitadel.appusermanagement.management.model.SearchAttributesModel;
 import com.warpedcitadel.appusermanagement.management.model.UserDetailsModel;
 import com.warpedcitadel.appusermanagement.util.SQLFileReader;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,42 +57,9 @@ public class ManagementRepository {
     }
 
 
-    public Slice<UserDetailsModel> getAppUsers(Pageable pageable, SearchAttributesModel attributes) {
+    public Slice<UserDetailsModel> getAppUsers(Pageable pageable, List<Object> attributesList) {
 
         String selectSQL = loadSQL.loadSQL("/users/select--get_app_users.sql");
-        int offset = pageable.getPageNumber() * pageable.getPageSize();
-        int limit = pageable.getPageSize();
-
-        if (limit >= 51) {
-            throw new IllegalArgumentException("Content requested too large");
-        }
-
-        List<Object> attributesList = new ArrayList<>();
-
-        // Can this if/else block be reduced?
-        if (attributes.getDisplayName() != null &&
-                !attributes.getDisplayName().isEmpty()) {
-            attributesList.add(attributes.getDisplayName().concat("%"));
-        } else {
-            attributes.setDisplayName("%");
-            attributesList.add(attributes.getDisplayName());
-        }
-        if (attributes.getRole() != null &&
-                !attributes.getRole().isEmpty()) {
-            attributesList.add(attributes.getRole());
-        } else {
-            attributes.setRole(null);
-            attributesList.add(attributes.getRole());
-        }
-        if (attributes.getIsActive() != null) {
-            attributesList.add(attributes.getIsActive());
-        } else {
-            attributes.setIsActive(null);
-            attributesList.add(attributes.getIsActive());
-        }
-
-        attributesList.add(limit + 1);
-        attributesList.add(offset);
 
         List<UserDetailsModel> users = new ArrayList<>();
 
@@ -129,7 +95,7 @@ public class ManagementRepository {
                 users.add(user);
             }
 
-            boolean hasNext = users.size() > limit;
+            boolean hasNext = users.size() > pageable.getPageSize();
 
             if (hasNext) {
                 users.remove(users.size() - 1);

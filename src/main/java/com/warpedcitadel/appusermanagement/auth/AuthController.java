@@ -37,8 +37,7 @@ public class AuthController {
         ApiResponse<UserReferenceDto> response = new ApiResponse<>("Logged in",
                 HttpStatus.OK.value(),
                 userDto,
-                request.getDescription(false).
-                        replace("uri=", ""),
+                request.getDescription(false).replace("uri=", ""),
                 Instant.now(Clock.systemUTC()));
 
             String jwtToken = jwtUtil.generateToken(user.username());
@@ -57,8 +56,7 @@ public class AuthController {
         ApiResponse<String> response = new ApiResponse<>("Signup",
                 HttpStatus.CREATED.value(),
                 "Account successfully created",
-                request.getDescription(false).
-                        replace("uri=", ""),
+                request.getDescription(false).replace("uri=", ""),
                 Instant.now(Clock.systemUTC()));
 
         return new ResponseEntity<>(response, HttpStatus.CREATED);

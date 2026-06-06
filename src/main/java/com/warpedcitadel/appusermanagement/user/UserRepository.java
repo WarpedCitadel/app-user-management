@@ -112,11 +112,11 @@ public class UserRepository {
         } catch (SQLException exception) {
             throw new RuntimeException("User with uuid: " + uuid + " does not exist", exception);
         }
-        return 0;
+        return -1;
     }
 
 
-    public int getUserIdByUsername(String username) {
+    public long getUserIdByUsername(String username) {
 
         String selectSQL = loadSQL.loadSQL("/users/select--get_app_user_id_u.sql");
 
