@@ -49,34 +49,29 @@ public class UserRepository {
     }
 
 
-    public int createAppUserProfile(AppUserProfileModel updateProfile){
+    public void createAppUserProfile(AppUserProfileModel updateProfile){
 
         String updateSql = loadSQL.loadSQL("/users/insert--create_app_user_profile.sql");
 
         try (Connection connection = database.getConnection();
             PreparedStatement updateStatement = connection.prepareStatement(updateSql, Statement.RETURN_GENERATED_KEYS)) {
 
-            updateStatement.setInt(1, updateProfile.getAppUserId());
+            updateStatement.setLong(1, updateProfile.getAppUserId());
             updateStatement.setString(2, updateProfile.getDisplayName());
             updateStatement.setString(3, updateProfile.getBio());
 
             int rowAffected = updateStatement.executeUpdate();
 
             if (rowAffected == 1){
-                try (ResultSet resultSet = updateStatement.getGeneratedKeys()) {
-                    if (resultSet.next()) return resultSet.getInt(1);
-                }
+                updateStatement.getGeneratedKeys();
             }
-
-            return -1;
-
         } catch (SQLException exception){
             throw new RuntimeException("Failed to create user profile with uuid: " + updateProfile.getUuid(), exception);
         }
     }
 
 
-    public int updateAppUserProfile(AppUserProfileModel updateProfile){
+    public void updateAppUserProfile(AppUserProfileModel updateProfile){
 
         String updateSql = loadSQL.loadSQL("/users/update--update_app_user_profile.sql");
 
@@ -85,18 +80,13 @@ public class UserRepository {
 
             updateStatement.setString(1, updateProfile.getDisplayName());
             updateStatement.setString(2, updateProfile.getBio());
-            updateStatement.setInt(3, updateProfile.getAppUserId());
+            updateStatement.setLong(3, updateProfile.getAppUserId());
 
             int rowAffected = updateStatement.executeUpdate();
 
-            if (rowAffected == 1){
-                try (ResultSet resultSet = updateStatement.getGeneratedKeys()) {
-                    if (resultSet.next()) return resultSet.getInt(1);
-                }
+            if (rowAffected == 1) {
+                 updateStatement.getGeneratedKeys();
             }
-
-            return -1;
-
         } catch (SQLException updateException){
             throw new RuntimeException("Failed to update user profile with uuid: " +
                     updateProfile.getUuid(), updateException);
@@ -105,9 +95,7 @@ public class UserRepository {
 
     // ################################### Helper Functions #########################################
 
-    // Todo | Make create a statement to distinguish between a username and uuid
-
-    public int getUserIdByUuid(String uuid){
+    public long getUserIdByUuid(String uuid){
 
         String selectSQL = loadSQL.loadSQL("/users/select--get_app_user_id.sql");
 
@@ -119,12 +107,12 @@ public class UserRepository {
             ResultSet resultSet = selectStatement.executeQuery();
 
             if (resultSet.next()) {
-                return resultSet.getInt("id");
+                return resultSet.getLong("id");
             }
         } catch (SQLException exception) {
             throw new RuntimeException("User with uuid: " + uuid + " does not exist", exception);
         }
-        return -1;
+        return 0;
     }
 
 
@@ -147,6 +135,7 @@ public class UserRepository {
         }
         return -1;
     }
+
 
     public List<GameProfileModel> getUserGames(String uuid) {
 

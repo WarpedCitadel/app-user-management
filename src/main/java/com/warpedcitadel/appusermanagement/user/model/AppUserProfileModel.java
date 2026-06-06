@@ -1,20 +1,15 @@
 package com.warpedcitadel.appusermanagement.user.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-
 import java.util.List;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class AppUserProfileModel {
 
-    @JsonIgnore
-    private int appUserId;
+    private long appUserId;
     private String uuid;
     private String profileIMG;
     private String displayName;
     private String bio;
-    private List<GameProfileModel> game;
+    private List<GameProfileModel> createdGames;
 
 
     public AppUserProfileModel() {
@@ -26,22 +21,22 @@ public class AppUserProfileModel {
         this.displayName = displayName;
     }
 
-    public AppUserProfileModel(String uuid, String displayName, String bio, String profileIMG, List<GameProfileModel> game) {
+    public AppUserProfileModel(String uuid, String displayName, String bio, String profileIMG, List<GameProfileModel> createdGames) {
         this.uuid = uuid;
         this.displayName = displayName;
         this.bio = bio;
         this.profileIMG = profileIMG;
-        this.game = game;
+        this.createdGames = createdGames;
     }
 
-    public AppUserProfileModel(int appUserId, String uuid, String displayName, String bio) {
+    public AppUserProfileModel(long appUserId, String uuid, String displayName, String bio) {
         this.appUserId = appUserId;
         this.uuid = uuid;
         this.displayName = displayName;
         this.bio = bio;
     }
 
-    public int getAppUserId() {
+    public long getAppUserId() {
         return appUserId;
     }
 
@@ -61,7 +56,7 @@ public class AppUserProfileModel {
         return profileIMG;
     }
 
-    public List<GameProfileModel> getGame() {
-        return game;
+    public List<GameProfileModel> getCreatedGames() {
+        return createdGames;
     }
 }
