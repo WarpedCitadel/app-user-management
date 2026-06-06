@@ -1,4 +1,4 @@
-package com.warpedcitadel.appusermanagement.validation;
+package com.warpedcitadel.appusermanagement.auth.validation;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
@@ -9,9 +9,9 @@ import java.lang.annotation.Target;
 
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = ValidEmailFormat.class)
-public @interface EmailFormat {
-    String message() default "Invalid password or username";
+@Constraint(validatedBy = ValidUsernameFormat.class)
+public @interface UsernameFormat {
+    String message() default "Invalid username Format";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

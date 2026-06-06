@@ -1,6 +1,6 @@
 package com.warpedcitadel.appusermanagement.security;
 
-import com.warpedcitadel.appusermanagement.auth.AuthModel;
+import com.warpedcitadel.appusermanagement.auth.model.AuthModel;
 import com.warpedcitadel.appusermanagement.auth.AuthRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

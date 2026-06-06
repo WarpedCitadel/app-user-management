@@ -1,6 +1,7 @@
 package com.warpedcitadel.appusermanagement.auth;
 
-import com.warpedcitadel.appusermanagement.user.model.UserModel;
+import com.warpedcitadel.appusermanagement.auth.model.AuthModel;
+import com.warpedcitadel.appusermanagement.auth.model.UserModel;
 import com.warpedcitadel.appusermanagement.util.SQLFileReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -44,7 +45,7 @@ public class AuthRepository {
     }
 
 
-    public int registerUser(UserModel user) {
+    public void createAppUser(UserModel user) {
 
         String insertSql = loadSQL.loadSQL("/users/insert--create_app_user.sql");
 
@@ -56,15 +57,8 @@ public class AuthRepository {
             insertStatement.setString(2, user.getPasswordHash());
             insertStatement.setString(3, user.getEmail());
 
-            int rowAffected = insertStatement.executeUpdate();
+            insertStatement.execute();
 
-            if (rowAffected == 1) {
-                try (ResultSet resultSet = insertStatement.getGeneratedKeys()) {
-                    if (resultSet.next()) return resultSet.getInt(1);
-                }
-            }
-
-            return -1;
         } catch (SQLException exception) {
             throw new RuntimeException("Username or email already exists");
         }

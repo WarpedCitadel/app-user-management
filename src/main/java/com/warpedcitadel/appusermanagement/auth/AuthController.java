@@ -1,8 +1,10 @@
 package com.warpedcitadel.appusermanagement.auth;
 
+import com.warpedcitadel.appusermanagement.auth.dto.UserReferenceDto;
+import com.warpedcitadel.appusermanagement.auth.dto.UserLoginDto;
+import com.warpedcitadel.appusermanagement.auth.dto.UserSignupDto;
 import com.warpedcitadel.appusermanagement.payload.ApiResponse;
 import com.warpedcitadel.appusermanagement.security.JwtUtil;
-import com.warpedcitadel.appusermanagement.user.model.UserModel;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -28,22 +30,37 @@ public class AuthController {
     private JwtUtil jwtUtil;
 
     @PostMapping("/login")
-    private ResponseEntity<ApiResponse<AuthModel>> loginUser(@RequestBody UserModel user, WebRequest request) {
-        AuthModel dbUser = authService.loginUser(user);
-            ApiResponse<AuthModel> response = new ApiResponse<>("Logged in", HttpStatus.OK.value(),
-                    dbUser, request.getDescription(false).replace("uri=", ""), Instant.now(Clock.systemUTC()));
-            String jwtToken = jwtUtil.generateToken(user.getUsername());
+    private ResponseEntity<ApiResponse<UserReferenceDto>> loginUser(@RequestBody UserLoginDto user,
+                                                                    WebRequest request) {
+        UserReferenceDto userDto = authService.loginUser(user);
+
+        ApiResponse<UserReferenceDto> response = new ApiResponse<>("Logged in",
+                HttpStatus.OK.value(),
+                userDto,
+                request.getDescription(false).
+                        replace("uri=", ""),
+                Instant.now(Clock.systemUTC()));
+
+            String jwtToken = jwtUtil.generateToken(user.username());
             HttpHeaders headers = new HttpHeaders();
             headers.set("Authorization", "Bearer " + jwtToken);
+
             return new ResponseEntity<>(response, headers, HttpStatus.OK);
     }
 
 
-    @PostMapping("/signin")
-    private ResponseEntity<ApiResponse<UserModel>> createAppUser(@Valid @RequestBody UserModel user, WebRequest request) {
-        authService.registerUser(user);
-        ApiResponse<UserModel> response = new ApiResponse<>("User Created", HttpStatus.CREATED.value(),
-                user, request.getDescription(false).replace("uri=", ""), Instant.now(Clock.systemUTC()));
+    @PostMapping("/signup")
+    private ResponseEntity<ApiResponse<String>> createAppUser(@Valid @RequestBody UserSignupDto user,
+                                                              WebRequest request) {
+        authService.createAppUser(user);
+
+        ApiResponse<String> response = new ApiResponse<>("Signup",
+                HttpStatus.CREATED.value(),
+                "Account successfully created",
+                request.getDescription(false).
+                        replace("uri=", ""),
+                Instant.now(Clock.systemUTC()));
+
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 }

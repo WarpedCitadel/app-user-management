@@ -1,7 +1,11 @@
 package com.warpedcitadel.appusermanagement.auth;
 
 import com.warpedcitadel.appusermanagement.audit.AuditRepository;
-import com.warpedcitadel.appusermanagement.user.model.UserModel;
+import com.warpedcitadel.appusermanagement.auth.dto.UserReferenceDto;
+import com.warpedcitadel.appusermanagement.auth.dto.UserLoginDto;
+import com.warpedcitadel.appusermanagement.auth.dto.UserSignupDto;
+import com.warpedcitadel.appusermanagement.auth.model.AuthModel;
+import com.warpedcitadel.appusermanagement.auth.model.UserModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -25,24 +29,33 @@ public class AuthService {
     }
 
 
-    public AuthModel loginUser(UserModel user) {
-        AuthModel dbUser = authRepository.authenticateUser(user.getUsername());
+    public UserReferenceDto loginUser(UserLoginDto userDto) {
+
+        UserModel userModel = new UserModel(
+                userDto.username()
+        );
+
+        AuthModel dbUser = authRepository.authenticateUser(userModel.getUsername());
         String storedHash = dbUser.getPasswordHash();
-        if (user.getUsername().equals(dbUser.getUsername())){
-            if (BCrypt.checkpw(user.getPasswordHash(), storedHash)) {
+        if (userDto.username().equals(dbUser.getUsername())){
+            if (BCrypt.checkpw(userDto.password(), storedHash)) {
 
                 auditRepository.updateLastActiveDtm(dbUser.getUuid());
-                return dbUser;
+                UserReferenceDto user = new UserReferenceDto(dbUser.getUuid());
+                return user;
             }
         }
         throw new UsernameNotFoundException("Invalid user name or password");
     }
 
 
-    public int registerUser(UserModel user) {
-        String encodedPassword = passwordEncoder().encode(user.getPasswordHash());
-        user.setPasswordHash(encodedPassword);
+    public void createAppUser(UserSignupDto userDto) {
+        String encodedPassword = passwordEncoder().encode(userDto.password());
 
-        return authRepository.registerUser(user);
+        UserModel userModel = new UserModel(
+                userDto.username(),
+                encodedPassword,
+                userDto.email());
+        authRepository.createAppUser(userModel);
     }
 }

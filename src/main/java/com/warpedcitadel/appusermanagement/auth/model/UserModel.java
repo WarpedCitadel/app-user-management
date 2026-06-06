@@ -1,27 +1,12 @@
-package com.warpedcitadel.appusermanagement.user.model;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.warpedcitadel.appusermanagement.validation.EmailFormat;
-import com.warpedcitadel.appusermanagement.validation.PasswordFormat;
-import com.warpedcitadel.appusermanagement.validation.UsernameFormat;
+package com.warpedcitadel.appusermanagement.auth.model;
 
 import java.util.Locale;
 
 public class UserModel {
 
-    @JsonIgnore
     private long appUserId;
-
-    @UsernameFormat(message = "Invalid username")
     private String username;
-
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @PasswordFormat(message = "Invalid password")
     private String passwordHash;
-
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @EmailFormat(message = "Invalid email")
     private String email;
 
 
@@ -29,9 +14,8 @@ public class UserModel {
 
     }
 
-    public UserModel(String username, String passwordHash) {
+    public UserModel(String username) {
         this.username = username;
-        this.passwordHash = passwordHash;
     }
 
     public UserModel(String username, String passwordHash, String email) {
@@ -57,15 +41,26 @@ public class UserModel {
         return email = email.toLowerCase(Locale.ROOT);
     }
 
+    public void setAppUserId(long appUserId) {
+        this.appUserId = appUserId;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     public void setPasswordHash(String passwordHash) {
         this.passwordHash = passwordHash;
     }
 
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
     @Override
     public String toString() {
         return "UserModel{" +
-                " appUserId=" + appUserId +
+                "appUserId=" + appUserId +
                 ", username='" + username + '\'' +
                 ", passwordHash='" + passwordHash + '\'' +
                 ", email='" + email + '\'' +
