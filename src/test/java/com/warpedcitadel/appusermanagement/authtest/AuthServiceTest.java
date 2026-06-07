@@ -65,7 +65,6 @@ public class AuthServiceTest {
     @Test
     void _test_loginUser() {
 
-        // Arrange
         UserLoginDto userDto = new UserLoginDto(
                 "JohnBlanche",
                 "pa$sW0rd5!");

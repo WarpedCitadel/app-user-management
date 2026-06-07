@@ -33,8 +33,6 @@ public class AuthControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    ObjectMapper objectMapper = new ObjectMapper();
-
     @Mock
     private JwtUtil jwtUtil;
 
@@ -46,6 +44,8 @@ public class AuthControllerTest {
 
     @InjectMocks
     private AuthController authController;
+
+    ObjectMapper objectMapper = new ObjectMapper();
 
 
     @BeforeEach
