@@ -80,6 +80,7 @@ public class AuthControllerTest {
 
     @Test
     void _test_loginAppUser() throws Exception {
+
         Path filePath = Path.of("src/test/resources/json/appUserLogin.json");
         String json = Files.readString(filePath);
 
@@ -88,7 +89,7 @@ public class AuthControllerTest {
         String jwtToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJKb2huQmxhbmNoZTEiLCJpYXQiOjE3ODA3Nzk2MDgsImV4cCI6MTc4MDc4MDUwOH0.JrksQumyiVuI68qjMxPcBIOxF6en6DQeYha1cwUZD_U";
 
         when(jwtUtil.generateToken(user.username())).thenReturn(jwtToken);
-        UserReferenceDto UserReferenceDto = new UserReferenceDto("019e9e91-6a9d-72e2-a9e3-f36328f2d88f");
+        UserReferenceDto UserReferenceDto = new UserReferenceDto("019ea371-9498-7cb1-b4b9-4ee3db8dc132");
         when(authService.loginUser(user)).thenReturn(UserReferenceDto);
 
         mockMvc.perform(post("/auth/login")
@@ -97,10 +98,11 @@ public class AuthControllerTest {
                         .header("x-api-version", 1.0))
                         .andExpect(status().isOk())
                         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                        .andExpect(header().string("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJKb2huQmxhbmNoZTEiLCJpYXQiOjE3ODA3Nzk2MDgsImV4cCI6MTc4MDc4MDUwOH0.JrksQumyiVuI68qjMxPcBIOxF6en6DQeYha1cwUZD_U"))
+                        .andExpect(header().string("Authorization",
+                                "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJKb2huQmxhbmNoZTEiLCJpYXQiOjE3ODA3Nzk2MDgsImV4cCI6MTc4MDc4MDUwOH0.JrksQumyiVuI68qjMxPcBIOxF6en6DQeYha1cwUZD_U"))
                         .andExpect(jsonPath("$.title").value("Logged in"))
                         .andExpect(jsonPath("$.status").value(200))
-                        .andExpect(jsonPath("$.data.userUUID").value("019e9e91-6a9d-72e2-a9e3-f36328f2d88f"))
+                        .andExpect(jsonPath("$.data.userUUID").value("019ea371-9498-7cb1-b4b9-4ee3db8dc132"))
                         .andExpect(jsonPath("$.instance").value("/auth/login"))
                         .andExpect(jsonPath("$.timestamp").exists());
     }
