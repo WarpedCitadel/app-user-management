@@ -29,7 +29,7 @@ public class ManagementController {
 
 
     @GetMapping("/search")
-    public GetAppUsersDto getUsers(SearchAttributesDto attributes,
+    public GetAppUsersDto getAppUsers(SearchAttributesDto attributes,
                                    Pageable pageable) {
         return managementService.getAppUsers(pageable, attributes);
     }

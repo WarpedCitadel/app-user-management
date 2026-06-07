@@ -30,7 +30,7 @@ public class AuthController {
     private JwtUtil jwtUtil;
 
     @PostMapping("/login")
-    private ResponseEntity<ApiResponse<UserReferenceDto>> loginUser(@RequestBody UserLoginDto user,
+    private ResponseEntity<ApiResponse<UserReferenceDto>> loginAppUser(@RequestBody UserLoginDto user,
                                                                     WebRequest request) {
         UserReferenceDto userDto = authService.loginUser(user);
 
