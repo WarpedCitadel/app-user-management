@@ -31,8 +31,6 @@ public class UserService {
         long userId = userRepository.getUserIdByUsername(username);
         long userProfileId = userRepository.getUserIdByUuid(createProfile.userUUID());
 
-        System.out.println(userId + " == " + userProfileId);
-
         if (userProfileId != userId) {
             throw new RuntimeException("Action not allowed");
         }
@@ -48,8 +46,6 @@ public class UserService {
 
         long userId = userRepository.getUserIdByUsername(username);
         long userProfileId = userRepository.getUserIdByUuid(updateProfile.userUUID());
-
-        System.out.println(userId + " == " + userProfileId);
 
         if (userProfileId != userId) {
             throw new RuntimeException("Action not allowed");
