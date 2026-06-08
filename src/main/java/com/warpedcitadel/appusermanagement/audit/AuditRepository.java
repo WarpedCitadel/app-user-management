@@ -1,6 +1,5 @@
 package com.warpedcitadel.appusermanagement.audit;
 
-import com.warpedcitadel.appusermanagement.audit.model.UserSessionsModel;
 import com.warpedcitadel.appusermanagement.util.SQLFileReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -57,11 +56,8 @@ public class AuditRepository {
                     continue;
                 }
 
-                UserSessionsModel session = new UserSessionsModel(
-                        resultSet.getString("lastactive_dtm")
-                );
-
-                userSessions.add(session.getLastActiveDtm());
+                String session = resultSet.getString("lastactive_dtm");
+                userSessions.add(session);
             }
 
             return userSessions;

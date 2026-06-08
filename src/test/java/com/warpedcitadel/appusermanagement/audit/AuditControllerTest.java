@@ -49,7 +49,7 @@ class AuditControllerTest {
     void _test_getUserSessions() throws Exception {
 
         Path filePath = Path.of("src/test/resources/json/appUserSessions.json");
-        String json = Files.readString(filePath);
+        String validJson = Files.readString(filePath);
 
         List<String> sessions = List.of("2026-03-12 23:17:37.290907",
                                         "2026-03-17 10:43:27.290907",
@@ -66,6 +66,6 @@ class AuditControllerTest {
         mockMvc.perform(get("/user/profile/{uuid}/session", validUUID)
                 .header("x-api-version", "1.0"))
                 .andExpect(status().isOk())
-                .andExpect(content().json(json));
+                .andExpect(content().json(validJson));
     }
 }

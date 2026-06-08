@@ -93,6 +93,7 @@ public class AuthRepositoryTest {
         AuthModel mockDbUser = authRepository.authenticateUser(userModel.getUsername());
 
         verify(preparedStatement).setString(1, userModel.getUsername());
+        verify(preparedStatement).executeQuery();
         Assertions.assertEquals(validUser.getUuid(), mockDbUser.getUuid());
         Assertions.assertEquals(validUser.getUsername(), mockDbUser.getUsername());
         Assertions.assertEquals(validUser.getPasswordHash(), mockDbUser.getPasswordHash());
