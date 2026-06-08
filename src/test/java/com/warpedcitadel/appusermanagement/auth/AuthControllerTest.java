@@ -12,7 +12,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -28,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(MockitoExtension.class)
 public class AuthControllerTest {
 
-    @Autowired
+    @Mock
     private MockMvc mockMvc;
 
     @Mock
@@ -38,7 +37,7 @@ public class AuthControllerTest {
     private AuthService authService;
 
     @Mock
-    ApiVersionStrategy apiVersionStrategy;
+    private ApiVersionStrategy apiVersionStrategy;
 
     @InjectMocks
     private AuthController authController;
@@ -103,5 +102,4 @@ public class AuthControllerTest {
                         .andExpect(jsonPath("$.data.userUUID").value("019ea371-9498-7cb1-b4b9-4ee3db8dc132"))
                         .andExpect(jsonPath("$.instance").value("/auth/login"))
                         .andExpect(jsonPath("$.timestamp").exists());
-    }
-}
+    }}

@@ -7,7 +7,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.accept.ApiVersionStrategy;
@@ -24,17 +23,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(MockitoExtension.class)
 class AuditControllerTest {
 
-    @Autowired
-    MockMvc mockMvc;
+    @Mock
+    private MockMvc mockMvc;
 
     @Mock
-    ApiVersionStrategy apiVersionStrategy;
+    private ApiVersionStrategy apiVersionStrategy;
 
     @Mock
     private AuditService auditService;
 
     @InjectMocks
-    AuditController auditController;
+    private AuditController auditController;
 
 
     @BeforeEach
