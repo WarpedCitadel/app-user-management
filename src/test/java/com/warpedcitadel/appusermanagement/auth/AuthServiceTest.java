@@ -1,8 +1,6 @@
-package com.warpedcitadel.appusermanagement.authtest;
+package com.warpedcitadel.appusermanagement.auth;
 
 import com.warpedcitadel.appusermanagement.audit.AuditRepository;
-import com.warpedcitadel.appusermanagement.auth.AuthRepository;
-import com.warpedcitadel.appusermanagement.auth.AuthService;
 import com.warpedcitadel.appusermanagement.auth.dto.UserLoginDto;
 import com.warpedcitadel.appusermanagement.auth.dto.UserReferenceDto;
 import com.warpedcitadel.appusermanagement.auth.dto.UserSignupDto;

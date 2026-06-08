@@ -1,6 +1,5 @@
-package com.warpedcitadel.appusermanagement.authtest;
+package com.warpedcitadel.appusermanagement.auth;
 
-import com.warpedcitadel.appusermanagement.auth.AuthRepository;
 import com.warpedcitadel.appusermanagement.auth.model.AuthModel;
 import com.warpedcitadel.appusermanagement.auth.model.UserModel;
 import com.warpedcitadel.appusermanagement.util.SQLFileReader;

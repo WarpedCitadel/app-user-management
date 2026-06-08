@@ -1,8 +1,6 @@
-package com.warpedcitadel.appusermanagement.authtest;
+package com.warpedcitadel.appusermanagement.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.warpedcitadel.appusermanagement.auth.AuthController;
-import com.warpedcitadel.appusermanagement.auth.AuthService;
 import com.warpedcitadel.appusermanagement.auth.dto.UserLoginDto;
 import com.warpedcitadel.appusermanagement.auth.dto.UserReferenceDto;
 import com.warpedcitadel.appusermanagement.auth.dto.UserSignupDto;
@@ -67,7 +65,7 @@ public class AuthControllerTest {
         mockMvc.perform(post("/auth/signup")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json)
-                        .header("x-api-version", 1.0))
+                        .header("x-api-version", "1.0"))
                         .andExpect(status().isCreated())
                         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                         .andExpect(jsonPath("$.title").value("Signup"))
@@ -95,7 +93,7 @@ public class AuthControllerTest {
         mockMvc.perform(post("/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json)
-                        .header("x-api-version", 1.0))
+                        .header("x-api-version", "1.0"))
                         .andExpect(status().isOk())
                         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                         .andExpect(header().string("Authorization",
