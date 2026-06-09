@@ -7,10 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 
 import java.time.Clock;
@@ -24,18 +21,15 @@ public class ManagementController {
     @Autowired
     private ManagementService managementService;
 
-    @Autowired
-    private ManagementRepository managementRepository;
-
 
     @GetMapping("/search")
-    public GetAppUsersDto getUsers(SearchAttributesDto attributes,
+    public GetAppUsersDto getAppUsers(SearchAttributesDto attributes,
                                    Pageable pageable) {
         return managementService.getAppUsers(pageable, attributes);
     }
 
 
-    @GetMapping("/profile/{uuid}/disable")
+    @PutMapping("/profile/{uuid}/disable")
     public ResponseEntity<ApiResponse> disableAppUser(@PathVariable String uuid, WebRequest request) {
         managementService.disableAppUser(uuid);
         ApiResponse disableAppUser = new ApiResponse<>("Status Changed", HttpStatus.OK.value(),
@@ -45,7 +39,7 @@ public class ManagementController {
     }
 
 
-    @GetMapping("/profile/{uuid}/enable")
+    @PutMapping("/profile/{uuid}/enable")
     public ResponseEntity<ApiResponse> enableAppUser(@PathVariable String uuid, WebRequest request) {
         managementService.enableAppUser(uuid);
         ApiResponse enableAppUser = new ApiResponse<>("Status Changed", HttpStatus.OK.value(),

@@ -1,8 +1,9 @@
 package com.warpedcitadel.appusermanagement.audit;
 
-import com.warpedcitadel.appusermanagement.audit.dto.UserSessionsDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class AuditService {
@@ -10,7 +11,7 @@ public class AuditService {
     @Autowired
     private AuditRepository auditRepository;
 
-    public UserSessionsDto getAppUserSessions(String uuid){
-        return new UserSessionsDto(auditRepository.getAppUserSessions(uuid));
+    public List<String> getAppUserSessions(String uuid){
+        return auditRepository.getAppUserSessions(uuid);
     }
 }

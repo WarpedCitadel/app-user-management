@@ -20,10 +20,10 @@ public class AuthRepository {
 
     public AuthModel authenticateUser(String username) {
 
-        String sqlScript = loadSQL.loadSQL("/users/select--get_app_user_details.sql");
+        String selectSql = loadSQL.loadSQL("/users/select--get_app_user_details.sql");
 
         try (Connection connection = database.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sqlScript)) {
+             PreparedStatement statement = connection.prepareStatement(selectSql)) {
 
             statement.setString(1, username);
             ResultSet resultSet = statement.executeQuery();
@@ -50,8 +50,7 @@ public class AuthRepository {
         String insertSql = loadSQL.loadSQL("/users/insert--create_app_user.sql");
 
         try (Connection connection = database.getConnection();
-             PreparedStatement insertStatement = connection.prepareStatement(insertSql,
-                     Statement.RETURN_GENERATED_KEYS)) {
+             PreparedStatement insertStatement = connection.prepareStatement(insertSql)) {
 
             insertStatement.setString(1, user.getUsername());
             insertStatement.setString(2, user.getPasswordHash());

@@ -51,10 +51,10 @@ public class UserRepository {
 
     public void createAppUserProfile(AppUserProfileModel updateProfile){
 
-        String updateSql = loadSQL.loadSQL("/users/insert--create_app_user_profile.sql");
+        String insertSql = loadSQL.loadSQL("/users/insert--create_app_user_profile.sql");
 
         try (Connection connection = database.getConnection();
-            PreparedStatement updateStatement = connection.prepareStatement(updateSql, Statement.RETURN_GENERATED_KEYS)) {
+            PreparedStatement updateStatement = connection.prepareStatement(insertSql, Statement.RETURN_GENERATED_KEYS)) {
 
             updateStatement.setLong(1, updateProfile.getAppUserId());
             updateStatement.setString(2, updateProfile.getDisplayName());
@@ -128,7 +128,7 @@ public class UserRepository {
             ResultSet resultSet = statement.executeQuery();
 
             if (resultSet.next()) {
-                return resultSet.getInt("id");
+                return resultSet.getLong("id");
             }
         } catch (SQLException exception) {
             throw new UsernameNotFoundException("User with the username of " + username + " does not exist");
