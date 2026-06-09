@@ -107,12 +107,26 @@ class AuditRepositoryTest {
 
             List<String> result = auditRepository.getAppUserSessions(validUUID);
 
-            System.out.println(result);
-
             verify(preparedStatement).setString(1, validUUID);
             verify(preparedStatement).executeQuery();
             Assertions.assertNotNull(result);
             Assertions.assertEquals(mockUserSessions, result);
+        }
+
+
+        @Test
+        void _test_updateLastActiveDtm() throws SQLException {
+
+            String updateSQL = loadSQL.loadSQL("/audit/insert--update_last_active_dtm.sql");
+            String validUUID = "19ea371-9498-7cb1-b4b9-4ee3db8dc132";
+
+            when(dataSource.getConnection()).thenReturn(connection);
+            when(connection.prepareStatement(updateSQL)).thenReturn(preparedStatement);
+
+            auditRepository.updateLastActiveDtm(validUUID);
+
+            verify(preparedStatement).setString(1, validUUID);
+            verify(preparedStatement).execute();
         }
     }
 }

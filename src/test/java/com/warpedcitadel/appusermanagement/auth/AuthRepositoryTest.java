@@ -31,10 +31,10 @@ public class AuthRepositoryTest {
     @Mock
     private ResultSet resultSet;
 
-    private SQLFileReader loadSQL = new SQLFileReader();
-
     @InjectMocks
     private AuthRepository authRepository;
+
+    private SQLFileReader loadSQL = new SQLFileReader();
 
 
     @Test
@@ -94,6 +94,7 @@ public class AuthRepositoryTest {
 
         verify(preparedStatement).setString(1, userModel.getUsername());
         verify(preparedStatement).executeQuery();
+
         Assertions.assertEquals(validUser.getUuid(), mockDbUser.getUuid());
         Assertions.assertEquals(validUser.getUsername(), mockDbUser.getUsername());
         Assertions.assertEquals(validUser.getPasswordHash(), mockDbUser.getPasswordHash());
