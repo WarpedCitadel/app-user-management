@@ -52,9 +52,9 @@ class ManagementControllerTest {
                         .header("x-api-version", "1.0"))
                         .andExpect(status().isOk())
                         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                        .andExpect(jsonPath("$.title").value("Status Changed"))
+                        .andExpect(jsonPath("$.title").value("User status changed"))
                         .andExpect(jsonPath("$.status").value(200))
-                        .andExpect(jsonPath("$.data").value("User status changed to disabled"))
+                        .andExpect(jsonPath("$.data").value("User status set to disabled"))
                         .andExpect(jsonPath("$.instance").value("/user/profile/019ea371-9498-7cb1-b4b9-4ee3db8dc132/disable"))
                         .andExpect(jsonPath("$.timestamp").exists());
 
@@ -70,9 +70,9 @@ class ManagementControllerTest {
                         .header("x-api-version", "1.0"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.title").value("Status Changed"))
+                .andExpect(jsonPath("$.title").value("User status changed"))
                 .andExpect(jsonPath("$.status").value(200))
-                .andExpect(jsonPath("$.data").value("User status changed to enabled"))
+                .andExpect(jsonPath("$.data").value("User status set to enabled"))
                 .andExpect(jsonPath("$.instance").value("/user/profile/019ea371-9498-7cb1-b4b9-4ee3db8dc132/enable"))
                 .andExpect(jsonPath("$.timestamp").exists());
 

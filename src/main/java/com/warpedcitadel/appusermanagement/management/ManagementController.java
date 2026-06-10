@@ -40,7 +40,7 @@ public class ManagementController {
     @PutMapping("/profile/{uuid}/disable")
     public ResponseEntity<ApiResponse> disableAppUser(@PathVariable String uuid, WebRequest request) {
         managementService.disableAppUser(uuid);
-        ApiResponse response = new ApiResponse<>("User status Changed",
+        ApiResponse response = new ApiResponse<>("User status changed",
                 HttpStatus.OK.value(),
                 "User status set to disabled",
                 request.getDescription(false).replace("uri=", ""),
@@ -52,7 +52,7 @@ public class ManagementController {
     @PutMapping("/profile/{uuid}/enable")
     public ResponseEntity<ApiResponse> enableAppUser(@PathVariable String uuid, WebRequest request) {
         managementService.enableAppUser(uuid);
-        ApiResponse enableAppUser = new ApiResponse<>("User status Changed",
+        ApiResponse enableAppUser = new ApiResponse<>("User status changed",
                 HttpStatus.OK.value(),
                 "User status set to enabled",
                 request.getDescription(false).replace("uri=", ""),
