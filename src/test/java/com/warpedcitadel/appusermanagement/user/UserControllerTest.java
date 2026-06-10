@@ -44,6 +44,7 @@ public class UserControllerTest {
 
     private UserProfileDto profile;
     private List<GameProfileModel> list;
+    private GameProfileModel gameProfileModel;
     private final String jwtToken = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJKb2huQmxhbmNoZTEiLCJpYXQiOjE3ODA3Nzk2MDgsImV4cCI6MTc4MDc4MDUwOH0.JrksQumyiVuI68qjMxPcBIOxF6en6DQeYha1cwUZD_U";
     private final String testUsername = "JohnBlanche";
 
@@ -56,6 +57,18 @@ public class UserControllerTest {
         // Todo: Create a list of games
         list = new ArrayList<>();
 
+        gameProfileModel = new GameProfileModel(
+                "019ea2f1-be01-72ca-bf9c-bbf41a925d3d",
+                "Warhammer 40k",
+                "019ea2f1-c3cd-75a6-97ce-1e4b45182485",
+                "It is not the descent towards the darkness, " +
+                        "nor the rise to the light that makes us superior. " +
+                        "It is the endless struggle between the two that greatness of character lies.",
+                "Role playing"
+        );
+
+        list.add(gameProfileModel);
+
          profile = new UserProfileDto(
                 "019ea371-9498-7cb1-b4b9-4ee3db8dc132",
                 "019e9e91-d2de-70f0-ae45-ebb1c52f557e",
@@ -64,7 +77,7 @@ public class UserControllerTest {
                         "I find if I do one thing, it generates four, five or six other things in my imagination and if I do any of those," +
                         " they also generate the same again.",
                 list
-        );
+         );
     }
 
 
@@ -84,7 +97,7 @@ public class UserControllerTest {
                         .andExpect(jsonPath("$.status").value(200))
                         .andExpect(jsonPath("$.title").value("User profile created"))
                         .andExpect(jsonPath("$.data.userUUID").value("019ea371-9498-7cb1-b4b9-4ee3db8dc132"))
-                        .andExpect(jsonPath("$.data.displayName").value("JohnBlanche"))
+                        .andExpect(jsonPath("$.data.displayName").value(testUsername))
                         .andExpect(jsonPath("$.data.biography").value("I'm painfully aware that I'll probably not survive what I want to achieve. " +
                                                         "I find if I do one thing, it generates four, five or six other things in my imagination and if I do any of those," +
                                                         " they also generate the same again."))
@@ -108,7 +121,7 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.status").value(200))
                 .andExpect(jsonPath("$.title").value("User profile updated"))
                 .andExpect(jsonPath("$.data.userUUID").value("019ea371-9498-7cb1-b4b9-4ee3db8dc132"))
-                .andExpect(jsonPath("$.data.displayName").value("JohnBlanche"))
+                .andExpect(jsonPath("$.data.displayName").value(testUsername))
                 .andExpect(jsonPath("$.data.biography").value("I'm painfully aware that I'll probably not survive what I want to achieve. " +
                         "I find if I do one thing, it generates four, five or six other things in my imagination and if I do any of those," +
                         " they also generate the same again."))
@@ -127,13 +140,18 @@ public class UserControllerTest {
                         .header("x-api-version", "1.0"))
                         .andExpect(status().isOk())
                         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                        .andExpect(jsonPath("$.userUUID").value("019ea371-9498-7cb1-b4b9-4ee3db8dc132"))
-                        .andExpect(jsonPath("$.profileImgUUID").value("019e9e91-d2de-70f0-ae45-ebb1c52f557e"))
-                        .andExpect(jsonPath("$.displayName").value("JohnBlanche"))
-                        .andExpect(jsonPath("$.biography").value("I'm painfully aware that I'll probably not survive what I want to achieve. " +
+                        .andExpect(jsonPath("$.data.userUUID").value("019ea371-9498-7cb1-b4b9-4ee3db8dc132"))
+                        .andExpect(jsonPath("$.data.profileImgUUID").value("019e9e91-d2de-70f0-ae45-ebb1c52f557e"))
+                        .andExpect(jsonPath("$.data.displayName").value(testUsername))
+                        .andExpect(jsonPath("$.data.biography").value("I'm painfully aware that I'll probably not survive what I want to achieve. " +
                                                                     "I find if I do one thing, it generates four, five or six other things in my imagination and if I do any of those," +
                                                                     " they also generate the same again."))
-                        .andExpect(jsonPath("$.createdGames").value(list));
+                        .andExpect(jsonPath("$.data.createdGames").exists())
+                        .andExpect(jsonPath("$.data.createdGames[0].fileUUID").value(gameProfileModel.getFileUUID()))
+                        .andExpect(jsonPath("$.data.createdGames[0].title").value(gameProfileModel.getTitle()))
+                        .andExpect(jsonPath("$.data.createdGames[0].coverImgUUID").value(gameProfileModel.getCoverImgUUID()))
+                        .andExpect(jsonPath("$.data.createdGames[0].description").value(gameProfileModel.getDescription()))
+                        .andExpect(jsonPath("$.data.createdGames[0].genre").value(gameProfileModel.getGenre()));
 
         Mockito.verify(userService, Mockito.atLeast(1)).getUserProfile(validUUID);
     }

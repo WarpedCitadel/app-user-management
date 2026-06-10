@@ -10,10 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 
 import java.time.Clock;
@@ -31,7 +28,7 @@ public class AuthController {
 
     @PostMapping("/login")
     private ResponseEntity<ApiResponse<UserReferenceDto>> loginAppUser(@RequestBody UserLoginDto user,
-                                                                    WebRequest request) {
+                                                                       WebRequest request) {
         UserReferenceDto userDto = authService.loginUser(user);
 
         ApiResponse<UserReferenceDto> response = new ApiResponse<>("Logged in",

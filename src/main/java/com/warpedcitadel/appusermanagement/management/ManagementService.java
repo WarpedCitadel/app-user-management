@@ -2,9 +2,12 @@ package com.warpedcitadel.appusermanagement.management;
 
 import com.warpedcitadel.appusermanagement.management.dto.GetAppUsersDto;
 import com.warpedcitadel.appusermanagement.management.dto.SearchAttributesDto;
+import com.warpedcitadel.appusermanagement.management.dto.SlicedResponse;
 import com.warpedcitadel.appusermanagement.management.model.SearchAttributesModel;
+import com.warpedcitadel.appusermanagement.management.model.UserDetailsModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -58,7 +61,10 @@ public class ManagementService {
         attributesList.add(limit + 1);
         attributesList.add(offset);
 
-        return new GetAppUsersDto(managementRepository.getAppUsers(pageable, attributesList));
+        Slice<UserDetailsModel> sliceUsers = managementRepository.getAppUsers(pageable, attributesList);
+        SlicedResponse<UserDetailsModel> filterData = new SlicedResponse<>(sliceUsers);
+        GetAppUsersDto data = new GetAppUsersDto(filterData);
+        return data;
     }
 
 
