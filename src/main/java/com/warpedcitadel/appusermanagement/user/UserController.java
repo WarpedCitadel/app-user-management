@@ -70,7 +70,13 @@ public class UserController {
 
 
     @GetMapping("/profile/{uuid}")
-    public UserProfileDto userProfile(@PathVariable String uuid) {
-        return userService.getUserProfile(uuid);
+    public ResponseEntity<ApiResponse> userProfile(@PathVariable String uuid, WebRequest request) {
+
+        UserProfileDto profile = userService.getUserProfile(uuid);
+
+        ApiResponse<UserProfileDto> userProfile = new ApiResponse<>("User profile", HttpStatus.OK.value(),
+                profile, request.getDescription(false).replace("uri=", ""),
+                Instant.now(Clock.systemUTC()));
+        return new ResponseEntity<>(userProfile, HttpStatus.OK);
     }
 }

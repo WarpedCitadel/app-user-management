@@ -32,8 +32,10 @@ public class ManagementController {
     @PutMapping("/profile/{uuid}/disable")
     public ResponseEntity<ApiResponse> disableAppUser(@PathVariable String uuid, WebRequest request) {
         managementService.disableAppUser(uuid);
-        ApiResponse disableAppUser = new ApiResponse<>("Status Changed", HttpStatus.OK.value(),
-                "User status changed to disabled", request.getDescription(false).replace("uri=", ""),
+        ApiResponse disableAppUser = new ApiResponse<>("Status Changed",
+                HttpStatus.OK.value(),
+                "User status changed to disabled",
+                request.getDescription(false).replace("uri=", ""),
                 Instant.now(Clock.systemUTC()));
         return new ResponseEntity<>(disableAppUser, HttpStatus.OK);
     }
@@ -42,8 +44,10 @@ public class ManagementController {
     @PutMapping("/profile/{uuid}/enable")
     public ResponseEntity<ApiResponse> enableAppUser(@PathVariable String uuid, WebRequest request) {
         managementService.enableAppUser(uuid);
-        ApiResponse enableAppUser = new ApiResponse<>("Status Changed", HttpStatus.OK.value(),
-                "User status changed to enabled", request.getDescription(false).replace("uri=", ""),
+        ApiResponse enableAppUser = new ApiResponse<>("Status Changed",
+                HttpStatus.OK.value(),
+                "User status changed to enabled",
+                request.getDescription(false).replace("uri=", ""),
                 Instant.now(Clock.systemUTC()));
         return new ResponseEntity<>(enableAppUser, HttpStatus.OK);
     }
