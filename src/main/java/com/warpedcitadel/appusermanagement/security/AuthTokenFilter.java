@@ -1,6 +1,7 @@
 package com.warpedcitadel.appusermanagement.security;
 
-import com.warpedcitadel.appusermanagement.user.UserRepository;
+import com.warpedcitadel.appusermanagement.auth.model.AuthModel;
+import com.warpedcitadel.appusermanagement.auth.AuthRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,7 +25,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     private JwtUtil jwtUtil;
 
     @Autowired
-    private UserRepository userRepository;
+    private AuthRepository authRepository;
 
 
     @Override
@@ -37,8 +38,8 @@ public class AuthTokenFilter extends OncePerRequestFilter {
             if (jwtToken != null && jwtUtil.validateJwtToken(jwtToken)){
                 final String username = jwtUtil.getUserFromToken(jwtToken);
 
-                final AuthenticationModel userDetails
-                        = userRepository.authenticateUser(username);
+                final AuthModel userDetails
+                        = authRepository.authenticateUser(username);
                 UsernamePasswordAuthenticationToken authenticationToken =
                         new UsernamePasswordAuthenticationToken(
                                 userDetails,

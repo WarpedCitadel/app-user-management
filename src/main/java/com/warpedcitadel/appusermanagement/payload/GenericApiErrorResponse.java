@@ -1,11 +1,13 @@
 package com.warpedcitadel.appusermanagement.payload;
 
 import java.time.Instant;
+import java.util.Map;
 
-public record ApiResponse<Var>(
+
+public record GenericApiErrorResponse<timestamp>(
         String title,
         int status,
-        Var data,
+        Map<String, String> error,
         String instance,
         Instant timestamp
 ) {}

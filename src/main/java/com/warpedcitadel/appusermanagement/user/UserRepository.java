@@ -1,16 +1,9 @@
 package com.warpedcitadel.appusermanagement.user;
 
-import com.warpedcitadel.appusermanagement.security.AuthenticationModel;
-import com.warpedcitadel.appusermanagement.user.profile.AppUserProfileModel;
-import com.warpedcitadel.appusermanagement.user.profile.GameProfileModel;
-import com.warpedcitadel.appusermanagement.user.usermanagement.SearchAttributesModel;
-import com.warpedcitadel.appusermanagement.user.usermanagement.UserAuditModel;
-import com.warpedcitadel.appusermanagement.user.usermanagement.UserDetailsModel;
+import com.warpedcitadel.appusermanagement.user.model.AppUserProfileModel;
+import com.warpedcitadel.appusermanagement.user.model.GameProfileModel;
 import com.warpedcitadel.appusermanagement.util.SQLFileReader;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.SliceImpl;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Repository;
 
@@ -23,66 +16,9 @@ import java.util.List;
 public class UserRepository {
 
     @Autowired
-    private DataSource wcDatabase;
+    private DataSource database;
 
     SQLFileReader loadSQL = new SQLFileReader();
-
-    // TODO: Create a abstract template design with abstract methods for database query methods
-    // Possibly ask for email verification later on
-
-    public AuthenticationModel authenticateUser(String username) {
-
-        String sqlScript = loadSQL.loadSQL("/users/select--get_app_user_details.sql");
-
-        try (Connection connection = wcDatabase.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sqlScript)) {
-
-            statement.setString(1, username);
-            ResultSet resultSet = statement.executeQuery();
-
-            if (resultSet.next()) {
-                AuthenticationModel dbUser = new AuthenticationModel(
-                        resultSet.getString("user_uuid"),
-                        resultSet.getString("username"),
-                        resultSet.getString("password_hash"),
-                        resultSet.getString("role_type")
-                );
-                return dbUser;
-            } else {
-                throw new IllegalArgumentException("Invalid username or password");
-            }
-        } catch (SQLException exception) {
-            throw new RuntimeException("Failed to authenticate user");
-        }
-    }
-
-
-    public int registerUser(UserModel user) {
-
-        String insertSql = loadSQL.loadSQL("/users/insert--create_app_user.sql");
-
-        try (Connection connection = wcDatabase.getConnection();
-             PreparedStatement insertStatement = connection.prepareStatement(insertSql,
-                     Statement.RETURN_GENERATED_KEYS)) {
-
-            insertStatement.setString(1, user.getUsername());
-            insertStatement.setString(2, user.getPasswordHash());
-            insertStatement.setString(3, user.getEmail());
-
-            int rowAffected = insertStatement.executeUpdate();
-
-            if (rowAffected == 1) {
-                try (ResultSet resultSet = insertStatement.getGeneratedKeys()) {
-                    if (resultSet.next()) return resultSet.getInt(1);
-                }
-            }
-
-            return -1;
-        } catch (SQLException exception) {
-            throw new RuntimeException("Username or email already exists");
-        }
-    }
-
 
     public AppUserProfileModel getAppUserProfile(String uuid) {
 
@@ -90,7 +26,7 @@ public class UserRepository {
 
         List<GameProfileModel> gameList = getUserGames(uuid);
 
-        try (Connection connection = wcDatabase.getConnection();
+        try (Connection connection = database.getConnection();
              PreparedStatement statement = connection.prepareStatement(selectSQL)) {
 
             statement.setString(1, uuid);
@@ -113,222 +49,57 @@ public class UserRepository {
     }
 
 
-    public int createAppUserProfile(AppUserProfileModel updateProfile){
+    public void createAppUserProfile(AppUserProfileModel updateProfile){
 
-        String updateSql = loadSQL.loadSQL("/users/insert--create_app_user_profile.sql");
+        String insertSql = loadSQL.loadSQL("/users/insert--create_app_user_profile.sql");
 
-        try (Connection connection = wcDatabase.getConnection();
-            PreparedStatement updateStatement = connection.prepareStatement(updateSql, Statement.RETURN_GENERATED_KEYS)) {
+        try (Connection connection = database.getConnection();
+            PreparedStatement updateStatement = connection.prepareStatement(insertSql, Statement.RETURN_GENERATED_KEYS)) {
 
-            updateStatement.setInt(1, updateProfile.getAppUserId());
+            updateStatement.setLong(1, updateProfile.getAppUserId());
             updateStatement.setString(2, updateProfile.getDisplayName());
             updateStatement.setString(3, updateProfile.getBio());
 
             int rowAffected = updateStatement.executeUpdate();
 
             if (rowAffected == 1){
-                try (ResultSet resultSet = updateStatement.getGeneratedKeys()) {
-                    if (resultSet.next()) return resultSet.getInt(1);
-                }
+                updateStatement.getGeneratedKeys();
             }
-
-            return -1;
-
         } catch (SQLException exception){
             throw new RuntimeException("Failed to create user profile with uuid: " + updateProfile.getUuid(), exception);
         }
     }
 
 
-    public int updateAppUserProfile(AppUserProfileModel updateProfile){
+    public void updateAppUserProfile(AppUserProfileModel updateProfile){
 
         String updateSql = loadSQL.loadSQL("/users/update--update_app_user_profile.sql");
 
-        try (Connection connection = wcDatabase.getConnection();
+        try (Connection connection = database.getConnection();
              PreparedStatement updateStatement = connection.prepareStatement(updateSql, Statement.RETURN_GENERATED_KEYS)) {
 
             updateStatement.setString(1, updateProfile.getDisplayName());
             updateStatement.setString(2, updateProfile.getBio());
-            updateStatement.setInt(3, updateProfile.getAppUserId());
+            updateStatement.setLong(3, updateProfile.getAppUserId());
 
             int rowAffected = updateStatement.executeUpdate();
 
-            if (rowAffected == 1){
-                try (ResultSet resultSet = updateStatement.getGeneratedKeys()) {
-                    if (resultSet.next()) return resultSet.getInt(1);
-                }
+            if (rowAffected == 1) {
+                 updateStatement.getGeneratedKeys();
             }
-
-            return -1;
-
         } catch (SQLException updateException){
             throw new RuntimeException("Failed to update user profile with uuid: " +
                     updateProfile.getUuid(), updateException);
         }
     }
 
-    // TODO: Create an abstract template class for dynamic searches
-    public Slice<UserDetailsModel> getAppUsers(Pageable pageable, SearchAttributesModel attributes) {
-
-        String selectSQL = loadSQL.loadSQL("/users/select--get_app_users.sql");
-        int offset = pageable.getPageNumber() * pageable.getPageSize();
-        int limit = pageable.getPageSize();
-
-        if (limit >= 51) {
-            throw new IllegalArgumentException("Content requested too large");
-        }
-
-        List<Object> attributesList = new ArrayList<>();
-
-        // Can this if/else block be reduced?
-        if (attributes.getDisplayName() != null &&
-                !attributes.getDisplayName().isEmpty()) {
-            attributesList.add(attributes.getDisplayName().concat("%"));
-        } else {
-            attributes.setDisplayName("%");
-            attributesList.add(attributes.getDisplayName());
-        }
-        if (attributes.getRole() != null &&
-        !attributes.getRole().isEmpty()) {
-            attributesList.add(attributes.getRole());
-        } else {
-            attributes.setRole(null);
-            attributesList.add(attributes.getRole());
-        }
-        if (attributes.getIsActive() != null) {
-            attributesList.add(attributes.getIsActive());
-        } else {
-            attributes.setIsActive(null);
-            attributesList.add(attributes.getIsActive());
-        }
-
-        attributesList.add(limit + 1);
-        attributesList.add(offset);
-
-        List<UserDetailsModel> users = new ArrayList<>();
-
-        try (Connection connection = wcDatabase.getConnection();
-        PreparedStatement selectStatement = connection.prepareStatement(selectSQL)) {
-
-            // Convert this into an abstract method
-            int request;
-            for (request = 0; attributesList.size() > request; request++) {
-
-                if (attributesList.get(request) != null && !attributesList.isEmpty()) {
-                    selectStatement.setObject(request + 1,
-                            attributesList.get(request));
-                } else {
-                    selectStatement.setObject(request + 1, null);
-                }
-            }
-
-            ResultSet resultSet = selectStatement.executeQuery();
-
-            while (resultSet.next()) {
-
-                UserDetailsModel user = new UserDetailsModel(
-                        resultSet.getString("user_uuid"),
-                        resultSet.getString("img_uuid"),
-                        resultSet.getString("display_name"),
-                        resultSet.getString("username"),
-                        resultSet.getString("email"),
-                        resultSet.getString("role_type"),
-                        resultSet.getBoolean("isactive"),
-                        resultSet.getString("created_dtm")
-                );
-
-                users.add(user);
-            }
-
-            boolean hasNext = users.size() > limit;
-
-            if (hasNext) {
-                users.remove(users.size() - 1);
-            }
-
-            return new SliceImpl<>(users, pageable, hasNext);
-
-        } catch (SQLException exception){
-            throw new RuntimeException("Failed to retrieve list of users", exception);
-        }
-    }
-
-
-    public List<String> getAppUserSessions(String uuid) {
-
-        String selectSQL = loadSQL.loadSQL("/audit/select--get_app_user_sessions.sql");
-
-        List<String> userSessions = new ArrayList<>();
-
-        try (Connection connection = wcDatabase.getConnection();
-        PreparedStatement selectStatement = connection.prepareStatement(selectSQL)) {
-
-            selectStatement.setString(1, uuid);
-
-            ResultSet resultSet = selectStatement.executeQuery();
-
-            while (resultSet.next()) {
-
-                String isSession = resultSet.getString(1);
-                if (isSession == null) {
-                    continue;
-                }
-
-                UserAuditModel session = new UserAuditModel(
-                        resultSet.getString("lastactive_dtm")
-                );
-
-                userSessions.add(session.lastActiveDtm());
-            }
-
-            return userSessions;
-        } catch (SQLException exception) {
-            throw new RuntimeException("Failed to retrieve user session history", exception);
-        }
-    }
-
-
-    public void disableAppUser(String uuid){
-
-        String updateSQL = loadSQL.loadSQL("/users/update--disable_app_user.sql");
-
-        try (Connection connection = wcDatabase.getConnection();
-            PreparedStatement updateStatement = connection.prepareStatement(updateSQL)) {
-
-            updateStatement.setString(1, uuid);
-            updateStatement.execute();
-
-        } catch (SQLException exception) {
-            throw new RuntimeException("Failed to disable user with the UUID: " + uuid, exception);
-        }
-    }
-
-
-    public void enableAppUser(String uuid){
-
-        String updateSQL = loadSQL.loadSQL("/users/update--enable_app_user.sql");
-
-        try (Connection connection = wcDatabase.getConnection();
-             PreparedStatement updateStatement = connection.prepareStatement(updateSQL)) {
-
-            updateStatement.setString(1, uuid);
-            updateStatement.execute();
-
-        } catch (SQLException exception) {
-            throw new RuntimeException("Failed to enable user with the UUID: " + uuid, exception);
-        }
-    }
-
-
     // ################################### Helper Functions #########################################
 
-    // Todo | Make create a statement to distinguish between a username and uuid
-
-    public int getUserIdByUuid(String uuid){
+    public long getUserIdByUuid(String uuid){
 
         String selectSQL = loadSQL.loadSQL("/users/select--get_app_user_id.sql");
 
-        try (Connection connection = wcDatabase.getConnection();
+        try (Connection connection = database.getConnection();
              PreparedStatement selectStatement = connection.prepareStatement(selectSQL)) {
 
             selectStatement.setString(1, uuid);
@@ -336,7 +107,7 @@ public class UserRepository {
             ResultSet resultSet = selectStatement.executeQuery();
 
             if (resultSet.next()) {
-                return resultSet.getInt("id");
+                return resultSet.getLong("id");
             }
         } catch (SQLException exception) {
             throw new RuntimeException("User with uuid: " + uuid + " does not exist", exception);
@@ -345,11 +116,11 @@ public class UserRepository {
     }
 
 
-    public int getUserIdByUsername(String username) {
+    public long getUserIdByUsername(String username) {
 
         String selectSQL = loadSQL.loadSQL("/users/select--get_app_user_id_u.sql");
 
-        try (Connection connection = wcDatabase.getConnection();
+        try (Connection connection = database.getConnection();
              PreparedStatement statement = connection.prepareStatement(selectSQL)) {
 
             statement.setString(1, username);
@@ -357,7 +128,7 @@ public class UserRepository {
             ResultSet resultSet = statement.executeQuery();
 
             if (resultSet.next()) {
-                return resultSet.getInt("id");
+                return resultSet.getLong("id");
             }
         } catch (SQLException exception) {
             throw new UsernameNotFoundException("User with the username of " + username + " does not exist");
@@ -365,13 +136,14 @@ public class UserRepository {
         return -1;
     }
 
+
     public List<GameProfileModel> getUserGames(String uuid) {
 
             String selectSQL = loadSQL.loadSQL("/users/select--get_game_profiles.sql");
 
             List<GameProfileModel> games = new ArrayList<>();
 
-            try (Connection connection = wcDatabase.getConnection();
+            try (Connection connection = database.getConnection();
             PreparedStatement selectStatement = connection.prepareStatement(selectSQL)) {
 
                 selectStatement.setString(1, uuid);
@@ -399,21 +171,5 @@ public class UserRepository {
             }  catch (SQLException exception) {
                 throw new RuntimeException("failed to get list of games for user " + uuid);
             }
-    }
-
-
-    public void updateLastActiveDtm(String uuid){
-
-        String updateSQL = loadSQL.loadSQL("/audit/insert--update_last_active_dtm.sql");
-
-        try (Connection connection = wcDatabase.getConnection();
-             PreparedStatement updateStatement = connection.prepareStatement(updateSQL)) {
-
-            updateStatement.setString(1, uuid);
-            updateStatement.execute();
-
-        } catch (SQLException exception) {
-            throw new RuntimeException("failed to log user session");
-        }
     }
 }
