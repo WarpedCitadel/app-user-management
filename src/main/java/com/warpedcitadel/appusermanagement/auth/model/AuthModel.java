@@ -6,13 +6,15 @@ public class AuthModel {
     private final String username;
     private final String passwordHash;
     private final String role;
+    private final boolean isActive;
 
 
-    public AuthModel(String uuid, String username, String passwordHash, String role) {
+    public AuthModel(String uuid, String username, String passwordHash, String role, boolean isActive) {
         this.uuid = uuid;
         this.username = username;
         this.passwordHash = passwordHash;
         this.role = role;
+        this.isActive = isActive;
     }
 
 
@@ -30,5 +32,9 @@ public class AuthModel {
 
     public String getRole(){
         return role;
+    }
+
+    public boolean isActive() {
+        return isActive;
     }
 }

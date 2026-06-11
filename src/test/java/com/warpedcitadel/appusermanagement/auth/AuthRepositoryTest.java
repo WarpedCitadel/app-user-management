@@ -72,7 +72,8 @@ public class AuthRepositoryTest {
                 "019ea371-9498-7cb1-b4b9-4ee3db8dc132",
                 "JohnBlanche",
                 "$2a$10$8Hdtn/Ih2Pjd1V5780RVHe8NOLnZZFdjOyk1kax8CpDFHInsDG7A6",
-                "user"
+                "user",
+                true
         );
 
         when(dataSource.getConnection()).thenReturn(connection);

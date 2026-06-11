@@ -33,7 +33,8 @@ public class AuthRepository {
                         resultSet.getString("user_uuid"),
                         resultSet.getString("username"),
                         resultSet.getString("password_hash"),
-                        resultSet.getString("role_type")
+                        resultSet.getString("role_type"),
+                        resultSet.getBoolean("isactive")
                 );
                 return dbUser;
             } else {

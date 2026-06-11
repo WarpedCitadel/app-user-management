@@ -49,7 +49,7 @@ public class AuthController {
     private ResponseEntity<ApiResponse<String>> createAppUser(@Valid @RequestBody UserSignupDto user,
                                                               WebRequest request) {
         authService.createAppUser(user);
-
+        authService.sendActivationEmail(user);
         ApiResponse<String> response = new ApiResponse<>("Signup",
                 HttpStatus.CREATED.value(),
                 "Account successfully created",
@@ -57,5 +57,18 @@ public class AuthController {
                 Instant.now(Clock.systemUTC()));
 
         return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+
+    @PostMapping("/activate")
+    private ResponseEntity<ApiResponse<String>> activateAccount(@RequestParam("token") String token, WebRequest request) {
+
+        ApiResponse<String> response = new ApiResponse<>("Signup",
+                HttpStatus.OK.value(),
+                "Account activated",
+                request.getDescription(false).replace("uri=", ""),
+                Instant.now(Clock.systemUTC()));
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }
