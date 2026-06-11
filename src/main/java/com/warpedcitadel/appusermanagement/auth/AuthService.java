@@ -12,6 +12,7 @@ import io.mailtrap.factory.MailtrapClientFactory;
 import io.mailtrap.model.request.emails.Address;
 import io.mailtrap.model.request.emails.MailtrapMail;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -36,7 +37,11 @@ public class AuthService {
     @Autowired
     private JavaMailSender mailSender;
 
-    private static final String TOKEN = "d327112a1a50060c7eeb61e90807f5be";
+    private final String token;
+
+   private AuthService(@Value("${mail.trap.token}") String token) {
+        this.token = token;
+    }
 
     @Bean
     private PasswordEncoder passwordEncoder(){
@@ -93,19 +98,18 @@ public class AuthService {
 //        String token = createToken();
 
         final MailtrapConfig config = new MailtrapConfig.Builder()
-                .sandbox(true)
-                .inboxId(4703606L)
-                .token(TOKEN)
+                .token(token)
                 .build();
+
+        System.out.println(token);
 
         final MailtrapClient client = MailtrapClientFactory.createMailtrapClient(config);
 
         final MailtrapMail mail = MailtrapMail.builder()
-                .from(new Address("hello@example.com", "Mailtrap Test"))
-                .to(List.of(new Address("officalwarpedcitadel@gmail.com")))
-                .subject("You are awesome!")
-                .text("Congrats for sending test email with Mailtrap!")
-                .category("Integration Test")
+                .from(new Address("support@warpedcitadel.com", "Activate Account"))
+                .to(List.of(new Address(userDto.email())))
+                .subject("Activate your Warped Citadel Account")
+                .text("Please click on the following link to activate your account.")
                 .build();
 
         try {
