@@ -45,7 +45,9 @@ public class AuthRepositoryTest {
         UserModel userModel = new UserModel(
                 "JohnBlanche",
                 "$2a$10$8Hdtn/Ih2Pjd1V5780RVHe8NOLnZZFdjOyk1kax8CpDFHInsDG7A6",
-                "johnblanche@gmail.com");
+                "johnblanche@gmail.com",
+                "PLACEHOLDER",
+                "546321");
 
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(insertSql)).thenReturn(preparedStatement);

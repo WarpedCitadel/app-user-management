@@ -56,11 +56,32 @@ public class AuthRepository {
             insertStatement.setString(1, user.getUsername());
             insertStatement.setString(2, user.getPasswordHash());
             insertStatement.setString(3, user.getEmail());
+            insertStatement.setString(4, user.getToken());
+            insertStatement.setString(5, user.getPasscode());
 
-            insertStatement.execute();
+            insertStatement.executeQuery();
 
         } catch (SQLException exception) {
             throw new RuntimeException("Username or email already exists");
         }
     }
+
+
+//    public void emailVerificationToken(UserModel user) {
+//
+//        String insertSql = loadSQL.loadSQL("/users/**");
+//
+//        try (Connection connection = database.getConnection();
+//             PreparedStatement insertStatement = connection.prepareStatement(insertSql)) {
+//
+//            insertStatement.setLong(1, user.getAppUserId());
+//            insertStatement.setString(2, user.getToken());
+//            insertStatement.setString(3, user.getPasscode());
+//
+//            insertStatement.execute();
+//
+//        } catch (SQLException exception) {
+//            throw new RuntimeException("Failed to generate user token");
+//        }
+//    }
 }

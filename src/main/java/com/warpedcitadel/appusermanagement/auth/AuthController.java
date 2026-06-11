@@ -49,7 +49,7 @@ public class AuthController {
     private ResponseEntity<ApiResponse<String>> createAppUser(@Valid @RequestBody UserSignupDto user,
                                                               WebRequest request) {
         authService.createAppUser(user);
-        authService.sendActivationEmail(user);
+
         ApiResponse<String> response = new ApiResponse<>("Signup",
                 HttpStatus.CREATED.value(),
                 "Account successfully created",

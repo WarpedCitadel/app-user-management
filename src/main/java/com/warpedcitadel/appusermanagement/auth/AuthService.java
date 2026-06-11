@@ -22,6 +22,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.security.SecureRandom;
 import java.util.List;
 import java.util.UUID;
 
@@ -37,85 +38,129 @@ public class AuthService {
     @Autowired
     private JavaMailSender mailSender;
 
-    private final String token;
+    private final String mailToken;
 
-   private AuthService(@Value("${mail.trap.token}") String token) {
-        this.token = token;
+   private AuthService(@Value("${mail.trap.token}") String mailToken) {
+        this.mailToken = mailToken;
+   }
+
+   @Bean
+   private PasswordEncoder passwordEncoder(){
+       return new BCryptPasswordEncoder(10);
+   }
+
+
+   public UserReferenceDto loginUser(UserLoginDto userDto) {
+
+       UserModel userModel = new UserModel(
+               userDto.username()
+       );
+
+       AuthModel dbUser = authRepository.authenticateUser(userModel.getUsername());
+
+       if (!dbUser.isActive()){
+           throw new BadCredentialsException("User not activated");
+       }
+
+       String storedHash = dbUser.getPasswordHash();
+       if (userDto.username().equals(dbUser.getUsername())){
+           if (BCrypt.checkpw(userDto.password(), storedHash)) {
+
+               auditRepository.updateLastActiveDtm(dbUser.getUuid());
+               return new UserReferenceDto(dbUser.getUuid());
+           }
+       }
+       throw new UsernameNotFoundException("Invalid user name or password");
+   }
+
+
+   public void createAppUser(UserSignupDto userDto) {
+
+       String encodedPassword = passwordEncoder().encode(userDto.password());
+       String passcode = generateOTP(6);
+       String token = createToken();
+
+       UserModel userModel = new UserModel(
+               userDto.username(),
+               encodedPassword,
+               userDto.email(),
+               token,
+               passcode
+       );
+
+       authRepository.createAppUser(userModel);
+       sendActivationEmail(userModel, passcode);
     }
-
-    @Bean
-    private PasswordEncoder passwordEncoder(){
-        return new BCryptPasswordEncoder(10);
-    }
-
-
-    public UserReferenceDto loginUser(UserLoginDto userDto) {
-
-        UserModel userModel = new UserModel(
-                userDto.username()
-        );
-
-        AuthModel dbUser = authRepository.authenticateUser(userModel.getUsername());
-
-        if (!dbUser.isActive()){
-            throw new BadCredentialsException("User not activated");
-        }
-
-        String storedHash = dbUser.getPasswordHash();
-        if (userDto.username().equals(dbUser.getUsername())){
-            if (BCrypt.checkpw(userDto.password(), storedHash)) {
-
-                auditRepository.updateLastActiveDtm(dbUser.getUuid());
-                return new UserReferenceDto(dbUser.getUuid());
-            }
-        }
-        throw new UsernameNotFoundException("Invalid user name or password");
-    }
-
-
-    public void createAppUser(UserSignupDto userDto) {
-
-        String encodedPassword = passwordEncoder().encode(userDto.password());
-
-        UserModel userModel = new UserModel(
-                userDto.username(),
-                encodedPassword,
-                userDto.email());
-        authRepository.createAppUser(userModel);
-    }
-
 
     private String createToken() {
 
-        String tokenUUID = UUID.randomUUID().toString();
-        String hashedToken = passwordEncoder().encode(tokenUUID);
-        return hashedToken;
+       String tokenUUID = UUID.randomUUID().toString();
+       return passwordEncoder().encode(tokenUUID);
     }
 
 
-    protected void sendActivationEmail(UserSignupDto userDto) {
+    private static String generateOTP(int length) {
 
-//        String token = createToken();
+       String numbers = "123456789";
+       SecureRandom random = new SecureRandom();
+       StringBuilder passcode = new StringBuilder(length);
 
-        final MailtrapConfig config = new MailtrapConfig.Builder()
-                .token(token)
-                .build();
+       for (int i = 0; i < length; i++) {
 
-        System.out.println(token);
+           int index = random.nextInt(numbers.length());
+           passcode.append(numbers.charAt(index));
+       }
 
-        final MailtrapClient client = MailtrapClientFactory.createMailtrapClient(config);
+       return passcode.toString();
+    }
 
-        final MailtrapMail mail = MailtrapMail.builder()
-                .from(new Address("support@warpedcitadel.com", "Activate Account"))
-                .to(List.of(new Address(userDto.email())))
-                .subject("Activate your Warped Citadel Account")
-                .text("Please click on the following link to activate your account.")
-                .build();
+
+    protected void sendActivationEmail(UserModel userModel, String passcode) {
+
+       String messageBlock = """
+               Hi %s,
+               
+               Welcome to Warped Citadel!
+               
+               We’re excited to have you join the Citadel. To complete your registration and unlock full access
+               to your account, please enter the verification code shown below to the application:
+               
+               Your verification code is: %s
+               
+               
+               Note: This code will expire in 15 minutes. If you need a new code, simply request a new verification code
+               from the login page on our website.
+               
+               
+               Didn't create an account? If you received this email by mistake, someone likely
+               entered your email address in error. You can safely ignore this email; no account will be created without
+               your explicit verification. If you have any questions or need a hand getting started, we're always here to help!
+               Just reply directly to this email.
+               
+               Best regards,
+               
+               The Warped Citadel Support Team
+               """.formatted(userModel.getUsername(), passcode);
 
         try {
-            System.out.println(client.send(mail));
-        } catch (Exception e) {
-            System.out.println("Caught exception : " + e);
+
+            final MailtrapConfig config = new MailtrapConfig.Builder()
+                    .token(mailToken)
+                    .build();
+
+            final MailtrapClient client = MailtrapClientFactory.createMailtrapClient(config);
+
+            final MailtrapMail mail = MailtrapMail.builder()
+                    .from(new Address("support@warpedcitadel.com", "Warped Citadel Support"))
+                    .to(List.of(new Address(userModel.getEmail())))
+                    .subject("Verify your email to get started with Warped Citadel")
+                    .text(messageBlock)
+                    .category("Account Verification")
+                    .build();
+
+            client.send(mail);
+        } catch (Exception exception) {
+            System.out.println("Caught exception : " + exception);
         }
     }
 }
