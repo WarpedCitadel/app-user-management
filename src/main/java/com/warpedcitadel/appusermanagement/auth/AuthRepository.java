@@ -89,6 +89,22 @@ public class AuthRepository {
     }
 
 
+    public void updateTokenStatus(String uuid){
+
+        String updateSQL = loadSQL.loadSQL("/users/update--update_token_isused.sql");
+
+        try (Connection connection = database.getConnection();
+             PreparedStatement updateStatement = connection.prepareStatement(updateSQL)) {
+
+            updateStatement.setString(1, uuid);
+            updateStatement.execute();
+
+        } catch (SQLException exception) {
+            throw new RuntimeException("Failed to change token status of token id of : " + uuid, exception);
+        }
+    }
+
+
     public EmailVerificationModel emailVerificationToken(VerificationTokenDto tokenDto) {
 
         String selectSql = loadSQL.loadSQL("/users/select--get_generated_token.sql");

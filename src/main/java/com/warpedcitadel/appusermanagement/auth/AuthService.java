@@ -96,10 +96,9 @@ public class AuthService {
    }
 
 
-   public void accountVerification(VerificationTokenDto emailToken) {
+   public void accountVerification(VerificationTokenDto emailToken) throws RuntimeException {
 
        EmailVerificationModel verificationToken = authRepository.emailVerificationToken(emailToken);
-       try {
 
           if (verificationToken.isUsed()) {
               throw new RuntimeException("Token has been already used");
@@ -110,11 +109,8 @@ public class AuthService {
           if (!verificationToken.getPasscode().equals(emailToken.passcode())) {
               throw new RuntimeException("Passcode is invalid");
           }
-
-          authRepository.verifyEnableUser(verificationToken.getAppUserId());
-       } catch (RuntimeException exception) {
-          System.out.println("Verification failed: " + exception.getMessage());
-      }
+           authRepository.verifyEnableUser(verificationToken.getAppUserId());
+           authRepository.updateTokenStatus(verificationToken.getToken());
    }
 
 
@@ -131,7 +127,7 @@ public class AuthService {
               Your verification code is: %s
               
               
-              Note: This code will expire in 15 minutes. If you need a new code, simply request a new verification code
+              Note: This passcode will expire in 15 minutes. If you need a new passcode, simply request a new verification passcode
               from the login page on our website.
               
               
