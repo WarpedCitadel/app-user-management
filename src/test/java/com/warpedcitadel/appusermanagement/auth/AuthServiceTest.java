@@ -76,6 +76,7 @@ public class AuthServiceTest {
                 "JohnBlanche",
                 "$2a$10$8Hdtn/Ih2Pjd1V5780RVHe8NOLnZZFdjOyk1kax8CpDFHInsDG7A6",
                 "user",
+                true,
                 true
         );
 

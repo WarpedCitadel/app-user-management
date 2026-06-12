@@ -1,6 +1,8 @@
 package com.warpedcitadel.appusermanagement.auth;
 
+import com.warpedcitadel.appusermanagement.auth.dto.VerificationTokenDto;
 import com.warpedcitadel.appusermanagement.auth.model.AuthModel;
+import com.warpedcitadel.appusermanagement.auth.model.EmailVerificationModel;
 import com.warpedcitadel.appusermanagement.auth.model.UserModel;
 import com.warpedcitadel.appusermanagement.util.SQLFileReader;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +25,10 @@ public class AuthRepository {
         String selectSql = loadSQL.loadSQL("/users/select--get_app_user_details.sql");
 
         try (Connection connection = database.getConnection();
-             PreparedStatement statement = connection.prepareStatement(selectSql)) {
+             PreparedStatement selectStatement = connection.prepareStatement(selectSql)) {
 
-            statement.setString(1, username);
-            ResultSet resultSet = statement.executeQuery();
+            selectStatement.setString(1, username);
+            ResultSet resultSet = selectStatement.executeQuery();
 
             if (resultSet.next()) {
                 AuthModel dbUser = new AuthModel(
@@ -34,7 +36,8 @@ public class AuthRepository {
                         resultSet.getString("username"),
                         resultSet.getString("password_hash"),
                         resultSet.getString("role_type"),
-                        resultSet.getBoolean("isactive")
+                        resultSet.getBoolean("isactive"),
+                        resultSet.getBoolean("isverified")
                 );
                 return dbUser;
             } else {
@@ -59,29 +62,59 @@ public class AuthRepository {
             insertStatement.setString(4, user.getToken());
             insertStatement.setString(5, user.getPasscode());
 
-            insertStatement.executeQuery();
+            insertStatement.execute();
 
         } catch (SQLException exception) {
-            throw new RuntimeException("Username or email already exists");
+            exception.printStackTrace();
         }
     }
 
 
-//    public void emailVerificationToken(UserModel user) {
-//
-//        String insertSql = loadSQL.loadSQL("/users/**");
-//
-//        try (Connection connection = database.getConnection();
-//             PreparedStatement insertStatement = connection.prepareStatement(insertSql)) {
-//
-//            insertStatement.setLong(1, user.getAppUserId());
-//            insertStatement.setString(2, user.getToken());
-//            insertStatement.setString(3, user.getPasscode());
-//
-//            insertStatement.execute();
-//
-//        } catch (SQLException exception) {
-//            throw new RuntimeException("Failed to generate user token");
-//        }
-//    }
+    public void verifyEnableUser(long appUserId) {
+
+        String updateSql = loadSQL.loadSQL("/users/update--update_app_user_verify.sql");
+
+        try (Connection connection = database.getConnection();
+
+        PreparedStatement updateStatement = connection.prepareStatement(updateSql)) {
+
+            updateStatement.setLong(1, appUserId);
+
+            updateStatement.executeUpdate();
+
+        } catch (SQLException exception) {
+
+            throw new RuntimeException("Could not update user verification");
+        }
+    }
+
+
+    public EmailVerificationModel emailVerificationToken(VerificationTokenDto tokenDto) {
+
+        String selectSql = loadSQL.loadSQL("/users/select--get_generated_token.sql");
+
+        try (Connection connection = database.getConnection();
+
+             PreparedStatement selectStatement = connection.prepareStatement(selectSql)) {
+
+            selectStatement.setString(1, tokenDto.token());
+            ResultSet resultSet = selectStatement.executeQuery();
+
+            if (resultSet.next()) {
+
+                EmailVerificationModel emailVerification = new EmailVerificationModel(
+                        resultSet.getLong("id"),
+                        resultSet.getString("token"),
+                        resultSet.getString("passcode"),
+                        resultSet.getBoolean("isused")
+                );
+                return emailVerification;
+            } else {
+                throw new IllegalArgumentException("Token is expired");
+            }
+
+        } catch (SQLException exception) {
+            throw new RuntimeException("Failed to retrieve user token");
+        }
+    }
 }

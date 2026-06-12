@@ -1,8 +1,9 @@
 package com.warpedcitadel.appusermanagement.auth;
 
-import com.warpedcitadel.appusermanagement.auth.dto.UserReferenceDto;
 import com.warpedcitadel.appusermanagement.auth.dto.UserLoginDto;
+import com.warpedcitadel.appusermanagement.auth.dto.UserReferenceDto;
 import com.warpedcitadel.appusermanagement.auth.dto.UserSignupDto;
+import com.warpedcitadel.appusermanagement.auth.dto.VerificationTokenDto;
 import com.warpedcitadel.appusermanagement.payload.ApiResponse;
 import com.warpedcitadel.appusermanagement.security.JwtUtil;
 import jakarta.validation.Valid;
@@ -10,7 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 
 import java.time.Clock;
@@ -46,13 +50,13 @@ public class AuthController {
 
 
     @PostMapping("/signup")
-    private ResponseEntity<ApiResponse<String>> createAppUser(@Valid @RequestBody UserSignupDto user,
+    private ResponseEntity<ApiResponse> createAppUser(@Valid @RequestBody UserSignupDto user,
                                                               WebRequest request) {
-        authService.createAppUser(user);
 
-        ApiResponse<String> response = new ApiResponse<>("Signup",
+        String token = authService.createAppUser(user);
+        ApiResponse<String> response = new ApiResponse<>("Account created",
                 HttpStatus.CREATED.value(),
-                "Account successfully created",
+                token,
                 request.getDescription(false).replace("uri=", ""),
                 Instant.now(Clock.systemUTC()));
 
@@ -61,9 +65,11 @@ public class AuthController {
 
 
     @PostMapping("/activate")
-    private ResponseEntity<ApiResponse<String>> activateAccount(@RequestParam("token") String token, WebRequest request) {
+    private ResponseEntity<ApiResponse<String>> activateAccount(@RequestBody VerificationTokenDto verification,
+                                                                WebRequest request) {
 
-        ApiResponse<String> response = new ApiResponse<>("Signup",
+        authService.accountVerification(verification);
+        ApiResponse<String> response = new ApiResponse<>("Account verified",
                 HttpStatus.OK.value(),
                 "Account activated",
                 request.getDescription(false).replace("uri=", ""),
