@@ -12,8 +12,8 @@ FROM amazoncorretto:25-alpine AS runner
 
 WORKDIR /app
 
-COPY --from=builder /app/target/app-user-management-0.0.2-SNAPSHOT.jar app-user-management-0.0.2-SNAPSHOT.jar
+COPY --from=builder /app/target/app-user-management-0.0.3-SNAPSHOT.jar app-user-management-0.0.3-SNAPSHOT.jar
 
 EXPOSE 8080
 
-ENTRYPOINT ["java","-jar", "/app/app-user-management-0.0.2-SNAPSHOT.jar"]
+ENTRYPOINT ["java","-jar", "/app/app-user-management-0.0.3-SNAPSHOT.jar"]

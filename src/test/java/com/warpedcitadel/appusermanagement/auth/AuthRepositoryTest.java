@@ -46,7 +46,7 @@ public class AuthRepositoryTest {
                 "JohnBlanche",
                 "$2a$10$8Hdtn/Ih2Pjd1V5780RVHe8NOLnZZFdjOyk1kax8CpDFHInsDG7A6",
                 "johnblanche@gmail.com",
-                "PLACEHOLDER",
+                "32aa8760-2431-43f7-8993-5278dd478032",
                 "546321");
 
         when(dataSource.getConnection()).thenReturn(connection);
@@ -57,6 +57,8 @@ public class AuthRepositoryTest {
         verify(preparedStatement).setString(1, userModel.getUsername());
         verify(preparedStatement).setString(2, userModel.getPasswordHash());
         verify(preparedStatement).setString(3, userModel.getEmail());
+        verify(preparedStatement).setString(4, userModel.getToken());
+        verify(preparedStatement).setString(5, userModel.getPasscode());
         verify(preparedStatement).execute();
     }
 

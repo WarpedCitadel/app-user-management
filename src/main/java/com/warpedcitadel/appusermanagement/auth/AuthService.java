@@ -13,7 +13,6 @@ import io.mailtrap.model.request.emails.MailtrapMail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCrypt;
@@ -33,9 +32,6 @@ public class AuthService {
 
     @Autowired
     private AuditRepository auditRepository;
-
-    @Autowired
-    private JavaMailSender mailSender;
 
     private final String mailToken;
 
@@ -192,13 +188,13 @@ public class AuthService {
 
    // ##### HELPER FUNCTIONS #####
 
-   private String createToken() {
+   protected String createToken() {
 
        return UUID.randomUUID().toString();
    }
 
 
-   private static String generateOTP(int length) {
+   protected String generateOTP(int length) {
 
        String numbers = "123456789";
 
