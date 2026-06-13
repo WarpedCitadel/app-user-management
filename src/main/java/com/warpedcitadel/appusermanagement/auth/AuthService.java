@@ -23,6 +23,8 @@ import org.springframework.stereotype.Service;
 import java.security.SecureRandom;
 import java.util.List;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class AuthService {
@@ -38,6 +40,9 @@ public class AuthService {
    private AuthService(@Value("${mail.trap.token}") String mailToken) {
         this.mailToken = mailToken;
    }
+
+    private static final Pattern UUID_PATTERN =
+            Pattern.compile("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$");
 
    @Bean
    private PasswordEncoder passwordEncoder(){
@@ -121,19 +126,23 @@ public class AuthService {
 
    public void accountVerification(VerificationTokenDto emailToken) throws RuntimeException {
 
+       if (!isValidUuid(emailToken.token())) {
+           throw new RuntimeException("Invalid Token format");
+       }
+
        EmailVerificationModel verificationToken = authRepository.emailVerificationToken(emailToken);
 
-          if (verificationToken.isUsed()) {
-              throw new RuntimeException("Token has been already used");
-          }
-          if (!verificationToken.getToken().equals(emailToken.token())) {
-              throw new RuntimeException("Token is invalid");
-          }
-          if (!verificationToken.getPasscode().equals(emailToken.passcode())) {
+       if (verificationToken.isUsed()) {
+           throw new RuntimeException("Token has been already used");
+       }
+       if (!verificationToken.getToken().equals(emailToken.token())) {
+           throw new RuntimeException("Token is invalid");
+       }
+       if (!verificationToken.getPasscode().equals(emailToken.passcode())) {
               throw new RuntimeException("Passcode is invalid");
-          }
-           authRepository.verifyEnableUser(verificationToken.getAppUserId());
-           authRepository.updateTokenStatus(verificationToken.getToken());
+       }
+       authRepository.verifyEnableUser(verificationToken.getAppUserId());
+       authRepository.updateTokenStatus(verificationToken.getToken());
    }
 
 
@@ -209,4 +218,13 @@ public class AuthService {
 
        return passcode.toString();
    }
+
+
+    private static boolean isValidUuid(String uuid) {
+        if (uuid == null) {
+            return false;
+        }
+        Matcher matcher = UUID_PATTERN.matcher(uuid);
+        return matcher.matches();
+    }
 }
