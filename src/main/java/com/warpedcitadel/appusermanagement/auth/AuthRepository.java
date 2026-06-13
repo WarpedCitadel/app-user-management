@@ -65,7 +65,7 @@ public class AuthRepository {
             insertStatement.execute();
 
         } catch (SQLException exception) {
-            exception.printStackTrace();
+            throw new RuntimeException("Failed to create app user");
         }
     }
 
@@ -131,6 +131,31 @@ public class AuthRepository {
 
         } catch (SQLException exception) {
             throw new RuntimeException("Failed to retrieve user token");
+        }
+    }
+
+
+    public String createNewEmailToken(EmailVerificationModel user) {
+
+        String insertSql = loadSQL.loadSQL("/users/insert--create_email_token.sql");
+
+        try (Connection connection = database.getConnection();
+
+             PreparedStatement insertStatement = connection.prepareStatement(insertSql)) {
+
+            insertStatement.setString(1, user.getEmail());
+            insertStatement.setString(2, user.getToken());
+            insertStatement.setString(3, user.getPasscode());
+            ResultSet resultSet = insertStatement.executeQuery();
+
+            if (resultSet.next()) {
+                return resultSet.getString("username");
+            } else {
+                throw new IllegalArgumentException("Could not return associated user");
+            }
+
+        } catch (SQLException exception) {
+            throw new RuntimeException("Failed to create user token");
         }
     }
 }

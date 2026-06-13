@@ -1,10 +1,7 @@
 package com.warpedcitadel.appusermanagement.auth;
 
 import com.warpedcitadel.appusermanagement.audit.AuditRepository;
-import com.warpedcitadel.appusermanagement.auth.dto.UserLoginDto;
-import com.warpedcitadel.appusermanagement.auth.dto.UserReferenceDto;
-import com.warpedcitadel.appusermanagement.auth.dto.UserSignupDto;
-import com.warpedcitadel.appusermanagement.auth.dto.VerificationTokenDto;
+import com.warpedcitadel.appusermanagement.auth.dto.*;
 import com.warpedcitadel.appusermanagement.auth.model.AuthModel;
 import com.warpedcitadel.appusermanagement.auth.model.EmailVerificationModel;
 import com.warpedcitadel.appusermanagement.auth.model.UserModel;
@@ -76,7 +73,7 @@ public class AuthService {
    }
 
 
-   public String createAppUser(UserSignupDto userDto) {
+   public UserVerificationDto createAppUser(UserSignupDto userDto) {
 
        String encodedPassword = passwordEncoder().encode(userDto.password());
        String passcode = generateOTP(6);
@@ -92,7 +89,37 @@ public class AuthService {
 
        authRepository.createAppUser(userModel);
        sendActivationEmail(userModel, passcode);
-       return token;
+       return new UserVerificationDto(
+               userModel.getEmail(),
+               token
+       );
+   }
+
+
+   public UserVerificationDto createNewVerificationPasscode(String email) {
+
+        String passcode = generateOTP(6);
+        String token = createToken();
+
+        EmailVerificationModel userVerification = new EmailVerificationModel(
+                email,
+                token,
+                passcode
+        );
+
+        String username = authRepository.createNewEmailToken(userVerification);
+        UserModel userModel = new UserModel(
+                username,
+                email,
+                token,
+                passcode
+        );
+
+        sendActivationEmail(userModel, passcode);
+        return new UserVerificationDto(
+                userVerification.getEmail(),
+                token
+        );
    }
 
 

@@ -2,9 +2,10 @@ package com.warpedcitadel.appusermanagement.auth.model;
 
 public class EmailVerificationModel {
 
-    private long    appUserId;
-    private String  token;
-    private String  passcode;
+    private long appUserId;
+    private String email;
+    private String token;
+    private String passcode;
     private boolean isUsed;
 
 
@@ -19,8 +20,19 @@ public class EmailVerificationModel {
         this.isUsed = isUsed;
     }
 
+    public EmailVerificationModel(String email, String token, String passcode) {
+        this.email = email;
+        this.token = token;
+        this.passcode = passcode;
+    }
+
+
     public long getAppUserId() {
         return appUserId;
+    }
+
+    public String getEmail() {
+        return email;
     }
 
     public String getToken() {

@@ -20,17 +20,14 @@ public class UserModel {
         this.username = username;
     }
 
-    public UserModel(String username, String passwordHash, String email, String token, String passcode) {
+    public UserModel(String username, String email, String token, String passcode) {
         this.username = username;
-        this.passwordHash = passwordHash;
         this.email = email;
         this.token = token;
         this.passcode = passcode;
     }
 
-
-    public UserModel(long appUserId, String username, String passwordHash, String email, String token, String passcode) {
-        this.appUserId = appUserId;
+    public UserModel(String username, String passwordHash, String email, String token, String passcode) {
         this.username = username;
         this.passwordHash = passwordHash;
         this.email = email;
