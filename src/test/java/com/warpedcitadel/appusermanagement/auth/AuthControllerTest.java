@@ -4,13 +4,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.warpedcitadel.appusermanagement.auth.dto.UserLoginDto;
 import com.warpedcitadel.appusermanagement.auth.dto.UserReferenceDto;
 import com.warpedcitadel.appusermanagement.auth.dto.UserSignupDto;
+import com.warpedcitadel.appusermanagement.auth.dto.UserVerificationDto;
 import com.warpedcitadel.appusermanagement.security.JwtUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -59,7 +59,13 @@ public class AuthControllerTest {
         String json = Files.readString(filePath);
 
         UserSignupDto user = objectMapper.readValue(json, UserSignupDto.class);
-        Mockito.doNothing().when(authService).createAppUser(Mockito.eq(user));
+
+        UserVerificationDto verificationData = new UserVerificationDto(
+                "johnblanche@gmail.com",
+                "32aa8760-2431-43f7-8993-5278dd478032"
+                );
+
+        when(authService.createAppUser(user)).thenReturn(verificationData);
 
         mockMvc.perform(post("/auth/signup")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -67,9 +73,10 @@ public class AuthControllerTest {
                         .header("x-api-version", "1.0"))
                         .andExpect(status().isCreated())
                         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                        .andExpect(jsonPath("$.title").value("Signup"))
+                        .andExpect(jsonPath("$.title").value("Account created"))
                         .andExpect(jsonPath("$.status").value(201))
-                        .andExpect(jsonPath("$.data").value("Account successfully created"))
+                        .andExpect(jsonPath("$.data.email").value("johnblanche@gmail.com"))
+                        .andExpect(jsonPath("$.data.sessionToken").value("32aa8760-2431-43f7-8993-5278dd478032"))
                         .andExpect(jsonPath("$.instance").value("/auth/signup"))
                         .andExpect(jsonPath("$.timestamp").exists());
     }

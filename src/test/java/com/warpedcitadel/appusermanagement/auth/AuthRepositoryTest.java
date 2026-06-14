@@ -45,7 +45,9 @@ public class AuthRepositoryTest {
         UserModel userModel = new UserModel(
                 "JohnBlanche",
                 "$2a$10$8Hdtn/Ih2Pjd1V5780RVHe8NOLnZZFdjOyk1kax8CpDFHInsDG7A6",
-                "johnblanche@gmail.com");
+                "johnblanche@gmail.com",
+                "32aa8760-2431-43f7-8993-5278dd478032",
+                "546321");
 
         when(dataSource.getConnection()).thenReturn(connection);
         when(connection.prepareStatement(insertSql)).thenReturn(preparedStatement);
@@ -55,6 +57,8 @@ public class AuthRepositoryTest {
         verify(preparedStatement).setString(1, userModel.getUsername());
         verify(preparedStatement).setString(2, userModel.getPasswordHash());
         verify(preparedStatement).setString(3, userModel.getEmail());
+        verify(preparedStatement).setString(4, userModel.getToken());
+        verify(preparedStatement).setString(5, userModel.getPasscode());
         verify(preparedStatement).execute();
     }
 
@@ -72,7 +76,9 @@ public class AuthRepositoryTest {
                 "019ea371-9498-7cb1-b4b9-4ee3db8dc132",
                 "JohnBlanche",
                 "$2a$10$8Hdtn/Ih2Pjd1V5780RVHe8NOLnZZFdjOyk1kax8CpDFHInsDG7A6",
-                "user"
+                "user",
+                true,
+                true
         );
 
         when(dataSource.getConnection()).thenReturn(connection);

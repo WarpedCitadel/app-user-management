@@ -8,6 +8,8 @@ public class UserModel {
     private String username;
     private String passwordHash;
     private String email;
+    private String token;
+    private String passcode;
 
 
     public UserModel() {
@@ -18,12 +20,20 @@ public class UserModel {
         this.username = username;
     }
 
-    public UserModel(String username, String passwordHash, String email) {
+    public UserModel(String username, String email, String token, String passcode) {
+        this.username = username;
+        this.email = email;
+        this.token = token;
+        this.passcode = passcode;
+    }
+
+    public UserModel(String username, String passwordHash, String email, String token, String passcode) {
         this.username = username;
         this.passwordHash = passwordHash;
         this.email = email;
+        this.token = token;
+        this.passcode = passcode;
     }
-
 
     public long getAppUserId() {
         return appUserId;
@@ -39,6 +49,14 @@ public class UserModel {
 
     public String getEmail() {
         return email = email.toLowerCase(Locale.ROOT);
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public String getPasscode() {
+        return passcode;
     }
 
     public void setAppUserId(long appUserId) {
