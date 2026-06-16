@@ -157,7 +157,7 @@ public class UserRepository {
                         continue;
                     }
                     GameProfileModel game = new GameProfileModel(
-                            resultSet.getString("file_uuid"),
+                            resultSet.getString("game_profile_uuid"),
                             resultSet.getString("title"),
                             resultSet.getString("img_uuid"),
                             resultSet.getString("short_desc"),
@@ -169,6 +169,7 @@ public class UserRepository {
 
                 return games;
             }  catch (SQLException exception) {
+
                 throw new RuntimeException("failed to get list of games for user " + uuid);
             }
     }
