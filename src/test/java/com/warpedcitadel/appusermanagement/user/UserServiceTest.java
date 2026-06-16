@@ -89,7 +89,7 @@ public class UserServiceTest {
 
         GameProfileModel gameResult = testProfile.createdGames().get(0);
         Assertions.assertEquals(1, testProfile.createdGames().size());
-        Assertions.assertEquals("019ea2f1-be01-72ca-bf9c-bbf41a925d3d", gameResult.getFileUUID());
+        Assertions.assertEquals("019ea2f1-be01-72ca-bf9c-bbf41a925d3d", gameResult.getGameProfileUUID());
         Assertions.assertEquals("Warhammer 40k", gameResult.getTitle());
         Assertions.assertEquals("019ea2f1-c3cd-75a6-97ce-1e4b45182485", gameResult.getCoverImgUUID());
         Assertions.assertEquals("It is not the descent towards the darkness, " +

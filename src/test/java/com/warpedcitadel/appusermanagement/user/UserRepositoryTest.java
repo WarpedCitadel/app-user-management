@@ -215,7 +215,7 @@ public class UserRepositoryTest {
                 .thenReturn("019ea2f1-be01-72ca-bf9c-bbf41a925d3d");
 
         when(resultSet.getString("game_profile_uuid"))
-                .thenReturn(gameProfileModel.getFileUUID());
+                .thenReturn(gameProfileModel.getGameProfileUUID());
 
         when(resultSet.getString("title"))
                 .thenReturn(gameProfileModel.getTitle());

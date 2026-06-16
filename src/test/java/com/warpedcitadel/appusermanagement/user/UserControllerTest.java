@@ -147,7 +147,7 @@ public class UserControllerTest {
                                                                     "I find if I do one thing, it generates four, five or six other things in my imagination and if I do any of those," +
                                                                     " they also generate the same again."))
                         .andExpect(jsonPath("$.data.createdGames").exists())
-                        .andExpect(jsonPath("$.data.createdGames[0].fileUUID").value(gameProfileModel.getFileUUID()))
+                        .andExpect(jsonPath("$.data.createdGames[0].gameProfileUUID").value(gameProfileModel.getGameProfileUUID()))
                         .andExpect(jsonPath("$.data.createdGames[0].title").value(gameProfileModel.getTitle()))
                         .andExpect(jsonPath("$.data.createdGames[0].coverImgUUID").value(gameProfileModel.getCoverImgUUID()))
                         .andExpect(jsonPath("$.data.createdGames[0].description").value(gameProfileModel.getDescription()))
