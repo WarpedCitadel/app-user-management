@@ -26,30 +26,22 @@ public class UserService {
         return userProfile;
     }
 
-    public void createUserProfile(UserProfileDto createProfile, String username){
+    public void createUserProfile(UserProfileDto createProfile){
 
-        long userId = userRepository.getUserIdByUsername(username);
         long userProfileId = userRepository.getUserIdByUuid(createProfile.userUUID());
 
-        if (userProfileId != userId) {
-            throw new RuntimeException("Action not allowed");
-        }
         AppUserProfileModel appUserProfileModel =
-                new AppUserProfileModel(userId, createProfile.userUUID(),
+                new AppUserProfileModel(userProfileId, createProfile.userUUID(),
                 createProfile.displayName(), createProfile.biography());
 
         userRepository.createAppUserProfile(appUserProfileModel);
     }
 
 
-    public void updateUserProfile(UserProfileDto updateProfile, String username) {
+    public void updateUserProfile(UserProfileDto updateProfile) {
 
-        long userId = userRepository.getUserIdByUsername(username);
         long userProfileId = userRepository.getUserIdByUuid(updateProfile.userUUID());
 
-        if (userProfileId != userId) {
-            throw new RuntimeException("Action not allowed");
-        }
         AppUserProfileModel appUserProfileModel =
                 new AppUserProfileModel(userProfileId, updateProfile.userUUID(),
                         updateProfile.displayName(), updateProfile.biography());

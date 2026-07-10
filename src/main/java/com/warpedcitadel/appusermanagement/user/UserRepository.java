@@ -4,7 +4,6 @@ import com.warpedcitadel.appusermanagement.user.model.AppUserProfileModel;
 import com.warpedcitadel.appusermanagement.user.model.GameProfileModel;
 import com.warpedcitadel.appusermanagement.util.SQLFileReader;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -44,7 +43,7 @@ public class UserRepository {
                 throw new RuntimeException("Failed to get user profile");
             }
         } catch (SQLException exception) {
-            throw new UsernameNotFoundException("Failed to find user with uuid: " + uuid, exception);
+            throw new RuntimeException("Failed to find user with uuid: " + uuid, exception);
         }
     }
 
@@ -131,7 +130,7 @@ public class UserRepository {
                 return resultSet.getLong("id");
             }
         } catch (SQLException exception) {
-            throw new UsernameNotFoundException("User with the username of " + username + " does not exist");
+            throw new RuntimeException("User with the username of " + username + " does not exist");
         }
         return -1;
     }

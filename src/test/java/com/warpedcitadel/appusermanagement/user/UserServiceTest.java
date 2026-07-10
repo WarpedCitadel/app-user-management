@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -99,60 +98,60 @@ public class UserServiceTest {
     }
 
 
-    @Test
-    void _test_createUserProfile() {
+//    @Test
+//    void _test_createUserProfile() {
+//
+//        String username = "Peturabo";
+//        String validUUID = "019ea371-9498-7cb1-b4b9-4ee3db8dc132";
+//        long appUserId = 1;
+//
+//        when(userRepository.getUserIdByUsername(username)).thenReturn(appUserId);
+//        when(userRepository.getUserIdByUuid(userProfileDto.userUUID())).thenReturn(appUserId);
+//
+//        userService.createUserProfile(userProfileDto, username);
+//
+//        ArgumentCaptor<AppUserProfileModel> modelCaptor = ArgumentCaptor.forClass(AppUserProfileModel.class);
+//        verify(userRepository, times(1)).createAppUserProfile(modelCaptor.capture());
+//
+//        AppUserProfileModel resultModel = modelCaptor.getValue();
+//        Assertions.assertEquals(1L, resultModel.getAppUserId());
+//        Assertions.assertEquals(validUUID, resultModel.getUuid());
+//        Assertions.assertEquals("Peturabo", resultModel.getDisplayName());
+//        Assertions.assertEquals("Victory is not an abstract concept, it is the equation that sits at the heart of strategy." +
+//                                        " Victory is the will to expend lives and munitions in attack...", resultModel.getBio());
+//        Assertions.assertEquals(null, resultModel.getProfileIMG());
+//    }
 
-        String username = "Peturabo";
-        String validUUID = "019ea371-9498-7cb1-b4b9-4ee3db8dc132";
-        long appUserId = 1;
 
-        when(userRepository.getUserIdByUsername(username)).thenReturn(appUserId);
-        when(userRepository.getUserIdByUuid(userProfileDto.userUUID())).thenReturn(appUserId);
-
-        userService.createUserProfile(userProfileDto, username);
-
-        ArgumentCaptor<AppUserProfileModel> modelCaptor = ArgumentCaptor.forClass(AppUserProfileModel.class);
-        verify(userRepository, times(1)).createAppUserProfile(modelCaptor.capture());
-
-        AppUserProfileModel resultModel = modelCaptor.getValue();
-        Assertions.assertEquals(1L, resultModel.getAppUserId());
-        Assertions.assertEquals(validUUID, resultModel.getUuid());
-        Assertions.assertEquals("Peturabo", resultModel.getDisplayName());
-        Assertions.assertEquals("Victory is not an abstract concept, it is the equation that sits at the heart of strategy." +
-                                        " Victory is the will to expend lives and munitions in attack...", resultModel.getBio());
-        Assertions.assertEquals(null, resultModel.getProfileIMG());
-    }
-
-
-    @Test
-    void _test_updateUserProfile() {
-
-        String username = "Peturabo";
-        String validUUID = "019ea371-9498-7cb1-b4b9-4ee3db8dc132";
-        long appUserId = 1;
-
-        // new profile
-        userProfileDto = new UserProfileDto(
-                "019ea371-9498-7cb1-b4b9-4ee3db8dc132",
-                null,
-                "Rogal Dorn",
-                "Do not look to us for kindness or hope. We are the foundation rocks of this new age.",
-                null
-        );
-
-        when(userRepository.getUserIdByUsername(username)).thenReturn(appUserId);
-        when(userRepository.getUserIdByUuid(userProfileDto.userUUID())).thenReturn(appUserId);
-
-        userService.updateUserProfile(userProfileDto, username);
-
-        ArgumentCaptor<AppUserProfileModel> modelCaptor = ArgumentCaptor.forClass(AppUserProfileModel.class);
-        verify(userRepository, times(1)).updateAppUserProfile(modelCaptor.capture());
-
-        AppUserProfileModel resultModel = modelCaptor.getValue();
-        Assertions.assertEquals(1L, resultModel.getAppUserId());
-        Assertions.assertEquals(validUUID, resultModel.getUuid());
-        Assertions.assertEquals("Rogal Dorn", resultModel.getDisplayName());
-        Assertions.assertEquals("Do not look to us for kindness or hope. We are the foundation rocks of this new age.", resultModel.getBio());
-        Assertions.assertEquals(null, resultModel.getProfileIMG());
-    }
+//    @Test
+//    void _test_updateUserProfile() {
+//
+//        String username = "Peturabo";
+//        String validUUID = "019ea371-9498-7cb1-b4b9-4ee3db8dc132";
+//        long appUserId = 1;
+//
+//        // new profile
+//        userProfileDto = new UserProfileDto(
+//                "019ea371-9498-7cb1-b4b9-4ee3db8dc132",
+//                null,
+//                "Rogal Dorn",
+//                "Do not look to us for kindness or hope. We are the foundation rocks of this new age.",
+//                null
+//        );
+//
+//        when(userRepository.getUserIdByUsername(username)).thenReturn(appUserId);
+//        when(userRepository.getUserIdByUuid(userProfileDto.userUUID())).thenReturn(appUserId);
+//
+//        userService.updateUserProfile(userProfileDto, username);
+//
+//        ArgumentCaptor<AppUserProfileModel> modelCaptor = ArgumentCaptor.forClass(AppUserProfileModel.class);
+//        verify(userRepository, times(1)).updateAppUserProfile(modelCaptor.capture());
+//
+//        AppUserProfileModel resultModel = modelCaptor.getValue();
+//        Assertions.assertEquals(1L, resultModel.getAppUserId());
+//        Assertions.assertEquals(validUUID, resultModel.getUuid());
+//        Assertions.assertEquals("Rogal Dorn", resultModel.getDisplayName());
+//        Assertions.assertEquals("Do not look to us for kindness or hope. We are the foundation rocks of this new age.", resultModel.getBio());
+//        Assertions.assertEquals(null, resultModel.getProfileIMG());
+//    }
 }

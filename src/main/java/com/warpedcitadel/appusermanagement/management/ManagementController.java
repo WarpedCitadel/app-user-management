@@ -15,7 +15,7 @@ import java.time.Instant;
 
 
 @RestController
-@RequestMapping(path = "/user", version = "1.0")
+@RequestMapping(path = "api/user", version = "1.0")
 public class ManagementController {
 
     @Autowired

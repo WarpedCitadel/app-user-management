@@ -2,7 +2,6 @@ package com.warpedcitadel.appusermanagement.exceptionhandlers;
 
 import com.warpedcitadel.appusermanagement.payload.GenericApiErrorResponse;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -28,21 +27,6 @@ public class GlobalExceptionHandler {
         return new GenericApiErrorResponse<>(
                 "Invalid Fields",
                 HttpStatus.BAD_REQUEST.value(),
-                errors,
-                request.getDescription(false).replace("uri=", ""),
-                Instant.now(Clock.systemUTC())
-        );
-    }
-
-
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    @ExceptionHandler(BadCredentialsException.class)
-    public GenericApiErrorResponse handleBadCredentialsException(BadCredentialsException badCredentialsException, WebRequest request) {
-        Map<String, String> errors = new HashMap<>();
-        errors.put("message", badCredentialsException.getMessage());
-        return new GenericApiErrorResponse<>(
-                "Invalid Fields",
-                HttpStatus.UNAUTHORIZED.value(),
                 errors,
                 request.getDescription(false).replace("uri=", ""),
                 Instant.now(Clock.systemUTC())
