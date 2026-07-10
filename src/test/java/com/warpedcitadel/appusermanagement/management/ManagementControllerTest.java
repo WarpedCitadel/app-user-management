@@ -48,14 +48,14 @@ class ManagementControllerTest {
 
         String validUUID = "019ea371-9498-7cb1-b4b9-4ee3db8dc132";
 
-        mockMvc.perform(put("/user/profile/{uuid}/disable", validUUID)
+        mockMvc.perform(put("/api/user/profile/{uuid}/disable", validUUID)
                         .header("x-api-version", "1.0"))
                         .andExpect(status().isOk())
                         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                         .andExpect(jsonPath("$.title").value("User status changed"))
                         .andExpect(jsonPath("$.status").value(200))
                         .andExpect(jsonPath("$.data").value("User status set to disabled"))
-                        .andExpect(jsonPath("$.instance").value("/user/profile/019ea371-9498-7cb1-b4b9-4ee3db8dc132/disable"))
+                        .andExpect(jsonPath("$.instance").value("/api/user/profile/019ea371-9498-7cb1-b4b9-4ee3db8dc132/disable"))
                         .andExpect(jsonPath("$.timestamp").exists());
 
         Mockito.verify(managementService, Mockito.atLeast(1)).disableAppUser(validUUID);
@@ -66,14 +66,14 @@ class ManagementControllerTest {
 
         String validUUID = "019ea371-9498-7cb1-b4b9-4ee3db8dc132";
 
-        mockMvc.perform(put("/user/profile/{uuid}/enable", validUUID)
+        mockMvc.perform(put("/api/user/profile/{uuid}/enable", validUUID)
                         .header("x-api-version", "1.0"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.title").value("User status changed"))
                 .andExpect(jsonPath("$.status").value(200))
                 .andExpect(jsonPath("$.data").value("User status set to enabled"))
-                .andExpect(jsonPath("$.instance").value("/user/profile/019ea371-9498-7cb1-b4b9-4ee3db8dc132/enable"))
+                .andExpect(jsonPath("$.instance").value("/api/user/profile/019ea371-9498-7cb1-b4b9-4ee3db8dc132/enable"))
                 .andExpect(jsonPath("$.timestamp").exists());
 
         Mockito.verify(managementService, Mockito.atLeast(1)).enableAppUser(validUUID);

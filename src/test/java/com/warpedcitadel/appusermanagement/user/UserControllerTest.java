@@ -1,6 +1,5 @@
 package com.warpedcitadel.appusermanagement.user;
 
-import com.warpedcitadel.appusermanagement.security.JwtUtil;
 import com.warpedcitadel.appusermanagement.user.dto.UserProfileDto;
 import com.warpedcitadel.appusermanagement.user.model.GameProfileModel;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,9 +34,6 @@ public class UserControllerTest {
 
     @Mock
     private UserService userService;
-
-    @Mock
-    JwtUtil jwtUtil;
 
     @InjectMocks
     private UserController userController;
@@ -87,7 +83,7 @@ public class UserControllerTest {
         Path filePath = Path.of("src/test/resources/json/createUserProfile.json");
         String json = Files.readString(filePath);
 
-        mockMvc.perform(post("/user/profile/createprofile")
+        mockMvc.perform(post("/api/user/profile/createprofile")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", jwtToken)
                         .header("x-api-version", "1.0")
@@ -101,7 +97,7 @@ public class UserControllerTest {
                         .andExpect(jsonPath("$.data.biography").value("I'm painfully aware that I'll probably not survive what I want to achieve. " +
                                                         "I find if I do one thing, it generates four, five or six other things in my imagination and if I do any of those," +
                                                         " they also generate the same again."))
-                        .andExpect(jsonPath("$.instance").value("/user/profile/createprofile"));
+                        .andExpect(jsonPath("$.instance").value("/api/user/profile/createprofile"));
     }
 
 
@@ -111,7 +107,7 @@ public class UserControllerTest {
         Path filePath = Path.of("src/test/resources/json/createUserProfile.json");
         String json = Files.readString(filePath);
 
-        mockMvc.perform(put("/user/profile/updateprofile")
+        mockMvc.perform(put("/api/user/profile/updateprofile")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", jwtToken)
                         .header("x-api-version", "1.0")
@@ -125,7 +121,7 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.data.biography").value("I'm painfully aware that I'll probably not survive what I want to achieve. " +
                         "I find if I do one thing, it generates four, five or six other things in my imagination and if I do any of those," +
                         " they also generate the same again."))
-                .andExpect(jsonPath("$.instance").value("/user/profile/updateprofile"));
+                .andExpect(jsonPath("$.instance").value("/api/user/profile/updateprofile"));
     }
 
 
@@ -136,7 +132,7 @@ public class UserControllerTest {
 
         when(userService.getUserProfile(validUUID)).thenReturn(profile);
 
-        mockMvc.perform(get("/user/profile/{uuid}", validUUID)
+        mockMvc.perform(get("/api/user/profile/{uuid}", validUUID)
                         .header("x-api-version", "1.0"))
                         .andExpect(status().isOk())
                         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
