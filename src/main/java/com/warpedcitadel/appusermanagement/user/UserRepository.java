@@ -38,6 +38,7 @@ public class UserRepository {
                         resultSet.getString("user_uuid"),
                         resultSet.getString("display_name"),
                         resultSet.getString("user_bio"),
+                        resultSet.getString("img_uuid"),
                         resultSet.getString("file_name"),
                         gameList
                 );

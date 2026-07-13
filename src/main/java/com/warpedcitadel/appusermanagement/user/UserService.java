@@ -20,7 +20,7 @@ public class UserService {
     public UserProfileDto getUserProfile(String uuid) {
         AppUserProfileModel userProfileModel = userRepository.getAppUserProfile(uuid);
 
-        String profilePrefix = "images/users/" + userProfileModel.getUuid() + "/image/" + userProfileModel.getProfileImg();
+        String profilePrefix = "images/users/" + userProfileModel.getFileUUID() + "/image/" + userProfileModel.getFileName();
         String profileImgUrl = cloudFrontService.generateSignedUrl(profilePrefix);
 
         for (int i = 0; userProfileModel.getCreatedGames().size() > i; i++) {
@@ -28,7 +28,7 @@ public class UserService {
             String gameProfileUUID = userProfileModel.getCreatedGames().get(i).getGameProfileUUID();
             String fileName = userProfileModel.getCreatedGames().get(i).getProfileImage();
 
-            String gamePrefix = "images/games/" + gameProfileUUID + "/gamesImages/" + fileName;
+            String gamePrefix = "images/games/" + gameProfileUUID + "/gameImages/" + fileName;
             String gameImageUrl = cloudFrontService.generateSignedUrl(gamePrefix);
             userProfileModel.getCreatedGames().get(i).setProfileImage(gameImageUrl);
         }

@@ -52,6 +52,7 @@ public class UserServiceTest {
         games.add(gameProfileModel);
 
         appUserProfileModel = new AppUserProfileModel(
+                "",
                 "019ea371-9498-7cb1-b4b9-4ee3db8dc132",
                 "JohnBlanche",
                 "I'm painfully aware that I'll probably not survive what I want to achieve. " +

@@ -1,6 +1,7 @@
 package com.warpedcitadel.appusermanagement.management;
 
 import com.warpedcitadel.appusermanagement.management.model.UserDetailsModel;
+import com.warpedcitadel.appusermanagement.util.CloudFrontService;
 import com.warpedcitadel.appusermanagement.util.SQLFileReader;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -20,9 +21,11 @@ public class ManagementRepository {
 
     SQLFileReader loadSQL = new SQLFileReader();
     private final DataSource database;
+    private final CloudFrontService cloudFrontService;
 
-    public ManagementRepository(DataSource database) {
+    public ManagementRepository(DataSource database, CloudFrontService cloudFrontService) {
         this.database = database;
+        this.cloudFrontService = cloudFrontService;
     }
 
 
@@ -82,9 +85,13 @@ public class ManagementRepository {
 
             while (resultSet.next()) {
 
+                String profilePrefix = "images/users/" + resultSet.getString("img_uuid") +
+                                        "/image/" + resultSet.getString("file_name");
+                String profileImgUrl = cloudFrontService.generateSignedUrl(profilePrefix);
+
                 UserDetailsModel user = new UserDetailsModel(
                         resultSet.getString("user_uuid"),
-                        resultSet.getString("img_uuid"),
+                        profileImgUrl,
                         resultSet.getString("display_name"),
                         resultSet.getString("username"),
                         resultSet.getString("email"),

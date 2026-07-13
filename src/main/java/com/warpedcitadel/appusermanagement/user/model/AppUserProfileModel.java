@@ -6,7 +6,8 @@ public class AppUserProfileModel {
 
     private long appUserId;
     private String uuid;
-    private String profileImg;
+    private String fileUUID;
+    private String fileName;
     private String displayName;
     private String bio;
     private List<GameProfileModel> createdGames;
@@ -21,11 +22,12 @@ public class AppUserProfileModel {
         this.displayName = displayName;
     }
 
-    public AppUserProfileModel(String uuid, String displayName, String bio, String profileImg, List<GameProfileModel> createdGames) {
+    public AppUserProfileModel(String uuid, String displayName, String bio, String fileUUID, String fileName, List<GameProfileModel> createdGames) {
         this.uuid = uuid;
         this.displayName = displayName;
         this.bio = bio;
-        this.profileImg = profileImg;
+        this.fileUUID = fileUUID;
+        this.fileName = fileName;
         this.createdGames = createdGames;
     }
 
@@ -52,8 +54,12 @@ public class AppUserProfileModel {
         return bio;
     }
 
-    public String getProfileImg() {
-        return profileImg;
+    public String getFileUUID() {
+        return fileUUID;
+    }
+
+    public String getFileName() {
+        return fileName;
     }
 
     public List<GameProfileModel> getCreatedGames() {

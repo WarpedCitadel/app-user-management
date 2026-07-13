@@ -1,6 +1,7 @@
 SELECT
 	au.user_uuid,
 	f.img_uuid,
+	f.file_name,
 	au.username,
 	f.display_name,
 	au.email,
