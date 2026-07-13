@@ -3,7 +3,6 @@ package com.warpedcitadel.appusermanagement.user;
 
 import com.warpedcitadel.appusermanagement.payload.ApiResponse;
 import com.warpedcitadel.appusermanagement.user.dto.UserProfileDto;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,8 +15,13 @@ import java.time.Instant;
 @RequestMapping(path = "/api/user", version = "1.0")
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+
+    private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
+
 
     @PostMapping("/profile/createprofile")
     private ResponseEntity<ApiResponse> createUserProfile(@RequestBody UserProfileDto createProfile, WebRequest request) {

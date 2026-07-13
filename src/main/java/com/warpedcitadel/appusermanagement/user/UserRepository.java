@@ -3,7 +3,6 @@ package com.warpedcitadel.appusermanagement.user;
 import com.warpedcitadel.appusermanagement.user.model.AppUserProfileModel;
 import com.warpedcitadel.appusermanagement.user.model.GameProfileModel;
 import com.warpedcitadel.appusermanagement.util.SQLFileReader;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -14,10 +13,13 @@ import java.util.List;
 @Repository
 public class UserRepository {
 
-    @Autowired
-    private DataSource database;
-
     SQLFileReader loadSQL = new SQLFileReader();
+    private final DataSource database;
+
+    public UserRepository(DataSource database) {
+        this.database = database;
+    }
+
 
     public AppUserProfileModel getAppUserProfile(String uuid) {
 
@@ -36,7 +38,7 @@ public class UserRepository {
                         resultSet.getString("user_uuid"),
                         resultSet.getString("display_name"),
                         resultSet.getString("user_bio"),
-                        resultSet.getString("img_uuid"),
+                        resultSet.getString("file_name"),
                         gameList
                 );
             } else {
@@ -155,10 +157,11 @@ public class UserRepository {
                     if (fileUUID == null) {
                         continue;
                     }
+
                     GameProfileModel game = new GameProfileModel(
                             resultSet.getString("game_profile_uuid"),
                             resultSet.getString("title"),
-                            resultSet.getString("img_uuid"),
+                            resultSet.getString("file_name"),
                             resultSet.getString("short_desc"),
                             resultSet.getString("genre_type")
                     );

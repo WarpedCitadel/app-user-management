@@ -3,7 +3,7 @@ SELECT
     COALESCE(aup.display_name, au.username)
         AS display_name,
     aup.user_bio,
-    pi.img_uuid
+    pi.file_name
 FROM wc01.app_user au
 LEFT JOIN wc01.app_user_profile aup
     ON au.id = aup.app_user_id

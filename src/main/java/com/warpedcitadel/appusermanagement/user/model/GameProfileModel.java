@@ -4,7 +4,7 @@ public class GameProfileModel {
 
     private String gameProfileUUID;
     private String title;
-    private String coverImgUUID;
+    private String profileImage;
     private String description;
     private String genre;
 
@@ -13,11 +13,11 @@ public class GameProfileModel {
 
     }
 
-    public GameProfileModel(String gameProfileUUID, String title, String coverImgUUID,
+    public GameProfileModel(String gameProfileUUID, String title, String profileImage,
                             String description, String genre) {
         this.gameProfileUUID = gameProfileUUID;
         this.title = title;
-        this.coverImgUUID = coverImgUUID;
+        this.profileImage = profileImage;
         this.description = description;
         this.genre = genre;
     }
@@ -38,12 +38,12 @@ public class GameProfileModel {
         this.title = title;
     }
 
-    public String getCoverImgUUID() {
-        return coverImgUUID;
+    public String getProfileImage() {
+        return profileImage;
     }
 
-    public void setCoverImgUUID(String coverImgUUID) {
-        this.coverImgUUID = coverImgUUID;
+    public void setProfileImage(String profileImage) {
+        this.profileImage = profileImage;
     }
 
     public String getDescription() {

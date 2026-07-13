@@ -2,7 +2,6 @@ package com.warpedcitadel.appusermanagement.management;
 
 import com.warpedcitadel.appusermanagement.management.model.UserDetailsModel;
 import com.warpedcitadel.appusermanagement.util.SQLFileReader;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
@@ -19,10 +18,12 @@ import java.util.List;
 @Repository
 public class ManagementRepository {
 
-    @Autowired
-    private DataSource database;
-
     SQLFileReader loadSQL = new SQLFileReader();
+    private final DataSource database;
+
+    public ManagementRepository(DataSource database) {
+        this.database = database;
+    }
 
 
     public void disableAppUser(String uuid){

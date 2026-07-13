@@ -7,7 +7,7 @@ import java.util.List;
 
 public record UserProfileDto(
         String userUUID,
-        String profileImgUUID,
+        String profileImage,
         String displayName,
         String biography,
 

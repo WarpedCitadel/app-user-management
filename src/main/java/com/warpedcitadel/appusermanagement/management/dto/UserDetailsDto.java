@@ -2,7 +2,7 @@ package com.warpedcitadel.appusermanagement.management.dto;
 
 public record UserDetailsDto(
         String uuid,
-        String profileIMG,
+        String profileImg,
         String username,
         String displayName,
         String email,

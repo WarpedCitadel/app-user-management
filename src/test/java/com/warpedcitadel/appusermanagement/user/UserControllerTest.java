@@ -137,7 +137,7 @@ public class UserControllerTest {
                         .andExpect(status().isOk())
                         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                         .andExpect(jsonPath("$.data.userUUID").value("019ea371-9498-7cb1-b4b9-4ee3db8dc132"))
-                        .andExpect(jsonPath("$.data.profileImgUUID").value("019e9e91-d2de-70f0-ae45-ebb1c52f557e"))
+                        .andExpect(jsonPath("$.data.profileImage").value("019e9e91-d2de-70f0-ae45-ebb1c52f557e"))
                         .andExpect(jsonPath("$.data.displayName").value(testUsername))
                         .andExpect(jsonPath("$.data.biography").value("I'm painfully aware that I'll probably not survive what I want to achieve. " +
                                                                     "I find if I do one thing, it generates four, five or six other things in my imagination and if I do any of those," +
@@ -145,7 +145,7 @@ public class UserControllerTest {
                         .andExpect(jsonPath("$.data.createdGames").exists())
                         .andExpect(jsonPath("$.data.createdGames[0].gameProfileUUID").value(gameProfileModel.getGameProfileUUID()))
                         .andExpect(jsonPath("$.data.createdGames[0].title").value(gameProfileModel.getTitle()))
-                        .andExpect(jsonPath("$.data.createdGames[0].coverImgUUID").value(gameProfileModel.getCoverImgUUID()))
+                        .andExpect(jsonPath("$.data.createdGames[0].profileImage").value(gameProfileModel.getProfileImage()))
                         .andExpect(jsonPath("$.data.createdGames[0].description").value(gameProfileModel.getDescription()))
                         .andExpect(jsonPath("$.data.createdGames[0].genre").value(gameProfileModel.getGenre()));
 

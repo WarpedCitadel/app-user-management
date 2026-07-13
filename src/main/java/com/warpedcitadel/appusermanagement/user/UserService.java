@@ -2,22 +2,40 @@ package com.warpedcitadel.appusermanagement.user;
 
 import com.warpedcitadel.appusermanagement.user.dto.UserProfileDto;
 import com.warpedcitadel.appusermanagement.user.model.AppUserProfileModel;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.warpedcitadel.appusermanagement.util.CloudFrontService;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final CloudFrontService cloudFrontService;
+
+    public UserService(UserRepository userRepository, CloudFrontService cloudFrontService) {
+        this.userRepository = userRepository;
+        this.cloudFrontService = cloudFrontService;
+    }
 
 
     public UserProfileDto getUserProfile(String uuid) {
         AppUserProfileModel userProfileModel = userRepository.getAppUserProfile(uuid);
 
+        String profilePrefix = "images/users/" + userProfileModel.getUuid() + "/image/" + userProfileModel.getProfileImg();
+        String profileImgUrl = cloudFrontService.generateSignedUrl(profilePrefix);
+
+        for (int i = 0; userProfileModel.getCreatedGames().size() > i; i++) {
+
+            String gameProfileUUID = userProfileModel.getCreatedGames().get(i).getGameProfileUUID();
+            String fileName = userProfileModel.getCreatedGames().get(i).getProfileImage();
+
+            String gamePrefix = "images/games/" + gameProfileUUID + "/gamesImages/" + fileName;
+            String gameImageUrl = cloudFrontService.generateSignedUrl(gamePrefix);
+            userProfileModel.getCreatedGames().get(i).setProfileImage(gameImageUrl);
+        }
+
         UserProfileDto userProfile = new UserProfileDto(
                 userProfileModel.getUuid(),
-                userProfileModel.getProfileIMG(),
+                profileImgUrl,
                 userProfileModel.getDisplayName(),
                 userProfileModel.getBio(),
                 userProfileModel.getCreatedGames()

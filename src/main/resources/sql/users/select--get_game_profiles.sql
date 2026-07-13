@@ -2,7 +2,7 @@ SELECT DISTINCT
 	gp.game_profile_uuid,
     gp.title,
     gi.iscover,
-    gi.img_uuid,
+    gi.file_name,
 	gp.short_desc,
 	g.genre_type
 FROM wc01.app_user au

@@ -3,7 +3,6 @@ package com.warpedcitadel.appusermanagement.management;
 import com.warpedcitadel.appusermanagement.management.dto.GetAppUsersDto;
 import com.warpedcitadel.appusermanagement.management.dto.SearchAttributesDto;
 import com.warpedcitadel.appusermanagement.payload.ApiResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,9 +16,12 @@ import java.time.Instant;
 @RestController
 @RequestMapping(path = "api/user", version = "1.0")
 public class ManagementController {
+    
+    private final ManagementService managementService;
 
-    @Autowired
-    private ManagementService managementService;
+    public ManagementController(ManagementService managementService) {
+        this.managementService = managementService;
+    }
 
 
     @GetMapping("/search")

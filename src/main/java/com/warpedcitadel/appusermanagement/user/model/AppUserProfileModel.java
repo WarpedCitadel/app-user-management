@@ -6,7 +6,7 @@ public class AppUserProfileModel {
 
     private long appUserId;
     private String uuid;
-    private String profileIMG;
+    private String profileImg;
     private String displayName;
     private String bio;
     private List<GameProfileModel> createdGames;
@@ -21,11 +21,11 @@ public class AppUserProfileModel {
         this.displayName = displayName;
     }
 
-    public AppUserProfileModel(String uuid, String displayName, String bio, String profileIMG, List<GameProfileModel> createdGames) {
+    public AppUserProfileModel(String uuid, String displayName, String bio, String profileImg, List<GameProfileModel> createdGames) {
         this.uuid = uuid;
         this.displayName = displayName;
         this.bio = bio;
-        this.profileIMG = profileIMG;
+        this.profileImg = profileImg;
         this.createdGames = createdGames;
     }
 
@@ -52,8 +52,8 @@ public class AppUserProfileModel {
         return bio;
     }
 
-    public String getProfileIMG() {
-        return profileIMG;
+    public String getProfileImg() {
+        return profileImg;
     }
 
     public List<GameProfileModel> getCreatedGames() {
