@@ -10,6 +10,7 @@ import org.springframework.web.context.request.WebRequest;
 
 import java.time.Clock;
 import java.time.Instant;
+import java.util.UUID;
 
 @RestController
 @RequestMapping(path = "/api/user", version = "1.0")
@@ -47,15 +48,35 @@ public class UserController {
         return new ResponseEntity<>(userProfile, HttpStatus.OK);
     }
 
-    @GetMapping("/profile/{username}")
-    public ResponseEntity<ApiResponse> userProfile(@PathVariable String username, WebRequest request) {
+    @GetMapping("/profile/{identifier}")
+    public ResponseEntity<ApiResponse> userProfile(@PathVariable String identifier, WebRequest request) {
 
-        String userUUID = userRepository.getUserIdByUsername(username);
+        String userUUID;
+
+        if (!isValidUUID(identifier)) {
+            userUUID = userRepository.getUserIdByUsername(identifier);
+        } else {
+            userUUID = identifier;
+        }
+
         UserProfileDto profile = userService.getUserProfile(userUUID);
 
         ApiResponse<UserProfileDto> userProfile = new ApiResponse<>("User profile", HttpStatus.OK.value(),
                 profile, request.getDescription(false).replace("uri=", ""),
                 Instant.now(Clock.systemUTC()));
         return new ResponseEntity<>(userProfile, HttpStatus.OK);
+    }
+
+
+    // ### Helper Methods ###
+
+    public boolean isValidUUID(String username) {
+
+        try {
+            UUID.fromString(username);
+            return true;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
     }
 }
