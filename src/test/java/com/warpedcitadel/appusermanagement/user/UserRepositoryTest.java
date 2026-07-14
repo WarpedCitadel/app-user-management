@@ -175,9 +175,9 @@ public class UserRepositoryTest {
 
 
     @Test
-    void _test_getUserIdByUsername() throws SQLException {
+    void _test_getUserUUIDByUsername() throws SQLException {
 
-        String selectSQL = loadSQL.loadSQL("/users/select--get_app_user_id_u.sql");
+        String selectSQL = loadSQL.loadSQL("/users/select--get_app_user_uuid_.sql");
         String username = "JohnBlanche";
 
         when(dataSource.getConnection()).thenReturn(connection);
@@ -187,14 +187,14 @@ public class UserRepositoryTest {
         when(resultSet.next())
                 .thenReturn(true, false);
 
-        when(resultSet.getLong("id"))
-                .thenReturn(1L);
+        when(resultSet.getString("user_uuid"))
+                .thenReturn("019ea371-9498-7cb1-b4b9-4ee3db8dc132");
 
-        long result = userRepository.getUserIdByUsername(username);
+        String result = userRepository.getUserIdByUsername(username);
 
         verify(preparedStatement).setString(1, username);
         verify(preparedStatement).executeQuery();
-        Assertions.assertEquals(1L, result);
+        Assertions.assertEquals("019ea371-9498-7cb1-b4b9-4ee3db8dc132", result);
     }
 
 

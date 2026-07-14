@@ -118,9 +118,11 @@ public class UserRepository {
     }
 
 
-    public long getUserIdByUsername(String username) {
+    public String getUserIdByUsername(String username) {
 
-        String selectSQL = loadSQL.loadSQL("/users/select--get_app_user_id_u.sql");
+        String selectSQL = loadSQL.loadSQL("/users/select--get_app_user_uuid_.sql");
+
+        String userUUID = "";
 
         try (Connection connection = database.getConnection();
              PreparedStatement statement = connection.prepareStatement(selectSQL)) {
@@ -130,12 +132,13 @@ public class UserRepository {
             ResultSet resultSet = statement.executeQuery();
 
             if (resultSet.next()) {
-                return resultSet.getLong("id");
+                userUUID = resultSet.getString("user_uuid");
             }
         } catch (SQLException exception) {
             throw new RuntimeException("User with the username of " + username + " does not exist");
         }
-        return -1;
+
+        return userUUID;
     }
 
 

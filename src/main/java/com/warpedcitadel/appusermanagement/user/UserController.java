@@ -17,9 +17,11 @@ public class UserController {
 
 
     private final UserService userService;
+    private final UserRepository userRepository;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, UserRepository userRepository) {
         this.userService = userService;
+        this.userRepository = userRepository;
     }
 
 
@@ -45,10 +47,11 @@ public class UserController {
         return new ResponseEntity<>(userProfile, HttpStatus.OK);
     }
 
-    @GetMapping("/profile/{uuid}")
-    public ResponseEntity<ApiResponse> userProfile(@PathVariable String uuid, WebRequest request) {
+    @GetMapping("/profile/{username}")
+    public ResponseEntity<ApiResponse> userProfile(@PathVariable String username, WebRequest request) {
 
-        UserProfileDto profile = userService.getUserProfile(uuid);
+        String userUUID = userRepository.getUserIdByUsername(username);
+        UserProfileDto profile = userService.getUserProfile(userUUID);
 
         ApiResponse<UserProfileDto> userProfile = new ApiResponse<>("User profile", HttpStatus.OK.value(),
                 profile, request.getDescription(false).replace("uri=", ""),
