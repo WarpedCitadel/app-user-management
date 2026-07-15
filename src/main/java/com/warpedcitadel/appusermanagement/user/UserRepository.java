@@ -176,7 +176,7 @@ public class UserRepository {
                 return games;
             }  catch (SQLException exception) {
 
-                throw new RuntimeException("failed to get list of games for user " + uuid);
+                throw new RuntimeException("failed to get list of games for user ID:" + uuid);
             }
     }
 }

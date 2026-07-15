@@ -55,6 +55,10 @@ public class UserController {
 
         if (!isValidUUID(identifier)) {
             userUUID = userRepository.getUserIdByUsername(identifier);
+            if (userUUID.isBlank()) {
+                throw new RuntimeException("Could not retrieve a user id for username: " + identifier);
+            }
+
         } else {
             userUUID = identifier;
         }
