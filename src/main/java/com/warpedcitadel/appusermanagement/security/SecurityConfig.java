@@ -37,6 +37,7 @@ public class SecurityConfig {
                                         .requestMatchers("/error").permitAll()
                                         .anyRequest().authenticated()
                         );
+
         return http.build();
     }
 
