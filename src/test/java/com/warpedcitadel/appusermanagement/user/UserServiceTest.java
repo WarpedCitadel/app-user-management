@@ -32,6 +32,7 @@ public class UserServiceTest {
 
         userProfileDto = new UserProfileDto(
                 "019ea371-9498-7cb1-b4b9-4ee3db8dc132",
+                "",
                 null,
                 "Peturabo",
                 "Victory is not an abstract concept, it is the equation that sits at the heart of strategy. Victory is the will to expend lives and munitions in attack...",
@@ -53,6 +54,7 @@ public class UserServiceTest {
 
         appUserProfileModel = new AppUserProfileModel(
                 "",
+                "",
                 "019ea371-9498-7cb1-b4b9-4ee3db8dc132",
                 "JohnBlanche",
                 "I'm painfully aware that I'll probably not survive what I want to achieve. " +
@@ -60,7 +62,6 @@ public class UserServiceTest {
                         " they also generate the same again.",
                 "019e9e91-d2de-70f0-ae45-ebb1c52f557e",
                 games
-
         );
     }
 

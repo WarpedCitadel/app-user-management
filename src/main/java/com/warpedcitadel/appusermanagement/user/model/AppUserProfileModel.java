@@ -9,6 +9,7 @@ public class AppUserProfileModel {
     private String fileUUID;
     private String fileName;
     private String displayName;
+    private String username;
     private String bio;
     private List<GameProfileModel> createdGames;
 
@@ -22,9 +23,10 @@ public class AppUserProfileModel {
         this.displayName = displayName;
     }
 
-    public AppUserProfileModel(String uuid, String displayName, String bio, String fileUUID, String fileName, List<GameProfileModel> createdGames) {
+    public AppUserProfileModel(String uuid, String displayName, String username, String bio, String fileUUID, String fileName, List<GameProfileModel> createdGames) {
         this.uuid = uuid;
         this.displayName = displayName;
+        this.username = username;
         this.bio = bio;
         this.fileUUID = fileUUID;
         this.fileName = fileName;
@@ -38,6 +40,7 @@ public class AppUserProfileModel {
         this.bio = bio;
     }
 
+
     public long getAppUserId() {
         return appUserId;
     }
@@ -48,6 +51,10 @@ public class AppUserProfileModel {
 
     public String getDisplayName() {
         return displayName;
+    }
+
+    public String getUsername() {
+        return username;
     }
 
     public String getBio() {

@@ -3,7 +3,7 @@ package com.warpedcitadel.appusermanagement.management.model;
 public class UserDetailsModel {
 
     String userUUID;
-    String profileIMG;
+    String profileImage;
     String username;
     String displayName;
     String email;
@@ -16,12 +16,12 @@ public class UserDetailsModel {
 
     }
 
-    public UserDetailsModel(String userUUID, String profileIMG,
+    public UserDetailsModel(String userUUID, String profileImage,
                             String displayName, String username, String email,
                             String role, boolean isActive, String createdDtm) {
 
         this.userUUID = userUUID;
-        this.profileIMG = profileIMG;
+        this.profileImage = profileImage;
         this.displayName = displayName;
         this.username = username;
         this.email = email;
@@ -35,8 +35,8 @@ public class UserDetailsModel {
         return userUUID;
     }
 
-    public String getProfileIMG() {
-        return profileIMG;
+    public String getProfileImage() {
+        return profileImage;
     }
 
     public String getUsername() {

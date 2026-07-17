@@ -9,6 +9,7 @@ public record UserProfileDto(
         String userUUID,
         String profileImage,
         String displayName,
+        String username,
         String biography,
 
         @Nullable

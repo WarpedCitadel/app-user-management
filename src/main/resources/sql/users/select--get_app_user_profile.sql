@@ -2,6 +2,7 @@ SELECT
     au.user_uuid,
     COALESCE(aup.display_name, au.username)
         AS display_name,
+    au.username,
     aup.user_bio,
     pi.img_uuid,
     pi.file_name

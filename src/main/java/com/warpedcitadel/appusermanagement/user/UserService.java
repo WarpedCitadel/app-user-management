@@ -37,6 +37,7 @@ public class UserService {
                 userProfileModel.getUuid(),
                 profileImgUrl,
                 userProfileModel.getDisplayName(),
+                userProfileModel.getUsername(),
                 userProfileModel.getBio(),
                 userProfileModel.getCreatedGames()
         );

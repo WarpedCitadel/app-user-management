@@ -67,6 +67,7 @@ public class UserControllerTest {
 
          profile = new UserProfileDto(
                 "019ea371-9498-7cb1-b4b9-4ee3db8dc132",
+                "",
                 "019e9e91-d2de-70f0-ae45-ebb1c52f557e",
                 "JohnBlanche",
                 "I'm painfully aware that I'll probably not survive what I want to achieve. " +

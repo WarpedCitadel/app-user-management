@@ -37,6 +37,7 @@ public class UserRepository {
                 return new AppUserProfileModel(
                         resultSet.getString("user_uuid"),
                         resultSet.getString("display_name"),
+                        resultSet.getString("username"),
                         resultSet.getString("user_bio"),
                         resultSet.getString("img_uuid"),
                         resultSet.getString("file_name"),
